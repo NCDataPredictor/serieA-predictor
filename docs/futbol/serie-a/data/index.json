@@ -1,0 +1,117 @@
+{
+ "liga": "Serie A",
+ "temporada": "2026-27",
+ "version": "futbol-0.1",
+ "actualizado": "2026-11-22T16:45Z",
+ "ejemplo": false,
+ "partidos": [
+  {
+   "id": "2026-11-22-MIL-FRO",
+   "fecha": "2026-11-22",
+   "hora_local": "18:00",
+   "hora_bogota": "12:00",
+   "jornada": 12,
+   "local": "MIL",
+   "visitante": "FRO",
+   "estadio": "Stadio Giuseppe Meazza",
+   "derbi": null,
+   "arbitro": "Luca Pairetto",
+   "1x2": [
+    0.509,
+    0.245,
+    0.245
+   ],
+   "goles": 3.65,
+   "over25": 0.693,
+   "ambos": 0.711,
+   "corners": 9.73,
+   "amarillas": 4.24,
+   "marcador": [
+    "2-1",
+    0.096
+   ],
+   "n_picks": 0,
+   "ejemplo": false,
+   "alineacion": {
+    "MIL": "oficial",
+    "FRO": "oficial"
+   },
+   "bajas": {
+    "MIL": 6,
+    "FRO": 3
+   }
+  },
+  {
+   "id": "2026-11-22-ATA-INT",
+   "fecha": "2026-11-22",
+   "hora_local": "20:45",
+   "hora_bogota": "14:45",
+   "jornada": 12,
+   "local": "ATA",
+   "visitante": "INT",
+   "estadio": "New Balance Arena",
+   "derbi": null,
+   "arbitro": "Fabio Maresca",
+   "1x2": [
+    0.223,
+    0.262,
+    0.515
+   ],
+   "goles": 3.03,
+   "over25": 0.573,
+   "ambos": 0.615,
+   "corners": 8.83,
+   "amarillas": 3.15,
+   "marcador": [
+    "1-1",
+    0.119
+   ],
+   "n_picks": 0,
+   "ejemplo": false,
+   "alineacion": {
+    "ATA": "prevista (últimos 10)",
+    "INT": "prevista (últimos 10)"
+   },
+   "bajas": {
+    "ATA": 2,
+    "INT": 2
+   }
+  },
+  {
+   "id": "2026-11-23-MON-FIO",
+   "fecha": "2026-11-23",
+   "hora_local": "20:45",
+   "hora_bogota": "14:45",
+   "jornada": 12,
+   "local": "MON",
+   "visitante": "FIO",
+   "estadio": "U-Power Stadium",
+   "derbi": null,
+   "arbitro": "Daniele Doveri",
+   "1x2": [
+    0.303,
+    0.281,
+    0.415
+   ],
+   "goles": 3.18,
+   "over25": 0.609,
+   "ambos": 0.666,
+   "corners": 8.8,
+   "amarillas": 4.01,
+   "marcador": [
+    "1-1",
+    0.12
+   ],
+   "n_picks": 0,
+   "ejemplo": false,
+   "alineacion": {
+    "MON": "prevista (últimos 10)",
+    "FIO": "prevista (últimos 10)"
+   },
+   "bajas": {
+    "MON": 2,
+    "FIO": 2
+   }
+  }
+ ]
+}

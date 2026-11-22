@@ -1,0 +1,102 @@
+{
+ "id": "2026-11-23-MON-FIO",
+ "fuente": "fotmob",
+ "fuente_id": "5749756",
+ "match": {
+  "liga": "serie_a",
+  "temporada": "2026-27",
+  "jornada": 12,
+  "fecha": "2026-11-23",
+  "hora_local": "20:45",
+  "hora_bogota": "14:45",
+  "utc": "2026-11-23T19:45:00Z",
+  "local": "MON",
+  "visitante": "FIO",
+  "estadio": "U-Power Stadium",
+  "neutral": false,
+  "competicion": "liga"
+ },
+ "contexto": {
+  "arbitro": "Daniele Doveri",
+  "arbitro_fotmob": {
+   "nombre": "Daniele Doveri",
+   "partidos": 37,
+   "amarillas_pp": 3.03,
+   "liga_amarillas_pp": 3.67,
+   "faltas_pp": 23.3,
+   "rojas": 1,
+   "penaltis": 7
+  },
+  "clima": {
+   "temperature": 6,
+   "windSpeed": 2,
+   "windDirectionCardinal": "NE",
+   "iconCode": 29,
+   "relativeHumidity": 94,
+   "precipChance": 8,
+   "precipitation": 0,
+   "snow": 0,
+   "cloudCover": 49,
+   "description": "Partly Cloudy",
+   "apiUsed": "forecast",
+   "lastUpdated": "2026-11-22T08:00:22Z",
+   "localizedKey": "weather_condition_partly_cloudy",
+   "defaultTitle": "Partly Cloudy"
+  }
+ },
+ "alineaciones": {
+  "estado": null
+ },
+ "bajas": {
+  "MON": [
+   {
+    "jugador": "MON-1830551",
+    "nombre": "Yvan Kouadio Maye",
+    "motivo": "lesion",
+    "regreso": "Back in training",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MON-41757",
+    "nombre": "Ivan Jurić",
+    "motivo": "sancion",
+    "regreso": "Late November 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MON-822440",
+    "nombre": "Michael Folorunsho",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   }
+  ],
+  "FIO": [
+   {
+    "jugador": "FIO-2018923",
+    "nombre": "Federico Croci",
+    "motivo": "internationalDuty",
+    "regreso": "Mid December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "FIO-831474",
+    "nombre": "Marin Pongračić",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "FIO-1093285",
+    "nombre": "Fabiano Parisi",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   }
+  ]
+ },
+ "cuotas": {
+  "casas": []
+ },
+ "props": {}
+}

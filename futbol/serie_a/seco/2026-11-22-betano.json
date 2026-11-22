@@ -1,0 +1,17 @@
+{
+ "nota": "Picks EN SECO (sin dinero) leídos de Betano Colombia el 22-nov-2026 ~10:45 Bogotá. p_modelo = modelo futbol-0.1 (commit f8849d1), p_casa = sin margen, EV con mezcla 0,8·casa + 0,2·modelo. Se liquidan con el resultado real para medir el modelo contra la casa.",
+ "picks": [
+  {"partido": "2026-11-22-MIL-FRO", "mercado": "MIL remates_puerta", "lado": "menos", "linea": 4.5, "cuota": 3.85, "p_modelo": 0.58, "p_casa": 0.24, "ev_mezcla": 0.191},
+  {"partido": "2026-11-22-MIL-FRO", "mercado": "MIL remates", "lado": "menos", "linea": 15.5, "cuota": 3.2, "p_modelo": 0.62, "p_casa": 0.29, "ev_mezcla": 0.146},
+  {"partido": "2026-11-22-MIL-FRO", "mercado": "FRO remates_puerta", "lado": "mas", "linea": 5.5, "cuota": 3.2, "p_modelo": 0.60, "p_casa": 0.29, "ev_mezcla": 0.134},
+  {"partido": "2026-11-22-MIL-FRO", "mercado": "MIL corners", "lado": "menos", "linea": 4.5, "cuota": 2.62, "p_modelo": 0.66, "p_casa": 0.36, "ev_mezcla": 0.090},
+  {"partido": "2026-11-22-MIL-FRO", "mercado": "FRO corners", "lado": "mas", "linea": 5.5, "cuota": 3.2, "p_modelo": 0.50, "p_casa": 0.29, "ev_mezcla": 0.067},
+  {"partido": "2026-11-22-ATA-INT", "mercado": "ATA remates", "lado": "menos", "linea": 10.5, "cuota": 3.4, "p_modelo": 0.53, "p_casa": 0.28, "ev_mezcla": 0.106},
+  {"partido": "2026-11-22-ATA-INT", "mercado": "ATA corners", "lado": "menos", "linea": 2.5, "cuota": 3.8, "p_modelo": 0.43, "p_casa": 0.25, "ev_mezcla": 0.074},
+  {"partido": "2026-11-22-ATA-INT", "mercado": "Total faltas", "lado": "menos", "linea": 21.5, "cuota": 1.82, "p_modelo": 0.85, "p_casa": 0.51, "ev_mezcla": 0.059},
+  {"partido": "2026-11-22-ATA-INT", "mercado": "INT remates", "lado": "mas", "linea": 20.5, "cuota": 3.2, "p_modelo": 0.47, "p_casa": 0.29, "ev_mezcla": 0.049},
+  {"partido": "2026-11-23-MON-FIO", "mercado": "MON remates_puerta", "lado": "mas", "linea": 5.5, "cuota": 3.15, "p_modelo": 0.50, "p_casa": 0.30, "ev_mezcla": 0.061},
+  {"partido": "2026-11-23-MON-FIO", "mercado": "David de Gea atajadas", "lado": "mas", "linea": 4.5, "cuota": 4.4, "p_modelo": 0.39, "p_casa": 0.21, "ev_mezcla": 0.070}
+ ],
+ "descartados": "Props de faltas recibidas de jugador (p. ej. Gonçalo Ramos 3+ al 69%): el modelo las sobrestima (Ramos promedia 1,74 por 90), hay que revisar el reparto antes de usarlas."
+}

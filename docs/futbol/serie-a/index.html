@@ -1,0 +1,534 @@
+<!doctype html><html lang="es"><meta charset="utf-8">
+<title>Serie A Predictor</title>
+<meta name="theme-color" content="#1a1659">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" type="image/png" sizes="192x192" href="../../icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap">
+<script>
+// Mismo tema claro/oscuro que la NBA (misma clave): se aplica antes de pintar para que no parpadee.
+try { const t = localStorage.getItem("ncdp-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+<style>
+/* Serie A Predictor. Paleta de la identidad de la Serie A: azul noche #1A1659, azul #0032A0, azul claro #0578FF,
+   verde #00A346, rojo #DB052B y gris #E2E2E2. Misma estructura que la web NBA: banner, barra de partidos,
+   inicio de la jornada y panel de cada partido (#id) con pestañas. */
+:root {
+  --bg: #f1f3f9; --surface: #ffffff; --ink: #0e0d33; --muted: #5a5f7a; --line: #dfe2ec; --soft: #f6f7fb;
+  --accent: #0032a0; --accent-2: #0578ff; --accent-soft: #e3ebfb; --on-accent: #ffffff;
+  --banner: #1a1659; --banner-2: #0032a0; --banner-ink: #f5f6fc; --banner-muted: #b3b8e0; --ticker: #120f45;
+  --good: #00a346; --good-soft: #dcf3e5; --bad: #db052b; --bad-soft: #fbe2e6; --draw: #8a8fb0;
+  --heat: 0, 50, 160;
+  --display: "Oswald", "Arial Narrow", system-ui, sans-serif;
+  --body: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Roboto Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #07061c; --surface: #100e2e; --ink: #eef0fb; --muted: #9a9fc4; --line: #24214f; --soft: #151239;
+  --accent: #5b8dff; --accent-2: #3d9bff; --accent-soft: #1a1f5c; --on-accent: #07061c;
+  --banner: #0b0930; --banner-2: #0a2a85; --ticker: #06051c;
+  --good: #2fd27a; --good-soft: #0d2f1f; --bad: #ff5470; --bad-soft: #3a0f1c; --draw: #8a8fb0; --heat: 91, 141, 255; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #07061c; --surface: #100e2e; --ink: #eef0fb; --muted: #9a9fc4; --line: #24214f; --soft: #151239;
+  --accent: #5b8dff; --accent-2: #3d9bff; --accent-soft: #1a1f5c; --on-accent: #07061c;
+  --banner: #0b0930; --banner-2: #0a2a85; --ticker: #06051c;
+  --good: #2fd27a; --good-soft: #0d2f1f; --bad: #ff5470; --bad-soft: #3a0f1c; --draw: #8a8fb0; --heat: 91, 141, 255; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--body); margin: 0 }
+.gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+.inner { max-width: 1080px; margin: 0 auto }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: .01em; margin: 0; line-height: 1.08; text-wrap: balance }
+h2 { font-size: 26px; text-transform: uppercase }
+h3 { font-size: 18px; text-transform: uppercase; letter-spacing: .03em }
+.eyebrow { font: 500 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
+.muted { color: var(--muted) }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums }
+a { color: var(--accent) }
+button { font: inherit }
+
+/* banner */
+.banner { background: linear-gradient(115deg, var(--banner) 0%, var(--banner) 55%, var(--banner-2) 100%); color: var(--banner-ink); position: relative }
+.banner::after { content: ""; position: absolute; inset: auto 0 0 0; height: 4px; background: linear-gradient(90deg, var(--good) 0 33.3%, #fff 33.3% 66.6%, var(--bad) 66.6%) }
+.banner .inner { padding-block: calc(18px + env(safe-area-inset-top, 0px)) 18px; display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; justify-content: space-between }
+.brand { color: inherit; text-decoration: none; display: flex; align-items: center; gap: 14px; min-width: 0 }
+.logo { flex: none; width: 50px; height: 50px; border-radius: 12px; display: grid; place-items: center; background: var(--accent-2); box-shadow: inset 0 -3px 0 rgba(0,0,0,.25) }
+.logo svg { width: 32px; height: 32px }
+.brand-t { display: grid; gap: 2px; min-width: 0 }
+.brand-t > span { font: 500 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--banner-muted) }
+.banner h1 { font-size: clamp(30px, 6vw, 46px); text-transform: uppercase; letter-spacing: .02em }
+.side { display: flex; align-items: center; gap: 10px; margin-left: auto }
+.home-link { color: var(--banner-ink); text-decoration: none; font: 600 13px var(--display); letter-spacing: .08em; text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,.25); border-radius: 999px; padding: 8px 14px; background: rgba(255,255,255,.06) }
+.home-link:hover, .home-link:focus-visible { background: rgba(255,255,255,.16); outline: none }
+.icon-btn { flex: none; width: 38px; height: 38px; border-radius: 999px; border: 1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.08);
+  color: var(--banner-ink); display: grid; place-items: center; cursor: pointer }
+.icon-btn:hover, .icon-btn:focus-visible { background: rgba(255,255,255,.18); outline: none }
+.icon-btn svg { width: 19px; height: 19px }
+.icon-btn .moon { display: none }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .icon-btn .moon { display: block } :root:not([data-theme="light"]) .icon-btn .sun { display: none } }
+:root[data-theme="dark"] .icon-btn .moon { display: block } :root[data-theme="dark"] .icon-btn .sun { display: none }
+
+/* franja de datos de ejemplo */
+.demo { background: repeating-linear-gradient(135deg, #ffcf3f 0 14px, #ffd95e 14px 28px); color: #2a2000; font: 600 13px/1.4 var(--body); text-align: center; padding: 8px 16px }
+.demo b { font-family: var(--display); letter-spacing: .06em; text-transform: uppercase }
+
+/* barra de partidos */
+.ticker { background: var(--ticker); overflow-x: auto; scrollbar-width: none }
+.ticker::-webkit-scrollbar { display: none }
+.track { display: flex; gap: 10px; width: max-content; padding: 10px 16px }
+.chip { display: grid; grid-template-columns: auto auto; gap: 0 14px; align-items: center; text-decoration: none; color: var(--banner-ink);
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-left: 3px solid var(--accent-2); border-radius: 8px; padding: 7px 12px; min-width: 180px }
+.chip:hover, .chip:focus-visible, .chip.active { border-color: var(--banner-ink); outline: none; background: rgba(255,255,255,.12) }
+.chip .t { font: 700 18px/1.15 var(--display); letter-spacing: .03em }
+.chip .s { font: 500 12px/1.3 var(--mono); text-align: right; color: var(--banner-muted) }
+.chip .x { font: 500 11px var(--mono); color: var(--banner-muted); grid-column: 1 / -1 }
+
+main { padding-block: 22px 60px }
+.section { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; margin: 8px 0 14px }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px }
+.grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)) }
+.grid2 { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)) }
+.stack > * + * { margin-top: 14px }
+
+/* escudo: código del equipo con sus colores */
+.badge { display: inline-grid; place-items: center; min-width: 2.8em; padding: .2em .45em .12em; border-radius: 6px; background: var(--tc); color: var(--tf);
+  font: 700 1em/1 var(--display); letter-spacing: .05em; box-shadow: inset 0 -2px 0 rgba(0,0,0,.2), 0 0 0 1px rgba(128,128,128,.3) }
+
+/* tarjeta de partido en el inicio */
+.mcard { display: block; text-decoration: none; color: inherit; transition: border-color .15s, transform .15s }
+.mcard:hover, .mcard:focus-visible { border-color: var(--accent); outline: none; transform: translateY(-1px) }
+.mcard .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px }
+.teams { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; font-size: 18px }
+.teams > span { display: flex; align-items: center; gap: 8px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.teams .v { justify-content: flex-end }
+.teams .v { text-align: right }
+.teams .vs { font: 500 12px var(--mono); color: var(--muted) }
+.tag { display: inline-block; font: 600 11px/1 var(--mono); letter-spacing: .05em; text-transform: uppercase; padding: 4px 7px; border-radius: 999px; background: var(--accent-soft); color: var(--accent) }
+.tag.hot { background: var(--bad-soft); color: var(--bad) }
+.tag.ok { background: var(--good-soft); color: var(--good) }
+.bar3 { display: flex; height: 26px; border-radius: 6px; overflow: hidden; margin: 12px 0 4px; font: 600 12px/26px var(--mono); color: #fff }
+.bar3 > div { text-align: center; min-width: 0; overflow: hidden; white-space: nowrap }
+.bar3 .x { background: var(--draw) }
+.bar3-l { display: flex; justify-content: space-between; font: 500 11px var(--mono); color: var(--muted) }
+.kv { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px }
+.kv div { background: var(--soft); border-radius: 8px; padding: 6px 8px }
+.kv b { display: block; font: 600 16px var(--mono) }
+.kv span { font: 500 10.5px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .04em }
+@media (max-width: 420px) { .kv { grid-template-columns: repeat(2, 1fr) } }
+
+/* panel del partido */
+.mhead { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; text-align: center; padding: 20px 16px }
+.mhead .tn { font: 700 clamp(24px, 5vw, 38px)/1 var(--display); text-transform: uppercase }
+.mhead .tn .badge { font-size: .8em; margin-bottom: 6px }
+.mhead .mid { font: 500 13px var(--mono); color: var(--muted) }
+.mhead .mid b { display: block; font: 700 30px var(--display); color: var(--ink) }
+.meta-row { display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: center; font-size: 13px; color: var(--muted); padding: 0 16px 16px }
+.tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--line); margin: 18px 0 16px }
+.tabs::-webkit-scrollbar { display: none }
+.tabs button { flex: none; border: 0; background: none; color: var(--muted); padding: 10px 14px; font: 600 14px var(--display); letter-spacing: .08em; text-transform: uppercase; cursor: pointer; border-bottom: 3px solid transparent }
+.tabs button[aria-selected="true"] { color: var(--ink); border-color: var(--accent) }
+.tabs button:hover, .tabs button:focus-visible { color: var(--ink); outline: none }
+
+table { width: 100%; border-collapse: collapse; font-size: 14px }
+th, td { padding: 7px 8px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap }
+th { font: 600 11px var(--mono); letter-spacing: .05em; text-transform: uppercase; color: var(--muted) }
+th:first-child, td:first-child { text-align: left }
+td.n, .n { font-family: var(--mono); font-variant-numeric: tabular-nums }
+.scroll { overflow-x: auto }
+.p { font-family: var(--mono); font-weight: 600 }
+.p.hi { color: var(--good) } .p.lo { color: var(--muted) }
+.sub { font-size: 12px; color: var(--muted) }
+.pill { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 5px; font: 700 12px var(--mono); color: #fff }
+.pill.G { background: var(--good) } .pill.E { background: var(--draw) } .pill.P { background: var(--bad) }
+.forma { display: flex; gap: 3px; flex-wrap: wrap }
+.score { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px }
+.score div { background: var(--soft); border-radius: 8px; padding: 6px; text-align: center }
+.score b { display: block; font: 700 18px var(--display) }
+.score span { font: 500 11px var(--mono); color: var(--muted) }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden }
+.seg button { border: 0; background: none; padding: 6px 12px; font: 600 12px var(--mono); color: var(--muted); cursor: pointer }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent) }
+select { font: 500 13px var(--mono); padding: 5px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink) }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 12px }
+.note { font-size: 13px; color: var(--muted); margin: 8px 0 0 }
+.callout { border-left: 3px solid var(--accent-2); background: var(--accent-soft); padding: 10px 12px; border-radius: 0 8px 8px 0; font-size: 14px }
+
+/* distribución por tramos: mapa de calor */
+.heat td { text-align: center; font: 500 12px var(--mono); border: 2px solid var(--surface); border-radius: 6px; background: rgba(var(--heat), var(--a)); color: var(--ink) }
+.heat td.hot { color: #fff }
+.heat th { text-align: center }
+.bars { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; align-items: end; height: 120px; margin-top: 8px }
+.bars div { background: var(--accent); border-radius: 4px 4px 0 0; position: relative; min-height: 2px }
+.bars div.h { background: var(--draw); opacity: .55; position: absolute; inset: auto 0 0 0; border-radius: 4px 4px 0 0 }
+.bars-l { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; font: 500 11px var(--mono); color: var(--muted); text-align: center; margin-top: 4px }
+
+/* campo: zonas de ataque */
+.pitch { width: 100%; max-width: 360px; display: block; margin: 0 auto }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--muted); justify-content: center }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px }
+
+/* jugadores */
+.prow { cursor: pointer }
+.prow:hover td { background: var(--soft) }
+.prow td:first-child { white-space: normal; min-width: 150px }
+.pos { font: 600 10.5px var(--mono); color: var(--muted); margin-left: 4px }
+.ficha td { background: var(--soft); white-space: normal; text-align: left }
+.lines { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; padding: 6px 0 }
+.lines .card { padding: 10px }
+.lines table { font-size: 12.5px }
+.lines th, .lines td { padding: 4px 6px }
+.oro { color: #b8860b; font-weight: 700 }
+.empty { text-align: center; color: var(--muted); padding: 30px 10px }
+footer { font-size: 12px; color: var(--muted); padding: 30px 0 }
+</style>
+
+<header class="banner gutter">
+  <div class="inner">
+    <a class="brand" href="#"><span class="logo" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><circle cx="16" cy="16" r="13"/><path d="M16 9.5l5 3.6-1.9 5.9h-6.2L11 13.1z"/><path d="M16 9.5V3.5M21 13.1l5.7-1.9M19.1 19l3.5 5M12.9 19l-3.5 5M11 13.1l-5.7-1.9"/></svg></span>
+      <span class="brand-t"><span>Simulación minuto a minuto · Serie A</span><h1>Serie A Predictor</h1></span></a>
+    <div class="side">
+      <a class="home-link" href="../../">Todos los modelos</a>
+      <button type="button" class="icon-btn" id="theme-btn" aria-label="Modo claro / oscuro" title="Modo claro / oscuro">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<div class="demo" id="demo" hidden><b>Datos de ejemplo</b> · jugadores, árbitros y estadísticas sintéticos para probar el modelo y la página. No son predicciones reales.</div>
+<nav class="ticker" aria-label="Partidos de la jornada"><div class="track" id="track"></div></nav>
+<main class="gutter"><div class="inner" id="app"><p class="empty">Cargando…</p></div></main>
+<footer class="gutter"><div class="inner" id="foot"></div></footer>
+
+<script>
+"use strict";
+/* ---------- utilidades ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const pct = (p, d = 0) => p == null ? "–" : (p * 100).toFixed(d) + "%";
+const f1 = x => x == null ? "–" : (+x).toFixed(1);
+const f2 = x => x == null ? "–" : (+x).toFixed(2);
+const fair = p => p > 0 ? (1 / p).toFixed(2) : "–";
+const STAT = {goles: "Goles", corners: "Córners", offsides: "Fueras de lugar", amarillas: "Amarillas", rojas: "Rojas", faltas: "Faltas",
+  remates: "Remates", remates_puerta: "Remates a puerta", pases: "Pases", atajadas: "Atajadas", faltas_recibidas: "Faltas recibidas", faltas_cometidas: "Faltas cometidas"};
+const STATS_EQ = ["goles", "remates", "remates_puerta", "corners", "faltas", "amarillas", "rojas", "offsides", "pases"];
+const STATS_J = ["remates", "remates_puerta", "faltas_recibidas", "faltas_cometidas", "pases", "atajadas"];
+const TRAMOS = ["0-15", "16-30", "31-45+", "46-60", "61-75", "76-90+"];
+const ZONA = {izq: "Izquierda", centro: "Centro", der: "Derecha"};
+const SIT = {jugada: "Jugada elaborada", contragolpe: "Contragolpe", balon_parado: "Balón parado", penalti: "Penalti"};
+// Colores de cada club (camiseta principal / texto)
+const TEAM = {
+  INT: ["Inter", "#0068a8", "#fff"], MIL: ["Milan", "#c8102e", "#fff"], JUV: ["Juventus", "#111111", "#fff"], NAP: ["Napoli", "#12a0d7", "#fff"],
+  ROM: ["Roma", "#8e1f2f", "#f0bc42"], LAZ: ["Lazio", "#87d8f7", "#0a2240"], ATA: ["Atalanta", "#1e71b8", "#111"], FIO: ["Fiorentina", "#482e92", "#fff"],
+  BOL: ["Bologna", "#1a2f48", "#d81e2a"], TOR: ["Torino", "#8a1e03", "#fff"], GEN: ["Genoa", "#a1162b", "#002f6c"], UDI: ["Udinese", "#222", "#fff"],
+  LEC: ["Lecce", "#f4dc00", "#d7141a"], CAG: ["Cagliari", "#002350", "#c8102e"], VER: ["Hellas Verona", "#00239c", "#ffcd00"], PAR: ["Parma", "#ffd200", "#1b3a8c"],
+  COM: ["Como", "#0a4595", "#fff"], SAS: ["Sassuolo", "#00a752", "#111"], PIS: ["Pisa", "#0a2240", "#fff"], CRE: ["Cremonese", "#9b1b30", "#a0a5aa"],
+  EMP: ["Empoli", "#005baa", "#fff"], MON: ["Monza", "#e4002b", "#fff"], VEN: ["Venezia", "#111", "#f58220"], SAM: ["Sampdoria", "#1b5faa", "#fff"],
+  SAL: ["Salernitana", "#7c1c2a", "#fff"], FRO: ["Frosinone", "#ffde00", "#00498f"], SPE: ["Spezia", "#111", "#fff"], PAL: ["Palermo", "#f5a7c4", "#111"]
+};
+const tname = c => (TEAM[c] || [c])[0];
+const badge = c => { const t = TEAM[c] || [c, "#0032a0", "#fff"]; return `<span class="badge" style="--tc:${t[1]};--tf:${t[2]}">${esc(c)}</span>`; };
+const store = {get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }};
+
+/* ---------- tema ---------- */
+$("#theme-btn").onclick = () => {
+  const cur = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const nx = cur === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = nx;
+  store.set("ncdp-theme", nx);
+};
+
+/* ---------- datos ---------- */
+let IDX = null;
+const CACHE = {};
+async function getJSON(u) { const r = await fetch(u, {cache: "no-cache"}); if (!r.ok) throw new Error(u + " " + r.status); return r.json(); }
+async function partido(id) { return CACHE[id] || (CACHE[id] = await getJSON("data/" + encodeURIComponent(id) + ".json")); }
+
+async function init() {
+  try { IDX = await getJSON("data/index.json"); }
+  catch (e) { $("#app").innerHTML = `<p class="empty">Todavía no hay jornada publicada.</p>`; return; }
+  $("#demo").hidden = !IDX.ejemplo;
+  $("#foot").innerHTML = `Modelo ${esc(IDX.version)} · ${esc(IDX.temporada)} · actualizado ${esc((IDX.actualizado || "").replace("T", " "))} UTC · horas en Bogotá (UTC−5). Probabilidades del modelo antes de mezclarlas con la casa; cuota justa = 1 / probabilidad.`;
+  $("#track").innerHTML = IDX.partidos.map(p => `<a class="chip" href="#${esc(p.id)}" data-id="${esc(p.id)}"><span class="t">${esc(p.local)} – ${esc(p.visitante)}</span><span class="s">${esc(p.hora_bogota || "")}</span><span class="x">${pct(p["1x2"][0])} · ${pct(p["1x2"][1])} · ${pct(p["1x2"][2])}</span></a>`).join("");
+  route();
+}
+addEventListener("hashchange", route);
+function route() {
+  const id = decodeURIComponent(location.hash.slice(1));
+  document.querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c.dataset.id === id));
+  if (id && IDX.partidos.some(p => p.id === id)) verPartido(id); else inicio();
+  scrollTo(0, 0);
+}
+
+/* ---------- inicio de la jornada ---------- */
+function bar3(p, L, V) {
+  const c1 = (TEAM[L] || [0, "#0032a0"])[1], c2 = (TEAM[V] || [0, "#db052b"])[1];
+  return `<div class="bar3" role="img" aria-label="Local ${pct(p[0])}, empate ${pct(p[1])}, visitante ${pct(p[2])}">
+    <div style="width:${p[0] * 100}%;background:${c1}">${pct(p[0])}</div><div class="x" style="width:${p[1] * 100}%">${pct(p[1])}</div><div style="width:${p[2] * 100}%;background:${c2}">${pct(p[2])}</div></div>
+    <div class="bar3-l"><span>1 · ${esc(L)}</span><span>X · empate</span><span>2 · ${esc(V)}</span></div>`;
+}
+function inicio() {
+  const ps = IDX.partidos;
+  const j = ps.length ? ps[0].jornada : "";
+  const picks = ps.reduce((a, p) => a + (p.n_picks || 0), 0);
+  $("#app").innerHTML = `
+  <div class="section"><h2>Jornada ${esc(j)}</h2><span class="eyebrow">${ps.length} partidos · ${esc(IDX.temporada)}</span></div>
+  <div class="grid">${ps.map(p => `
+    <a class="card mcard" href="#${esc(p.id)}">
+      <div class="top"><span class="eyebrow">${esc(fecha(p.fecha))} · ${esc(p.hora_bogota || "")} Bogotá</span>${p.derbi ? `<span class="tag hot">${esc(p.derbi)}</span>` : ""}</div>
+      <div class="teams"><span>${badge(p.local)} ${esc(tname(p.local))}</span><span class="vs">vs</span><span class="v">${esc(tname(p.visitante))} ${badge(p.visitante)}</span></div>
+      ${bar3(p["1x2"], p.local, p.visitante)}
+      <div class="kv"><div><span>Goles</span><b>${f2(p.goles)}</b></div><div><span>+2,5</span><b>${pct(p.over25)}</b></div><div><span>Ambos</span><b>${pct(p.ambos)}</b></div><div><span>Marcador</span><b>${esc(p.marcador[0])}</b></div>
+        <div><span>Córners</span><b>${f1(p.corners)}</b></div><div><span>Amarillas</span><b>${f1(p.amarillas)}</b></div><div><span>Árbitro</span><b style="font-size:13px">${esc(p.arbitro || "–")}</b></div><div><span>Bajas</span><b>${(p.bajas[p.local] || 0) + (p.bajas[p.visitante] || 0)}</b></div></div>
+      <p class="note">Alineación ${esc(p.alineacion[p.local])}</p>
+    </a>`).join("")}</div>
+  <div class="section" style="margin-top:28px"><h2>Picks de la jornada</h2><span class="eyebrow">${picks} picks</span></div>
+  ${picks ? "" : `<div class="card callout">Todavía no hay cuotas cargadas, así que no hay picks: el modelo nunca supone una cuota. Mientras tanto, en cada partido están sus probabilidades y la cuota justa (1 / probabilidad) para compararla con la de tu casa.</div>`}
+  <div id="picks"></div>`;
+  if (picks) Promise.all(ps.filter(p => p.n_picks).map(p => partido(p.id))).then(ds => {
+    const rows = ds.flatMap(d => d.picks.map(k => ({...k, id: d.id, game: d.match.local + "–" + d.match.visitante})));
+    rows.sort((a, b) => b.ev * b.p - a.ev * a.p);
+    $("#picks").innerHTML = `<div class="card scroll"><table><tr><th>Pick</th><th>Partido</th><th>Prob.</th><th>Cuota</th><th>EV</th></tr>${rows.map(k => `<tr><td>${esc(k.tipo === "equipo" ? (k.jugador === "partido" ? "Total del partido" : tname(k.jugador)) : k.jugador)} · ${k.lado === "over" ? "Más de" : "Menos de"} ${String(k.linea).replace(".", ",")} ${esc(STAT[k.stat].toLowerCase())}${k.suplente_oro ? ' <span class="oro" title="Con suplente de oro">★ oro</span>' : ""}</td><td><a href="#${esc(k.id)}">${esc(k.game)}</a></td><td class="p">${pct(k.p, 1)}</td><td class="n">${k.cuota.toFixed(2)}</td><td class="n">${(k.ev * 100).toFixed(1)}%</td></tr>`).join("")}</table></div>`;
+  });
+}
+function fecha(s) { const d = new Date(s + "T12:00:00"); return d.toLocaleDateString("es-CO", {weekday: "short", day: "numeric", month: "short"}); }
+
+/* ---------- panel de un partido ---------- */
+let TAB = store.get("sap-tab") || "resumen";
+async function verPartido(id) {
+  $("#app").innerHTML = `<p class="empty">Cargando partido…</p>`;
+  let d;
+  try { d = await partido(id); } catch (e) { $("#app").innerHTML = `<p class="empty">No se pudo cargar el partido.</p>`; return; }
+  const m = d.match, L = m.local, V = m.visitante, pa = d.partido;
+  const tabs = [["resumen", "Resumen"], ["contexto", "Contexto"], ["distribucion", "Distribución"], ["jugadores", "Jugadores"], ["bajas", "Bajas"]];
+  $("#app").innerHTML = `
+  <div class="card" style="padding:0">
+    <div class="mhead">
+      <div class="tn">${badge(L)}<div>${esc(tname(L))}</div></div>
+      <div class="mid"><b>${esc(pa.marcadores[0][0])}</b>más probable<br>${pct(pa.marcadores[0][1], 1)}</div>
+      <div class="tn">${badge(V)}<div>${esc(tname(V))}</div></div>
+    </div>
+    <div class="meta-row"><span>${esc(fecha(m.fecha))} · ${esc(m.hora_local)} Italia · <b>${esc(m.hora_bogota)} Bogotá</b></span><span>${esc(m.estadio || "")}</span><span>Árbitro: <b>${esc(d.arbitro.nombre || "por designar")}</b></span>${d.derbi ? `<span class="tag hot">${esc(d.derbi)}</span>` : ""}<span>Alineación ${esc(d.alineacion[L].estado)}</span></div>
+  </div>
+  <nav class="tabs" role="tablist">${tabs.map(([k, t]) => `<button role="tab" data-tab="${k}" aria-selected="${k === TAB}">${t}</button>`).join("")}</nav>
+  <div id="tab"></div>`;
+  document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => { TAB = b.dataset.tab; store.set("sap-tab", TAB); document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-selected", x === b)); pintar(d); });
+  pintar(d);
+}
+function pintar(d) {
+  const f = {resumen, contexto, distribucion, jugadores, bajas}[TAB] || resumen;
+  $("#tab").innerHTML = "";
+  f(d, $("#tab"));
+}
+
+/* -- Resumen -- */
+function resumen(d, el) {
+  const m = d.match, L = m.local, V = m.visitante, pa = d.partido;
+  const overRow = (o) => o.map(([l, p]) => `<tr><td>Más de ${String(l).replace(".", ",")}</td><td class="p ${p >= .55 ? "hi" : ""}">${pct(p, 1)}</td><td class="n">${fair(p)}</td><td class="p">${pct(1 - p, 1)}</td><td class="n">${fair(1 - p)}</td></tr>`).join("");
+  el.innerHTML = `
+  <div class="grid2">
+    <div class="card stack">
+      <h3>Resultado</h3>
+      ${bar3(pa["1x2"], L, V)}
+      <div class="kv"><div><span>1X</span><b>${pct(pa.doble_oportunidad["1X"])}</b></div><div><span>12</span><b>${pct(pa.doble_oportunidad["12"])}</b></div><div><span>X2</span><b>${pct(pa.doble_oportunidad["X2"])}</b></div><div><span>Ambos marcan</span><b>${pct(pa.ambos_marcan)}</b></div></div>
+      <div><span class="eyebrow">Al descanso</span>${bar3(pa.descanso_1x2, L, V)}</div>
+      <div><span class="eyebrow">Marcadores más probables</span><div class="score" style="margin-top:6px">${pa.marcadores.map(([s, p]) => `<div><b>${s}</b><span>${pct(p, 1)}</span><span style="display:block">${fair(p)}</span></div>`).join("")}</div></div>
+      <p class="note">Primer gol: ${esc(L)} ${pct(pa.primer_gol[L])} · ${esc(V)} ${pct(pa.primer_gol[V])} · sin goles ${pct(pa.primer_gol.ninguno)}${pa.minuto_primer_gol ? ` · minuto mediano ${pa.minuto_primer_gol.p50}'` : ""}. Portería a cero: ${esc(L)} ${pct(pa.porteria_cero[L])}, ${esc(V)} ${pct(pa.porteria_cero[V])}.</p>
+    </div>
+    <div class="card"><h3>Goles del partido</h3>
+      <div class="scroll"><table><tr><th>Línea</th><th>Más</th><th>Cuota justa</th><th>Menos</th><th>Cuota justa</th></tr>${overRow(pa.total_goles.over)}</table></div>
+      <p class="note">Esperado ${f2(pa.total_goles.dist.media)} goles (p10–p90: ${pa.total_goles.dist.p10}–${pa.total_goles.dist.p90}). ${esc(L)} ${f2(d.equipos[L].goles.dist.media)} · ${esc(V)} ${f2(d.equipos[V].goles.dist.media)}.</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <div class="toolbar"><h3>Estadísticas de equipo</h3><span class="sub">media simulada · rango p10–p90 · ${esc(L)} hace más que ${esc(V)}</span></div>
+    <div class="scroll"><table>
+      <tr><th>Estadística</th><th>${esc(L)}</th><th>${esc(V)}</th><th>Total</th><th>Liga (por equipo)</th><th>${esc(L)} más</th></tr>
+      ${STATS_EQ.map(s => { const a = d.equipos[L][s].dist, b = d.equipos[V][s].dist, t = pa.totales[s].dist, mq = pa.mas_que_rival[s];
+        return `<tr><td>${STAT[s]}</td><td class="n">${f1(a.media)} <span class="sub">${a.p10}–${a.p90}</span></td><td class="n">${f1(b.media)} <span class="sub">${b.p10}–${b.p90}</span></td><td class="n"><b>${f1(t.media)}</b> <span class="sub">${t.p10}–${t.p90}</span></td><td class="n">${f1(d.liga.medias[s])}</td><td class="p">${mq ? pct(mq[0]) : "–"}</td></tr>`; }).join("")}
+    </table></div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <div class="toolbar"><h3>Líneas de equipo</h3><select id="linea-st">${STATS_EQ.filter(s => s !== "goles").map(s => `<option value="${s}">${STAT[s]}</option>`).join("")}</select></div>
+    <div id="lineas"></div>
+  </div>`;
+  const sel = el.querySelector("#linea-st");
+  const draw = () => {
+    const s = sel.value, t = pa.totales[s];
+    const team = c => `<div><span class="eyebrow">${esc(tname(c))}</span><table>${d.equipos[c][s].over.map(([l, p]) => `<tr><td>Más de ${String(l).replace(".", ",")}</td><td class="p ${p >= .55 ? "hi" : ""}">${pct(p, 1)}</td><td class="n">${fair(p)}</td></tr>`).join("")}</table></div>`;
+    el.querySelector("#lineas").innerHTML = `<div class="grid"><div><span class="eyebrow">Total del partido</span><table>${t.over.map(([l, p]) => `<tr><td>Más de ${String(l).replace(".", ",")}</td><td class="p ${p >= .55 ? "hi" : ""}">${pct(p, 1)}</td><td class="n">${fair(p)}</td></tr>`).join("")}</table></div>${team(L)}${team(V)}</div>
+      ${factoresTxt(d, s)}`;
+  };
+  sel.onchange = draw; draw();
+}
+function factoresTxt(d, s) {
+  const L = d.match.local, V = d.match.visitante;
+  const lab = {base: "base (ataque × defensa rival)", localia: "localía", arbitro: "árbitro", derbi: "derbi", estilo: "cruce de estilos", h2h: "H2H", fuerza: "fuerza"};
+  const one = c => { const f = d.factores[c][s] || {}; return `${esc(c)}: ` + Object.entries(f).map(([k, v]) => `${lab[k] || k} ${k === "base" || k === "fuerza" ? f2(v) : "×" + f2(v)}`).join(" · "); };
+  return `<p class="note">Cómo se armó el esperado. ${one(L)}. ${one(V)}.</p>`;
+}
+
+/* -- Contexto -- */
+function contexto(d, el) {
+  const m = d.match, L = m.local, V = m.visitante;
+  const forma = c => {
+    const u = d.forma[c] || [];
+    const avg = (k, s) => u.length ? u.reduce((a, x) => a + x[k][s], 0) / u.length : null;
+    return `<div class="card"><div class="toolbar"><h3>${esc(tname(c))} · últimos ${u.length}</h3><div class="forma">${u.slice().reverse().map(x => `<span class="pill ${x.res}" title="${esc(x.fecha)} ${x.local ? "vs" : "en"} ${esc(x.rival)} ${x.gf}-${x.gc}">${x.res}</span>`).join("")}</div></div>
+      <div class="scroll"><table><tr><th>Por partido</th><th>A favor</th><th>En contra</th><th>Liga</th></tr>${STATS_EQ.map(s => `<tr><td>${STAT[s]}</td><td class="n">${f1(avg("favor", s))}</td><td class="n">${f1(avg("contra", s))}</td><td class="n">${f1(d.liga.medias[s])}</td></tr>`).join("")}</table></div>
+      <details style="margin-top:8px"><summary class="sub">Partido a partido</summary><div class="scroll"><table><tr><th>Fecha</th><th>Rival</th><th>Res.</th><th>Rem.</th><th>Córn.</th><th>Faltas</th><th>Amar.</th></tr>${u.slice().reverse().map(x => `<tr><td>${esc(x.fecha.slice(5))}${x.derbi ? " ★" : ""}</td><td>${x.local ? "vs" : "en"} ${badge(x.rival)}</td><td><span class="pill ${x.res}">${x.gf}-${x.gc}</span></td><td class="n">${x.favor.remates}-${x.contra.remates}</td><td class="n">${x.favor.corners}-${x.contra.corners}</td><td class="n">${x.favor.faltas}-${x.contra.faltas}</td><td class="n">${x.favor.amarillas}-${x.contra.amarillas}</td></tr>`).join("")}</table></div></details></div>`;
+  };
+  const a = d.arbitro;
+  const h = d.h2h;
+  el.innerHTML = `
+  <div class="grid2">${forma(L)}${forma(V)}</div>
+  <div class="grid2" style="margin-top:14px">
+    <div class="card"><h3>Árbitro · ${esc(a.nombre || "por designar")}</h3>
+      ${(a.n || a.n_externo) ? `<div class="kv"><div><span>Amarillas/partido</span><b>${f2(a.media_amarillas)}</b></div><div><span>Últimos 5</span><b>${f2(a.media_amarillas_u5)}</b></div><div><span>Liga</span><b>${f2(a.liga_amarillas)}</b></div><div><span>Efecto</span><b>×${f2(a.mult_amarillas)}</b></div></div>
+      <div class="scroll" style="margin-top:10px"><table><tr><th>Últimos 5 que pitó</th><th>Amar.</th><th>Rojas</th><th>Faltas</th></tr>${a.ultimos5.map(x => `<tr><td>${esc(x.fecha)} · ${esc(x.partido)}</td><td class="n">${x.amarillas}</td><td class="n">${x.rojas}</td><td class="n">${x.faltas}</td></tr>`).join("")}</table></div>
+      <p class="note">${a.n ? a.n + " partidos dirigidos en nuestro histórico" : a.n_externo + " partidos en la Serie A según FotMob"}. Su media (con más peso en los últimos 5) se encoge hacia la de la liga según cuántos partidos tiene; el efecto multiplica las amarillas esperadas de los dos equipos.</p>` : `<p class="note">Sin árbitro designado o sin historial: se usa la media de la liga.</p>`}
+    </div>
+    <div class="card"><h3>Cara a cara${d.derbi ? ` · ${esc(d.derbi)}` : ""}</h3>
+      ${h.partidos.length ? `<div class="scroll"><table><tr><th>Partido</th><th>Res.</th><th>Rem.</th><th>Córn.</th><th>Amar.</th></tr>${h.partidos.slice().reverse().map(p => { const a1 = p.equipos[p.local], b1 = p.equipos[p.visitante]; return `<tr><td>${esc(p.fecha)} · ${esc(p.local)}–${esc(p.visitante)}</td><td class="n">${a1.goles}-${b1.goles}</td><td class="n">${a1.remates}-${b1.remates}</td><td class="n">${a1.corners}-${b1.corners}</td><td class="n">${a1.amarillas}-${b1.amarillas}</td></tr>`; }).join("")}</table></div>
+      <p class="note">Peso del cara a cara: ${h.n} partidos → ${pct(h.n / (h.n + 4))}. Efecto en el esperado: ${["goles", "remates", "corners", "faltas", "amarillas"].map(s => `${STAT[s].toLowerCase()} ×${f2(h.mult[s])}`).join(", ")}.</p>`
+      : `<p class="note">No se enfrentaron la temporada pasada ni en esta.${d.derbi ? " Al ser derbi se aplica el efecto derbi de partida en tarjetas y faltas." : ""}</p>`}
+    </div>
+  </div>
+  <div class="section" style="margin-top:22px"><h2>Estilos de juego</h2><span class="eyebrow">por dónde y cómo atacan · por dónde les hacen daño</span></div>
+  <div class="grid2">${estilo(d, L, V)}${estilo(d, V, L)}</div>`;
+}
+function estilo(d, c, r) {
+  const e = d.estilos[c], x = d.cruce[c], lz = d.liga.zonas;
+  const col = v => v > 1.08 ? "var(--good)" : v < 0.92 ? "var(--bad)" : "var(--draw)";
+  // campo en vertical: c ataca hacia arriba; columnas = su izquierda, centro, derecha
+  const z = ["izq", "centro", "der"];
+  const pitch = `<svg class="pitch" viewBox="0 0 300 200" role="img" aria-label="Zonas de ataque de ${esc(c)}">
+    <rect x="1" y="1" width="298" height="198" rx="8" fill="var(--soft)" stroke="var(--line)"/>
+    <rect x="100" y="1" width="100" height="34" fill="none" stroke="var(--line)"/><line x1="1" y1="199" x2="299" y2="199" stroke="var(--line)"/>
+    ${z.map((k, i) => { const u = x.zonas_uso[k], rr = x.ratio_zona_rival[k]; return `
+      <rect x="${4 + i * 98}" y="40" width="94" height="${Math.max(6, u * 300)}" rx="6" fill="var(--accent)" opacity="${0.35 + u}" />
+      <text x="${51 + i * 98}" y="30" text-anchor="middle" font-family="Roboto Mono, ui-monospace, monospace" font-size="11" fill="var(--muted)">${ZONA[k]}</text>
+      <text x="${51 + i * 98}" y="${60 + Math.max(6, u * 300) / 2}" text-anchor="middle" font-family="Oswald, Arial Narrow, sans-serif" font-size="22" font-weight="700" fill="var(--ink)">${pct(u)}</text>
+      <text x="${51 + i * 98}" y="190" text-anchor="middle" font-family="Roboto Mono, ui-monospace, monospace" font-size="11" font-weight="600" fill="${col(rr)}">${esc(r)} concede ×${f2(rr)}</text>`; }).join("")}
+    </svg>`;
+  const sitRows = Object.keys(SIT).map(k => `<tr><td>${SIT[k]}</td><td class="n">${pct(x.sit_uso[k])}</td><td class="n" style="color:${col(x.ratio_sit_rival[k])}">×${f2(x.ratio_sit_rival[k])}</td></tr>`).join("");
+  const hz = x.h2h_cambia.zonas_h2h;
+  return `<div class="card"><h3>${esc(tname(c))} ataca</h3>
+    ${pitch}
+    <div class="legend"><span><i style="background:var(--accent)"></i>% de sus remates por zona (corrido por el H2H)</span><span>×: cuánto concede ${esc(r)} por ese lado frente a la liga</span></div>
+    <div class="scroll" style="margin-top:8px"><table><tr><th>Cómo llega al remate</th><th>Uso</th><th>${esc(r)} concede</th></tr>${sitRows}</table></div>
+    <div class="kv"><div><span>Posesión</span><b>${e.posesion != null ? f1(e.posesion) + "%" : "–"}</b></div><div><span>Pases</span><b>${e.pases ?? "–"}</b></div><div><span>Presión</span><b title="Pases que deja dar al rival frente a la liga (menos = presiona más)">×${f2(e.presion)}</b></div><div><span>Dureza</span><b title="Faltas y tarjetas frente a la liga">×${f2(e.dureza)}</b></div></div>
+    <p class="note">Zona más favorable: <b>${ZONA[x.zona_fuerte]}</b>. Volumen de remates por el cruce: ×${f2(x.mult_remates)}.${hz ? ` Contra ${esc(r)} atacó ${z.map(k => `${ZONA[k].toLowerCase()} ${pct(hz[k])}`).join(", ")} (${x.h2h_cambia.remates_h2h} remates H2H, peso ${pct(x.h2h_cambia.peso)}).` : ""}</p>
+  </div>`;
+}
+
+/* -- Distribución -- */
+function distribucion(d, el) {
+  const L = d.match.local, V = d.match.visitante;
+  const heat = c => {
+    const rows = STATS_EQ.filter(s => s !== "rojas").map(s => {
+      const v = d.tramos_sim[c][s].media, tot = v.reduce((a, b) => a + b, 0) || 1;
+      const mx = Math.max(...v.map(x => x / tot));
+      return `<tr><th style="text-align:left">${STAT[s]}</th>${v.map(x => { const sh = x / tot, a = Math.min(1, sh / Math.max(mx, .2)); return `<td class="${a > .65 ? "hot" : ""}" style="--a:${(a * .9).toFixed(2)}" title="${f2(x)} de media · ${pct(sh)} del partido">${pct(sh)}</td>`; }).join("")}</tr>`;
+    }).join("");
+    return `<div class="card"><h3>${esc(tname(c))}</h3><div class="scroll"><table class="heat"><tr><th></th>${TRAMOS.map(t => `<th>${t}</th>`).join("")}</tr>${rows}</table></div>
+      <p class="note">Qué parte de cada estadística cae en cada tramo de 15' en este partido (simulación con su perfil, el del rival y el marcador).</p></div>`;
+  };
+  el.innerHTML = `
+  <div class="card callout">La "distribución" del equipo: igual que en la NBA se mira cuándo entra y sale cada jugador, aquí se mira en qué tramo del partido hace (y recibe) cada cosa. El modelo usa estos perfiles minuto a minuto, junto con el marcador: el que pierde empuja y saca más córners; el que gana se repliega y hace más faltas.</div>
+  <div class="grid2" style="margin-top:14px">${heat(L)}${heat(V)}</div>
+  <div class="card" style="margin-top:14px">
+    <div class="toolbar"><h3>Detalle por tramo</h3><select id="dist-st">${STATS_EQ.map(s => `<option value="${s}">${STAT[s]}</option>`).join("")}</select></div>
+    <div id="dist-d"></div>
+  </div>`;
+  const sel = el.querySelector("#dist-st");
+  const draw = () => {
+    const s = sel.value;
+    const one = c => {
+      const sim = d.tramos_sim[c][s], hf = d.tramos_hist[c].favor[s], hc = d.tramos_hist[c].contra[s];
+      const mx = Math.max(...sim.media, ...hf, .001);
+      return `<div><span class="eyebrow">${esc(tname(c))} · esperado en este partido vs su media histórica</span>
+        <div class="bars">${sim.media.map((v, i) => `<div style="height:${v / mx * 100}%" title="Simulado ${f2(v)} · histórico ${f2(hf[i])}"><div class="h" style="height:${(hf[i] / Math.max(v, .001)) * 100}%"></div></div>`).join("")}</div>
+        <div class="bars-l">${TRAMOS.map(t => `<span>${t}</span>`).join("")}</div>
+        <div class="scroll"><table><tr><th>Tramo</th>${TRAMOS.map(t => `<th>${t}</th>`).join("")}</tr>
+          <tr><td>Esperado</td>${sim.media.map(v => `<td class="n">${f2(v)}</td>`).join("")}</tr>
+          <tr><td>Al menos 1</td>${sim.p_alguno.map(v => `<td class="p">${pct(v)}</td>`).join("")}</tr>
+          <tr><td>Histórico a favor</td>${hf.map(v => `<td class="n">${f2(v)}</td>`).join("")}</tr>
+          <tr><td>Histórico en contra</td>${hc.map(v => `<td class="n">${f2(v)}</td>`).join("")}</tr></table></div></div>`;
+    };
+    el.querySelector("#dist-d").innerHTML = `<div class="grid2">${one(L)}${one(V)}</div><p class="note">Barras azules: lo esperado en este partido. Gris: su media histórica por partido en ese tramo. "Al menos 1" sirve para mercados como "gol entre el 0 y el 15'".</p>`;
+  };
+  sel.onchange = draw; draw();
+}
+
+/* -- Jugadores -- */
+let J_TEAM = null, J_STAT = "remates", J_ORO = false;
+function jugadores(d, el) {
+  const L = d.match.local, V = d.match.visitante;
+  if (J_TEAM !== L && J_TEAM !== V) J_TEAM = L;
+  el.innerHTML = `
+  <div class="toolbar">
+    <div class="seg" id="j-team">${[L, V].map(c => `<button data-c="${c}" aria-pressed="${c === J_TEAM}">${esc(tname(c))}</button>`).join("")}</div>
+    <select id="j-stat">${STATS_J.map(s => `<option value="${s}" ${s === J_STAT ? "selected" : ""}>${STAT[s]}</option>`).join("")}</select>
+    <label class="sub" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="j-oro" ${J_ORO ? "checked" : ""}> <span class="oro">★</span> Suplente de oro</label>
+  </div>
+  <div class="card scroll" style="padding:6px 10px" id="j-tab"></div>
+  <p class="note"><span class="oro">★ Suplente de oro:</span> si el titular sale sin llegar a la línea, la continúa quien entra por él, sumando lo que ya llevaba el titular. Con la casilla marcada, las probabilidades de los titulares son las de titular + reemplazo (solo cuentan si es titular). Las demás son condicionadas a que juegue. Toca un jugador para ver todas sus líneas.</p>`;
+  el.querySelectorAll("#j-team button").forEach(b => b.onclick = () => { J_TEAM = b.dataset.c; jugadores(d, el); });
+  el.querySelector("#j-stat").onchange = e => { J_STAT = e.target.value; tabla(); };
+  el.querySelector("#j-oro").onchange = e => { J_ORO = e.target.checked; tabla(); };
+  const xi = new Set(d.alineacion[J_TEAM].xi);
+  function tabla() {
+    const s = J_STAT;
+    const js = d.jugadores[J_TEAM].filter(j => j.stats[s]);
+    const lineas = [...new Set(js.flatMap(j => j.stats[s].over.map(o => o[0])))].sort((a, b) => a - b).slice(0, s === "pases" ? 99 : 4);
+    const lin = s === "pases" ? null : lineas;
+    const get = (j, l) => { const st = j.stats[s]; const tb = J_ORO && st.oro_over ? st.oro_over : st.over; const r = tb.find(o => o[0] === l); return r ? r[1] : null; };
+    el.querySelector("#j-tab").innerHTML = `<table><tr><th>Jugador</th><th>Titular</th><th>Juega</th><th>Min.</th><th>Media</th>${lin ? lin.map(l => `<th>${Math.ceil(l)}+</th>`).join("") : "<th>p10–p90</th><th>Línea · más de</th>"}</tr>
+      ${js.map((j, i) => { const st = j.stats[s];
+        const cells = lin ? lin.map(l => { const p = get(j, l); return `<td class="p ${p >= .55 ? "hi" : p < .2 ? "lo" : ""}">${p == null ? "–" : pct(p)}</td>`; }).join("")
+          : (() => { const tb = J_ORO && st.oro_over ? st.oro_over : st.over; const mid = tb[Math.floor(tb.length / 2)]; return `<td class="n">${st.dist.p10}–${st.dist.p90}</td><td class="n">${mid[0]} · <b>${pct(mid[1])}</b></td>`; })();
+        return `<tr class="prow" data-i="${i}"><td>${xi.has(j.nombre) ? "" : '<span class="sub">banco · </span>'}${esc(j.nombre)}<span class="pos">${esc(j.pos)}</span>${j.hereda_de ? ` <span class="tag ok" title="Hereda el puesto de ${esc(j.hereda_de)}">titular por baja</span>` : ""}</td>
+          <td class="p">${pct(j.p_titular)}</td><td class="n">${pct(j.p_juega)}</td><td class="n">${f1(j.min_medio)}</td><td class="n">${f2(st.media)}</td>${cells}</tr>`; }).join("")}</table>`;
+    el.querySelectorAll(".prow").forEach(r => r.onclick = () => ficha(r, js[+r.dataset.i]));
+  }
+  tabla();
+}
+function ficha(row, j) {
+  const nx = row.nextElementSibling;
+  if (nx && nx.classList.contains("ficha")) { nx.remove(); return; }
+  const cols = row.children.length;
+  const tr = document.createElement("tr");
+  tr.className = "ficha";
+  const cards = STATS_J.filter(s => j.stats[s]).map(s => { const st = j.stats[s];
+    return `<div class="card"><b>${STAT[s]}</b> <span class="sub">media ${f2(st.media)}${j.tasas90[s] != null ? ` · ${f2(j.tasas90[s])}/90'` : ""}</span>
+      <table><tr><th>Más de</th><th>Prob.</th>${st.oro_over ? '<th class="oro">★ oro</th>' : ""}<th>Justa</th></tr>${st.over.map(([l, p], k) => `<tr><td>${String(l).replace(".", ",")}</td><td class="p">${pct(st.titular_over ? st.titular_over[k][1] : p)}</td>${st.oro_over ? `<td class="p oro">${pct(st.oro_over[k][1])}</td>` : ""}<td class="n">${fair(st.oro_over && J_ORO ? st.oro_over[k][1] : p)}</td></tr>`).join("")}</table></div>`; }).join("");
+  const oro = j.suplentes_oro && j.suplentes_oro.length ? `Si sale (${pct(j.p_sustituido)} de las veces, completa ${pct(j.p_completa)}), suele entrar: ${j.suplentes_oro.map(([n, p]) => `${esc(n)} (${pct(p)})`).join(", ")}.` : "";
+  tr.innerHTML = `<td colspan="${cols}"><p class="sub">Titular ${pct(j.p_titular)} · juega ${pct(j.p_juega)} · ${f1(j.min_si_titular)}' si es titular · amarilla ${pct(j.p_amarilla)} · gol ${pct(j.p_gol)}. ${oro}</p><div class="lines">${cards}</div></td>`;
+  row.after(tr);
+}
+
+/* -- Bajas -- */
+function bajas(d, el) {
+  const L = d.match.local, V = d.match.visitante;
+  const one = c => {
+    const b = d.bajas[c];
+    if (!b.lista.length) return `<div class="card"><h3>${esc(tname(c))}</h3><p class="note">Sin bajas conocidas. XI ${esc(d.alineacion[c].estado)}: ${d.alineacion[c].xi.map(esc).join(", ")}.</p></div>`;
+    const ef = Object.fromEntries(b.efecto_equipo.map(x => [x.jugador, x]));
+    return `<div class="card"><h3>${esc(tname(c))}</h3>
+      ${b.lista.map(x => { const e = ef[x.jugador];
+        return `<div style="border-top:1px solid var(--line);padding:10px 0">
+          <b>${esc(x.jugador)}</b> <span class="pos">${esc(x.pos)}</span> <span class="tag ${x.p_juega > 0 ? "" : "hot"}">${esc(x.motivo)}${x.p_juega > 0 ? ` · juega ${pct(x.p_juega)}` : ""}</span>
+          <p class="sub">Era titular en ${pct(x.era_titular)} de los últimos partidos · ${f2(x.tasas90.remates)} remates y ${f1(x.tasas90.pases)} pases por 90'.</p>
+          ${x.heredero ? `<p>Hereda el puesto: <b>${esc(x.heredero)}</b>.</p>` : ""}
+          ${e ? `<p class="sub">Efecto en el equipo: ${Object.entries(e.equipo).map(([s, v]) => `${STAT[s].toLowerCase()} ×${f2(v.mult)}${v.medido ? ` (medido sin él ×${f2(v.medido)}, peso ${pct(v.peso_medido)})` : ""}`).join(" · ")}.</p>` : ""}
+        </div>`; }).join("")}
+      ${b.companeros.length ? `<p class="eyebrow" style="margin-top:8px">Compañeros que cambian (medido en partidos sin la baja)</p><div class="scroll"><table><tr><th>Jugador</th>${STATS_J.map(s => `<th>${STAT[s]}</th>`).join("")}</tr>${b.companeros.map(x => `<tr><td>${esc(x.jugador)} <span class="sub">sin ${esc(x.sin)}</span></td>${STATS_J.map(s => `<td class="n">${f2(x.antes[s])}→<b>${f2(x.despues[s])}</b></td>`).join("")}</tr>`).join("")}</table></div>` : ""}
+      <p class="note">El volumen del ausente se reparte solo entre los que juegan, en proporción a lo que cada uno remata, pasa o recibe faltas: por eso suben las líneas de sus compañeros (en la pestaña Jugadores). El equipo pierde parte de ese volumen si el heredero es peor.</p></div>`;
+  };
+  el.innerHTML = `<div class="grid2">${one(L)}${one(V)}</div>`;
+}
+
+init();
+</script>

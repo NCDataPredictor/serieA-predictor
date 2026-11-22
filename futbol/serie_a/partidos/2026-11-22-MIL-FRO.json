@@ -1,0 +1,180 @@
+{
+ "id": "2026-11-22-MIL-FRO",
+ "fuente": "fotmob",
+ "fuente_id": "5749750",
+ "match": {
+  "liga": "serie_a",
+  "temporada": "2026-27",
+  "jornada": 12,
+  "fecha": "2026-11-22",
+  "hora_local": "18:00",
+  "hora_bogota": "12:00",
+  "utc": "2026-11-22T17:00:00.000Z",
+  "local": "MIL",
+  "visitante": "FRO",
+  "estadio": "Stadio Giuseppe Meazza",
+  "neutral": false,
+  "competicion": "liga"
+ },
+ "contexto": {
+  "arbitro": "Luca Pairetto",
+  "arbitro_fotmob": {
+   "nombre": "Luca Pairetto",
+   "partidos": 25,
+   "amarillas_pp": 4.56,
+   "liga_amarillas_pp": 3.67,
+   "faltas_pp": 24.33,
+   "rojas": 5,
+   "penaltis": 6
+  },
+  "clima": {
+   "temperature": 8,
+   "windSpeed": 2,
+   "windDirectionCardinal": "WSW",
+   "iconCode": 11,
+   "relativeHumidity": 94,
+   "precipChance": 35,
+   "precipitation": 0.08,
+   "snow": 0,
+   "cloudCover": 81,
+   "description": "Light Rain",
+   "apiUsed": "forecast",
+   "lastUpdated": "2026-11-22T14:00:10Z",
+   "localizedKey": "weather_condition_light_rain",
+   "defaultTitle": "Light Rain"
+  }
+ },
+ "alineaciones": {
+  "estado": "oficial",
+  "MIL": {
+   "titulares": [
+    "MIL-466439",
+    "MIL-1106074",
+    "MIL-1200630",
+    "MIL-1669433",
+    "MIL-1385856",
+    "MIL-1137272",
+    "MIL-1342754",
+    "MIL-31097",
+    "MIL-352879",
+    "MIL-688295",
+    "MIL-940087"
+   ],
+   "banco": [
+    "MIL-1642393",
+    "MIL-1787536",
+    "MIL-1163501",
+    "MIL-1048023",
+    "MIL-1445650",
+    "MIL-1163219",
+    "MIL-1787535",
+    "MIL-688278",
+    "MIL-1554575",
+    "MIL-1215652"
+   ]
+  },
+  "FRO": {
+   "titulares": [
+    "FRO-1289655",
+    "FRO-1332850",
+    "FRO-1415326",
+    "FRO-1327513",
+    "FRO-1117058",
+    "FRO-1189223",
+    "FRO-746829",
+    "FRO-1523327",
+    "FRO-749488",
+    "FRO-1235421",
+    "FRO-1342748"
+   ],
+   "banco": [
+    "FRO-415425",
+    "FRO-1280112",
+    "FRO-992025",
+    "FRO-353519",
+    "FRO-1510384",
+    "FRO-1250568",
+    "FRO-850295",
+    "FRO-1285119",
+    "FRO-1402924",
+    "FRO-1670272",
+    "FRO-1135820",
+    "FRO-1445163",
+    "FRO-1024946"
+   ]
+  }
+ },
+ "bajas": {
+  "MIL": [
+   {
+    "jugador": "MIL-281762",
+    "nombre": "Pietro Terracciano",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   },
+   {
+    "jugador": "MIL-749662",
+    "nombre": "Fikayo Tomori",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   },
+   {
+    "jugador": "MIL-844996",
+    "nombre": "Matteo Gabbia",
+    "motivo": "lesion",
+    "regreso": "Early January 2027",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MIL-921341",
+    "nombre": "Alexis Saelemaekers",
+    "motivo": "lesion",
+    "regreso": "Mid January 2027",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MIL-604982",
+    "nombre": "Ruben Loftus-Cheek",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MIL-688300",
+    "nombre": "Samuel Chukwueze",
+    "motivo": "lesion",
+    "regreso": "Mid January 2027",
+    "p_juega": 0.0
+   }
+  ],
+  "FRO": [
+   {
+    "jugador": "FRO-1396091",
+    "nombre": "Gabriele Bracaglia",
+    "motivo": "sancion",
+    "regreso": "Late November 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "FRO-617044",
+    "nombre": "Florian Grillitsch",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   },
+   {
+    "jugador": "FRO-1256534",
+    "nombre": "Antonio Raimondo",
+    "motivo": "lesion",
+    "regreso": "Late January 2027",
+    "p_juega": 0.0
+   }
+  ]
+ },
+ "cuotas": {
+  "casas": []
+ },
+ "props": {}
+}
