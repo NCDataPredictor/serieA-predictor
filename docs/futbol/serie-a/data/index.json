@@ -2,7 +2,7 @@
  "liga": "Serie A",
  "temporada": "2026-27",
  "version": "futbol-0.1",
- "actualizado": "2026-11-22T15:30Z",
+ "actualizado": "2026-11-22T16:45Z",
  "ejemplo": false,
  "partidos": [
   {
@@ -17,24 +17,24 @@
    "derbi": null,
    "arbitro": "Luca Pairetto",
    "1x2": [
-    0.455,
-    0.261,
-    0.283
+    0.509,
+    0.245,
+    0.245
    ],
-   "goles": 3.43,
-   "over25": 0.659,
-   "ambos": 0.695,
-   "corners": 9.67,
-   "amarillas": 4.28,
+   "goles": 3.65,
+   "over25": 0.693,
+   "ambos": 0.711,
+   "corners": 9.73,
+   "amarillas": 4.24,
    "marcador": [
-    "1-1",
-    0.108
+    "2-1",
+    0.096
    ],
    "n_picks": 0,
    "ejemplo": false,
    "alineacion": {
-    "MIL": "prevista (últimos 10)",
-    "FRO": "prevista (últimos 10)"
+    "MIL": "oficial",
+    "FRO": "oficial"
    },
    "bajas": {
     "MIL": 6,
