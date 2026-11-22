@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+# datos de ejemplo sintéticos: se regeneran con futbol/serie_a/ejemplo/generar.py
+futbol/*/historico/ejemplo_*.json
+# crudos descargados (pesan mucho; se guardan en el PC)
+futbol/*/raw/
