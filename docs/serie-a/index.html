@@ -2,7 +2,7 @@
 <title>Serie A Predictor</title>
 <meta name="theme-color" content="#1a1659">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<link rel="icon" type="image/png" sizes="192x192" href="../../icon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="../icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap">
 <script>
@@ -265,6 +265,52 @@ footer { font-size: 12px; color: var(--muted); padding: 30px 0 }
 .glab { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; font: 500 10.5px var(--mono); color: var(--muted); text-align: center; margin-top: 4px }
 .glab .pk { color: var(--ink); font-weight: 700 }
 
+/* picks y Mis picks */
+.addb { width: 30px; height: 30px; border-radius: 999px; border: 1px solid var(--accent); background: none; color: var(--accent); font: 700 16px/1 var(--mono); cursor: pointer; transition: transform .15s, background .15s }
+.addb:hover { transform: scale(1.1) } .addb.on { background: var(--good); border-color: var(--good); color: #fff }
+.addb.del { background: none; border-color: var(--line); color: var(--muted); font-size: 13px }
+.tpicks tr.err td { background: color-mix(in srgb, var(--bad) 7%, transparent) }
+.tpicks td:first-child { white-space: normal; min-width: 220px }
+td.pos, b.pos { color: var(--good) }
+.mine-n { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; margin-left: 4px; border-radius: 999px; background: var(--good); color: #fff; font: 700 11px var(--mono) }
+.mine-n[hidden] { display: none }
+h2 .ico { vertical-align: -0.12em }
+
+/* navegación: volver y modal de modelos */
+.banner .inner { flex-wrap: wrap }
+.back-btn { margin-right: -6px }
+button.home-link { cursor: pointer }
+#modelos-dlg { border: 1px solid var(--line); border-radius: 18px; padding: 18px; width: min(560px, calc(100vw - 32px)); background: var(--surface); color: var(--ink); box-shadow: 0 30px 80px -20px rgba(0,0,0,.6) }
+#modelos-dlg::backdrop { background: rgba(5, 6, 25, .6); backdrop-filter: blur(3px) }
+#modelos-dlg[open] { animation: up .3s cubic-bezier(.2,.7,.2,1) both }
+.dlg-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px }
+.dlg-x { width: 34px; height: 34px; border-radius: 999px; border: 1px solid var(--line); background: var(--soft); color: var(--ink); cursor: pointer; font-size: 14px }
+.dlg-home { display: grid; gap: 2px; text-decoration: none; color: var(--ink); background: var(--accent-soft); border-radius: 12px; padding: 12px 14px; margin-bottom: 12px }
+.dlg-home b { font: 700 18px var(--display); text-transform: uppercase; letter-spacing: .03em } .dlg-home span { font-size: 13px; color: var(--muted) }
+.dlg-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) }
+.dlg-m { position: relative; display: grid; gap: 2px; padding: 12px; border-radius: 12px; text-decoration: none; color: #fff; background: linear-gradient(140deg, var(--m1) 55%, var(--m2)); min-height: 78px; transition: transform .15s }
+.dlg-m:hover, .dlg-m:focus-visible { transform: translateY(-2px); outline: 2px solid var(--accent-2) }
+.dlg-m small { font: 500 10px var(--mono); letter-spacing: .1em; text-transform: uppercase; opacity: .8 }
+.dlg-m b { font: 700 19px var(--display); text-transform: uppercase }
+.dlg-m.cur::after { content: "Estás aquí"; position: absolute; bottom: 8px; right: 8px; font: 600 9.5px var(--mono); text-transform: uppercase; background: rgba(255,255,255,.25); padding: 2px 6px; border-radius: 999px }
+.dlg-m.soon { opacity: .5; pointer-events: none }
+.dlg-m.soon::after { content: "Pronto"; position: absolute; bottom: 8px; right: 8px; font: 600 9.5px var(--mono); text-transform: uppercase; background: rgba(255,255,255,.2); padding: 2px 6px; border-radius: 999px }
+@media (max-width: 520px) { .home-link { padding: 7px 10px; font-size: 12px } }
+
+/* alineaciones: campo con titulares y banco */
+.campo { position: relative; border-radius: 14px; padding: 14px 6px; display: grid; gap: 14px; min-height: 420px; align-content: space-between;
+  background: repeating-linear-gradient(180deg, #1f7a3a 0 44px, #22843f 44px 88px); box-shadow: inset 0 0 0 2px rgba(255,255,255,.35) }
+.campo::before { content: ""; position: absolute; left: 12%; right: 12%; top: 50%; border-top: 2px solid rgba(255,255,255,.35) }
+.campo::after { content: ""; position: absolute; left: 50%; top: 50%; width: 76px; height: 76px; margin: -38px 0 0 -38px; border: 2px solid rgba(255,255,255,.35); border-radius: 50% }
+.linea { position: relative; z-index: 1; display: flex; justify-content: space-evenly; gap: 4px }
+.pj { display: grid; justify-items: center; gap: 3px; width: 74px; text-align: center; color: #fff; animation: up .45s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 40ms) }
+.pj .ph { box-shadow: 0 0 0 2px #fff, 0 3px 8px rgba(0,0,0,.35) }
+.pj b { font: 600 11px/1.15 var(--body); text-shadow: 0 1px 2px rgba(0,0,0,.6); max-width: 74px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.pj small { font: 600 9.5px var(--mono); background: rgba(0,0,0,.35); border-radius: 999px; padding: 1px 6px }
+.pj .dor { position: absolute; transform: translate(16px, -4px); font: 700 10px var(--mono); background: var(--tf2, #fff); color: var(--tc2, #000); border-radius: 999px; min-width: 18px; padding: 0 4px }
+.banco { margin-top: 12px } .banco table td:first-child { white-space: normal }
+@media (max-width: 420px) { .pj { width: 60px } .pj b { font-size: 10px; max-width: 60px } .campo { min-height: 380px } }
+
 /* animaciones */
 @keyframes up { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
 @keyframes growx { from { transform: scaleX(0) } to { transform: scaleX(1) } }
@@ -281,10 +327,13 @@ footer { font-size: 12px; color: var(--muted); padding: 30px 0 }
 
 <header class="banner gutter">
   <div class="inner">
+    <button type="button" class="icon-btn back-btn" id="back-btn" aria-label="Volver" title="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
     <a class="brand" href="#"><span class="logo" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><circle cx="16" cy="16" r="13"/><path d="M16 9.5l5 3.6-1.9 5.9h-6.2L11 13.1z"/><path d="M16 9.5V3.5M21 13.1l5.7-1.9M19.1 19l3.5 5M12.9 19l-3.5 5M11 13.1l-5.7-1.9"/></svg></span>
       <span class="brand-t"><span>Simulación minuto a minuto · Serie A</span><h1>Serie A Predictor</h1></span></a>
     <div class="side">
-      <a class="home-link" href="../../">Todos los modelos</a>
+      <a class="home-link" href="manual/">Manual</a>
+      <a class="home-link mine-link" href="#mis-picks">Mis picks <b id="mine-n" class="mine-n" hidden></b></a>
+      <button type="button" class="home-link" id="modelos-btn" aria-haspopup="dialog">Modelos</button>
       <button type="button" class="icon-btn" id="theme-btn" aria-label="Modo claro / oscuro" title="Modo claro / oscuro">
         <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
         <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
@@ -293,6 +342,11 @@ footer { font-size: 12px; color: var(--muted); padding: 30px 0 }
   </div>
 </header>
 <div class="demo" id="demo" hidden><b>Datos de ejemplo</b> · jugadores, árbitros y estadísticas sintéticos para probar el modelo y la página. No son predicciones reales.</div>
+<dialog id="modelos-dlg" aria-labelledby="modelos-t">
+  <div class="dlg-head"><h2 id="modelos-t">Modelos</h2><button type="button" class="dlg-x" id="modelos-x" aria-label="Cerrar">✕</button></div>
+  <a class="dlg-home" href="../"><b>NCData Predictor</b><span>Portada · todos los modelos y picks del día</span></a>
+  <div class="dlg-grid" id="modelos-grid"></div>
+</dialog>
 <nav class="ticker" aria-label="Partidos de la jornada"><div class="track" id="track"></div></nav>
 <main class="gutter"><div class="inner" id="app"><p class="empty">Cargando…</p></div></main>
 <footer class="gutter"><div class="inner" id="foot"></div></footer>
@@ -306,7 +360,7 @@ const pct = (p, d = 0) => p == null ? "–" : (p * 100).toFixed(d) + "%";
 const f1 = x => x == null ? "–" : (+x).toFixed(1);
 const f2 = x => x == null ? "–" : (+x).toFixed(2);
 const fair = p => p > 0 ? (1 / p).toFixed(2) : "–";
-const STAT = {goles: "Goles", corners: "Córners", offsides: "Fueras de lugar", amarillas: "Amarillas", rojas: "Rojas", faltas: "Faltas",
+const STAT = {goles: "Goles", tarjetas: "Tarjetas", corners: "Córners", offsides: "Fueras de lugar", amarillas: "Amarillas", rojas: "Rojas", faltas: "Faltas",
   remates: "Remates", remates_puerta: "Remates a puerta", pases: "Pases", atajadas: "Atajadas", faltas_recibidas: "Faltas recibidas", faltas_cometidas: "Faltas cometidas"};
 // Íconos por estadística (SVG en línea, heredan el color del texto; tarjetas con su color real)
 const SV = (b, extra = "") => `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"${extra}>${b}</svg>`;
@@ -328,6 +382,7 @@ const ICO = {
   over: SV('<path d="M4 18l6-6 4 4 6-8"/><path d="M15 8h5v5"/>'),
   arbitro: SV('<circle cx="9" cy="14" r="5"/><path d="M13 11l7-4v4l-6 2"/><circle cx="9" cy="14" r="1.4" fill="currentColor"/>'),
   bajas: SV('<path d="M12 3a9 9 0 100 18 9 9 0 000-18zM5.6 5.6l12.8 12.8"/>'),
+  tarjetas: `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="10" height="14" rx="2" transform="rotate(-10 9 12)" fill="#F5C518" stroke="#B58F00" stroke-width="1"/><rect x="10" y="4" width="10" height="14" rx="2" transform="rotate(10 15 11)" fill="#DB052B" stroke="#8E0019" stroke-width="1"/></svg>`,
 };
 const ic = k => ICO[k] || "";
 const lbl = s => `${ic(s)}${STAT[s]}`;
@@ -387,7 +442,8 @@ addEventListener("hashchange", route);
 function route() {
   const id = decodeURIComponent(location.hash.slice(1));
   document.querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c.dataset.id === id));
-  if (id && IDX.partidos.some(p => p.id === id)) verPartido(id); else inicio();
+  if (id === "mis-picks") misPicks();
+  else if (id && IDX.partidos.some(p => p.id === id)) verPartido(id); else inicio();
   scrollTo(0, 0);
 }
 
@@ -427,14 +483,21 @@ function inicio() {
       </div>
       <div class="mc-foot"><span>${ic("arbitro")}Árbitro <b>${esc(p.arbitro || "por designar")}</b> · Bajas ${esc(L)} <b>${p.bajas[L] || 0}</b> · ${esc(V)} <b>${p.bajas[V] || 0}</b></span><span class="mc-go">Ver partido <span>→</span></span></div>
     </a>`; }).join("")}</div>
-  <div class="section" style="margin-top:28px"><h2>Picks de la jornada</h2><span class="eyebrow">${picks} picks</span></div>
+  <div class="section" style="margin-top:28px"><h2>${ic("over")}Picks de la jornada</h2><span class="eyebrow">${picks} picks · cuotas de Betano</span></div>
   ${picks ? "" : `<div class="card callout">Todavía no hay cuotas cargadas, así que no hay picks: el modelo nunca supone una cuota. Mientras tanto, en cada partido están sus probabilidades y la cuota justa (1 / probabilidad) para compararla con la de tu casa.</div>`}
-  <div id="picks"></div>`;
+  <div id="picks"></div>
+  <div class="section" style="margin-top:28px"><h2>${ic("tarjetas")}Errores de cuota</h2><span class="eyebrow">línea de la casa lejos de lo que pasa en la cancha</span></div>
+  <div id="errores"></div>`;
   contar($("#app"));
-  if (picks) Promise.all(ps.filter(p => p.n_picks).map(p => partido(p.id))).then(ds => {
-    const rows = ds.flatMap(d => d.picks.map(k => ({...k, id: d.id, game: d.match.local + "–" + d.match.visitante})));
-    rows.sort((a, b) => b.ev * b.p - a.ev * a.p);
-    $("#picks").innerHTML = `<div class="card scroll"><table><tr><th>Pick</th><th>Partido</th><th>Prob.</th><th>Cuota</th><th>EV</th></tr>${rows.map(k => `<tr><td>${esc(k.tipo === "equipo" ? (k.jugador === "partido" ? "Total del partido" : tname(k.jugador)) : k.jugador)} · ${k.lado === "over" ? "Más de" : "Menos de"} ${String(k.linea).replace(".", ",")} ${ic(k.stat)}${esc(STAT[k.stat].toLowerCase())}${k.suplente_oro ? ' <span class="oro" title="Con suplente de oro">★ oro</span>' : ""}</td><td><a href="#${esc(k.id)}">${esc(k.game)}</a></td><td class="p">${pct(k.p, 1)}</td><td class="n">${k.cuota.toFixed(2)}</td><td class="n">${(k.ev * 100).toFixed(1)}%</td></tr>`).join("")}</table></div>`;
+  const errVacio = `<div class="card callout">Ningún error de cuota en esta jornada. Aparece uno cuando la casa da ≤ 45% a algo que se cumplió en ≥ 70% de los partidos recientes de los dos equipos, con el promedio al menos un 20% lejos de la línea y el modelo del mismo lado.</div>`;
+  if (!picks) { $("#errores").innerHTML = errVacio; return; }
+  Promise.all(ps.filter(p => p.n_picks).map(p => partido(p.id))).then(ds => {
+    const rows = ds.flatMap(d => d.picks.map(k => ({...k, id: d.id, game: d.match.local + "–" + d.match.visitante, fecha: d.match.fecha, hora: d.match.hora_bogota})));
+    rows.sort((a, b) => (b.puntaje ?? b.ev * b.p) - (a.puntaje ?? a.ev * a.p));
+    const val = rows.filter(k => !k.error_cuota), err = rows.filter(k => k.error_cuota);
+    $("#picks").innerHTML = val.length ? tablaPicks(val, true) : `<div class="card callout">Sin picks de valor por ahora: ninguna línea pasó todos los filtros.</div>`;
+    $("#errores").innerHTML = err.length ? tablaPicks(err, true) : errVacio;
+    bindPicks($("#app"), rows);
   });
 }
 // Los números cuentan desde 0 al aparecer (se respeta "reducir movimiento").
@@ -460,7 +523,7 @@ async function verPartido(id) {
   let d;
   try { d = await partido(id); } catch (e) { $("#app").innerHTML = `<p class="empty">No se pudo cargar el partido.</p>`; return; }
   const m = d.match, L = m.local, V = m.visitante, pa = d.partido;
-  const tabs = [["resumen", "Resumen"], ["contexto", "Contexto"], ["distribucion", "Distribución"], ["jugadores", "Jugadores"], ["bajas", "Bajas"]];
+  const tabs = [["resumen", "Resumen"], ["alineaciones", "Alineaciones"], ["picks", `Picks${d.picks.length ? ` (${d.picks.length})` : ""}`], ["contexto", "Contexto"], ["distribucion", "Distribución"], ["jugadores", "Jugadores"], ["bajas", "Bajas"]];
   $("#app").innerHTML = `
   <div class="card mcard reveal" style="padding:0;gap:0;--c1:${tcol(L)[1]};--c2:${tcol(V)[1]};transform:none">
     <div class="mhead" style="margin:0">
@@ -476,7 +539,7 @@ async function verPartido(id) {
   pintar(d);
 }
 function pintar(d) {
-  const f = {resumen, contexto, distribucion, jugadores, bajas}[TAB] || resumen;
+  const f = {resumen, alineaciones, picks: picksPartido, contexto, distribucion, jugadores, bajas}[TAB] || resumen;
   $("#tab").innerHTML = "";
   f(d, $("#tab"));
 }
@@ -712,5 +775,171 @@ function bajas(d, el) {
   el.innerHTML = `<div class="grid2">${one(L)}${one(V)}</div>`;
 }
 
+/* ---------- picks: tabla, Mis picks y Mi combinada ---------- */
+const MINE_K = "sap-mine";
+const mine = {
+  get() { try { return JSON.parse(store.get(MINE_K) || "[]"); } catch (e) { return []; } },
+  set(v) { store.set(MINE_K, JSON.stringify(v)); actualizarMine(); }
+};
+function actualizarMine() { const n = mine.get().length, b = $("#mine-n"); if (b) { b.hidden = !n; b.textContent = n; } }
+const pickKey = k => [k.id, k.tipo, k.jugador, k.stat, k.lado, k.linea].join("|");
+const quienTxt = k => k.tipo === "equipo" ? (k.jugador === "partido" ? "Total del partido" : tname(k.jugador)) : k.jugador;
+const pickTxt = k => `${quienTxt(k)} · ${k.lado === "over" ? "Más de" : "Menos de"} ${String(k.linea).replace(".", ",")} ${STAT[k.stat].toLowerCase()}`;
+const quienBadge = k => k.tipo === "equipo" && k.jugador !== "partido" ? crest(k.jugador, 18) : k.tipo === "equipo" ? ic("over") : "";
+
+function tablaPicks(rows, conPartido) {
+  const en = new Set(mine.get().map(x => x.key));
+  return `<div class="card scroll" style="padding:6px 10px"><table class="tpicks">
+    <tr><th>Pick</th>${conPartido ? "<th>Partido</th>" : ""}<th>Cuota</th><th title="Probabilidad según la simulación">Modelo</th><th title="Veces que se cumplió en los partidos recientes de los dos equipos">Cumplió</th><th title="Probabilidad que da la casa, sin su margen">Casa</th><th title="Mezcla de casa, modelo e histórico: la que se usa para el EV">Prob.</th><th>EV</th><th></th></tr>
+    ${rows.map(k => { const key = pickKey(k);
+      return `<tr class="${k.error_cuota ? "err" : ""}"><td><span class="who" style="gap:6px">${quienBadge(k)}<span>${ic(k.stat)}${esc(pickTxt(k))}${k.error_cuota ? ' <span class="tag hot">error de cuota</span>' : ""}${k.suplente_oro ? ' <span class="oro">★ oro</span>' : ""}
+          ${k.prom_hist != null ? `<span class="sub" style="display:block">promedio reciente ${f1(k.prom_hist)} · modelo espera ${f1(k.media_modelo)}</span>` : ""}</span></span></td>
+        ${conPartido ? `<td><a href="#${esc(k.id)}">${esc(k.game)}</a><span class="sub" style="display:block">${esc(k.hora || "")}</span></td>` : ""}
+        <td class="n"><b>${k.cuota.toFixed(2)}</b></td><td class="p ${k.p_modelo >= .55 ? "hi" : ""}">${pct(k.p_modelo)}</td>
+        <td class="n">${k.n_hist ? `${k.aciertos}/${k.n_hist} <span class="sub">${pct(k.aciertos / k.n_hist)}</span>` : "–"}</td>
+        <td class="n">${pct(k.p_casa)}</td><td class="p">${pct(k.p, 1)}</td><td class="n ${k.ev > 0 ? "pos" : ""}">${(k.ev * 100).toFixed(1)}%</td>
+        <td><button type="button" class="addb ${en.has(key) ? "on" : ""}" data-key="${esc(key)}" aria-label="Añadir a Mis picks">${en.has(key) ? "✓" : "+"}</button></td></tr>`; }).join("")}
+  </table></div>
+  <p class="note">Un pick entra si el modelo y lo que pasó en los partidos recientes están del mismo lado (≥ 50%), y la probabilidad final (65% la de la casa sin margen + 35% el promedio de modelo e histórico) deja EV ≥ 3%. Los errores de cuota entran aparte. "Cumplió" cuenta los partidos recientes del equipo y lo que concedió el rival (o los dos equipos, en totales). Toca + para guardarlo en Mis picks.</p>`;
+}
+function bindPicks(root, rows) {
+  const byKey = Object.fromEntries(rows.map(k => [pickKey(k), k]));
+  root.querySelectorAll(".addb").forEach(b => b.onclick = e => {
+    e.preventDefault();
+    const key = b.dataset.key, k = byKey[key];
+    let v = mine.get();
+    if (v.some(x => x.key === key)) v = v.filter(x => x.key !== key);
+    else if (k) v.push({key, id: k.id, game: k.game || k.id.slice(11), fecha: k.fecha || k.id.slice(0, 10), tipo: k.tipo, jugador: k.jugador, equipo: k.equipo,
+      stat: k.stat, lado: k.lado, linea: k.linea, cuota: k.cuota, p: k.p, error_cuota: !!k.error_cuota, añadido: new Date().toISOString().slice(0, 16)});
+    mine.set(v);
+    const on = v.some(x => x.key === key);
+    root.querySelectorAll(`.addb[data-key="${CSS.escape(key)}"]`).forEach(x => { x.classList.toggle("on", on); x.textContent = on ? "✓" : "+"; });
+  });
+}
+
+/* -- pestaña Picks del partido -- */
+function picksPartido(d, el) {
+  const rows = d.picks.map(k => ({...k, id: d.id, game: d.match.local + "–" + d.match.visitante, fecha: d.match.fecha, hora: d.match.hora_bogota}));
+  const val = rows.filter(k => !k.error_cuota), err = rows.filter(k => k.error_cuota);
+  const cc = d.cuotas_casa;
+  el.innerHTML = `
+    ${cc ? `<p class="note" style="margin:0 0 10px">Cuotas de ${esc(cc.casa)} capturadas ${esc((cc.capturado || "").replace("T", " "))} UTC${cc["1x2"] ? ` · 1X2 ${cc["1x2"].map(x => x.toFixed(2)).join(" / ")} (modelo: ${d.partido["1x2"].map(p => fair(p)).join(" / ")})` : ""}.</p>`
+      : `<div class="card callout">Todavía no hay cuotas de la casa para este partido, así que no hay picks: el modelo nunca supone una cuota. En Resumen tienes la cuota justa de cada línea para comparar.</div>`}
+    ${cc ? `<h3 style="margin:6px 0 10px">Líneas recomendadas</h3>${val.length ? tablaPicks(val, false) : `<div class="card callout">Ninguna línea de este partido pasó los filtros (modelo e histórico a favor y EV ≥ 3%).</div>`}
+    <h3 style="margin:22px 0 10px">Errores de cuota</h3>${err.length ? tablaPicks(err, false) : `<p class="note">Ninguno en este partido.</p>`}` : ""}`;
+  bindPicks(el, rows);
+}
+
+/* -- Mis picks: guardados en este navegador, liquidados con los resultados reales -- */
+let RES = null;
+async function resultados() { if (RES) return RES; try { RES = await getJSON("data/resultados.json"); } catch (e) { RES = {partidos: {}}; } return RES; }
+function liquidar(k, R) {
+  const r = R.partidos[k.id];
+  if (!r) return {estado: "pendiente"};
+  if (k.tipo !== "equipo") return {estado: "sin datos"};
+  const v = t => { const e = r.equipos[t] || {}; return k.stat === "tarjetas" ? (e.amarillas || 0) + (e.rojas || 0) : e[k.stat]; };
+  const real = k.jugador === "partido" ? v(r.local) + v(r.visitante) : v(k.jugador);
+  if (real == null) return {estado: "sin datos"};
+  const gana = k.lado === "over" ? real > k.linea : real < k.linea;
+  return {estado: gana ? "ganado" : "perdido", real, u: gana ? k.cuota - 1 : -1};
+}
+async function misPicks() {
+  const v = mine.get(), R = await resultados();
+  const L = v.map(k => ({...k, ...liquidar(k, R)}));
+  const hechos = L.filter(k => k.estado === "ganado" || k.estado === "perdido");
+  const resumenDe = xs => { const g = xs.filter(k => k.estado === "ganado").length, u = xs.reduce((a, k) => a + (k.u || 0), 0);
+    return {n: xs.length, g, pct: xs.length ? g / xs.length : null, u, roi: xs.length ? u / xs.length : null}; };
+  const tot = resumenDe(hechos), eq = resumenDe(hechos.filter(k => k.tipo === "equipo")), ju = resumenDe(hechos.filter(k => k.tipo !== "equipo"));
+  const kpi = (t, r) => `<div class="tile"><span>${t}</span><b>${r.n ? pct(r.pct) : "–"}</b><span class="sub">${r.g}/${r.n} · ${r.u >= 0 ? "+" : ""}${r.u.toFixed(2)} u${r.n ? ` · ROI ${(r.roi * 100).toFixed(1)}%` : ""}</span></div>`;
+  const pend = L.filter(k => k.estado === "pendiente");
+  $("#app").innerHTML = `
+    <div class="section"><h2>Mis picks</h2><span class="eyebrow">guardados en este navegador · ${v.length} picks</span></div>
+    ${v.length ? "" : `<div class="card callout">Todavía no guardaste picks. En "Picks de la jornada" o en la pestaña Picks de cada partido toca <b>+</b> para añadirlos aquí.</div>`}
+    ${v.length ? `<div class="tiles reveal" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">${kpi("Rendimiento total", tot)}${kpi("Picks de equipo", eq)}${kpi("Picks de jugador", ju)}</div>
+    <p class="note">Apuesta de 1 unidad por pick. Se liquidan solos con el resultado real cuando el partido entra al histórico.</p>
+    <div class="card scroll reveal" style="margin-top:14px;padding:6px 10px"><table>
+      <tr><th></th><th>Pick</th><th>Partido</th><th>Cuota</th><th>Prob.</th><th>Estado</th><th>Real</th><th>Unid.</th><th></th></tr>
+      ${L.map(k => `<tr><td>${k.estado === "pendiente" ? `<input type="checkbox" class="cb" data-key="${esc(k.key)}" aria-label="Usar en la combinada">` : ""}</td>
+        <td style="text-align:left;white-space:normal">${ic(k.stat)}${esc(pickTxt(k))}${k.error_cuota ? ' <span class="tag hot">error</span>' : ""}</td><td>${IDX.partidos.some(p => p.id === k.id) ? `<a href="#${esc(k.id)}">${esc(k.game)}</a>` : esc(k.game)}</td>
+        <td class="n">${k.cuota.toFixed(2)}</td><td class="p">${pct(k.p)}</td>
+        <td><span class="tag ${k.estado === "ganado" ? "ok" : k.estado === "perdido" ? "hot" : ""}">${k.estado}</span></td>
+        <td class="n">${k.real ?? "–"}</td><td class="n">${k.u != null ? (k.u >= 0 ? "+" : "") + k.u.toFixed(2) : "–"}</td>
+        <td><button type="button" class="addb on del" data-key="${esc(k.key)}" aria-label="Quitar">✕</button></td></tr>`).join("")}
+    </table></div>
+    <div class="section" style="margin-top:26px"><h2>Mi combinada</h2><span class="eyebrow">marca picks pendientes en la tabla</span></div>
+    <div class="card" id="combi"></div>` : ""}`;
+  const combi = () => {
+    const sel = [...document.querySelectorAll(".cb:checked")].map(c => pend.find(k => k.key === c.dataset.key)).filter(Boolean);
+    const box = $("#combi"); if (!box) return;
+    if (sel.length < 2) { box.innerHTML = `<p class="note" style="margin:0">Marca al menos 2 picks pendientes para ver la probabilidad y la cuota de la combinada.</p>`; return; }
+    const cuota = sel.reduce((a, k) => a * k.cuota, 1), p = sel.reduce((a, k) => a * k.p, 1), ev = p * cuota - 1;
+    const ids = sel.map(k => k.id), mismo = ids.length !== new Set(ids).size;
+    box.innerHTML = `<div class="tiles"><div class="tile"><span>Patas</span><b>${sel.length}</b></div><div class="tile"><span>Cuota combinada</span><b>${cuota.toFixed(2)}</b></div>
+      <div class="tile"><span>Probabilidad</span><b>${pct(p, 1)}</b><div class="meter"><i class="${p >= .5 ? "hi" : ""}" style="width:${Math.round(p * 100)}%"></i></div></div>
+      <div class="tile"><span>EV</span><b class="${ev > 0 ? "pos" : ""}">${(ev * 100).toFixed(1)}%</b></div><div class="tile"><span>Cuota justa</span><b>${fair(p)}</b></div></div>
+      <p class="note">${sel.map(k => esc(pickTxt(k))).join(" + ")}.${mismo ? " <b>Ojo:</b> hay patas del mismo partido; no son independientes y la probabilidad real puede ser distinta (más alta si van en la misma dirección, más baja si se contradicen)." : " Patas de partidos distintos: se multiplican como independientes."}</p>`;
+  };
+  document.querySelectorAll(".cb").forEach(c => c.onchange = combi); combi();
+  document.querySelectorAll(".del").forEach(b => b.onclick = () => { mine.set(mine.get().filter(x => x.key !== b.dataset.key)); misPicks(); });
+}
+
+/* -- Alineaciones: titulares sobre el campo y suplentes -- */
+const LINEA = {POR: 0, DFC: 1, LI: 1, LD: 1, MC: 2, MI: 2, MD: 2, DC: 3, EI: 3, ED: 3};
+const LADO = {LI: 0, MI: 0, EI: 0, DFC: 1, MC: 1, DC: 1, POR: 1, LD: 2, MD: 2, ED: 2};
+function alineaciones(d, el) {
+  const L = d.match.local, V = d.match.visitante;
+  const one = (c, k) => {
+    const al = d.alineacion[c], xi = new Set(al.xi), t = tcol(c);
+    const fuera = new Set((d.bajas[c].lista || []).filter(b => !(b.p_juega > 0)).map(b => b.jugador));
+    const js = d.jugadores[c];
+    const tit = js.filter(j => xi.has(j.nombre)), sup = js.filter(j => !xi.has(j.nombre) && !fuera.has(j.nombre));
+    const lineas = [[], [], [], []];
+    tit.forEach(j => lineas[LINEA[j.pos] ?? 2].push(j));
+    lineas.forEach(l => l.sort((a, b) => (LADO[a.pos] ?? 1) - (LADO[b.pos] ?? 1)));
+    let i = 0;
+    const ficha = j => `<div class="pj" style="--i:${i++}" title="${esc(j.nombre)} · ${esc(j.pos)} · ${f1(j.min_medio)}' esperados">${foto(j.id, j.nombre, c, 40)}${j.dorsal != null ? `<span class="dor" style="--tc2:${t[2]};--tf2:${t[1]}">${j.dorsal}</span>` : ""}<b>${esc(j.nombre.split(" ").slice(-1)[0])}</b><small>${esc(j.pos)}</small></div>`;
+    const sist = lineas.slice(1).map(l => l.length).filter(Boolean).join("-");
+    return `<div class="card" style="border-top:4px solid ${t[1]}">
+      <div class="toolbar"><h3 class="who" style="gap:8px">${crest(c, 26)}${esc(tname(c))}</h3>
+        <span><span class="tag ${al.estado === "oficial" ? "ok" : ""}">XI ${esc(al.estado)}</span> <span class="tag">${esc(sist)}</span></span></div>
+      <div class="campo">${lineas.slice().reverse().map(l => `<div class="linea">${l.map(ficha).join("")}</div>`).join("")}</div>
+      <div class="banco"><h4 style="margin:0 0 4px;font:600 13px var(--display);letter-spacing:.06em;text-transform:uppercase">Suplentes · ${sup.length}</h4>
+        <div class="scroll"><table><tr><th>Jugador</th><th title="Probabilidad de que entre al partido">Entra</th><th title="Minutos esperados si entra">Min.</th></tr>
+        ${sup.sort((a, b) => b.p_juega - a.p_juega).map(j => `<tr><td><span class="who" style="gap:8px">${foto(j.id, j.nombre, c, 28)}<span>${j.dorsal != null ? `<span class="sub">${j.dorsal} · </span>` : ""}${esc(j.nombre)}<span class="pos">${esc(j.pos)}</span></span></span></td><td class="p ${j.p_juega >= .5 ? "hi" : ""}">${pct(j.p_juega)}</td><td class="n">${j.p_juega > 0 ? f1(j.min_medio) : "–"}</td></tr>`).join("")}</table></div></div>
+      ${fuera.size ? `<p class="note">No juegan: ${[...fuera].map(esc).join(", ")} (ver Bajas).</p>` : ""}
+    </div>`;
+  };
+  const ofi = [L, V].every(c => d.alineacion[c].estado === "oficial");
+  el.innerHTML = `${ofi ? "" : `<div class="card callout" style="margin-bottom:14px">Alineación ${[L, V].map(c => `${esc(c)}: ${esc(d.alineacion[c].estado)}`).join(" · ")}. Mientras no sea la oficial, el XI es el más probable según los últimos partidos; se actualiza cuando el club la publica (≈1 h antes).</div>`}
+    <div class="grid2">${one(L, 0)}${one(V, 1)}</div>
+    <p class="note">Titulares sobre el campo (la posición sale de dónde juega cada uno). En suplentes, "Entra" es la probabilidad de que juegue algún minuto y "Min." los minutos que suele jugar cuando entra.</p>`;
+}
+
+/* ---------- navegación: volver al punto anterior y modal de modelos ---------- */
+const PILA = [];
+let ULT = location.hash, VOLVIENDO = false;
+addEventListener("hashchange", () => { if (!VOLVIENDO && ULT !== location.hash) PILA.push(ULT); VOLVIENDO = false; ULT = location.hash; });
+$("#back-btn").onclick = () => {
+  let prev = PILA.pop();
+  while (prev !== undefined && prev === location.hash) prev = PILA.pop();
+  if (prev !== undefined) { VOLVIENDO = true; location.hash = prev; }
+  else if (location.hash && location.hash !== "#") location.hash = "";
+  else location.href = "../";
+};
+const MODELOS_NAV = [
+  {n: "NBA", d: "Baloncesto", url: "https://nba-predictor-9hf.pages.dev/", m1: "#0b1a3a", m2: "#1d428a"},
+  {n: "Serie A", d: "Fútbol · Italia", url: "./", m1: "#1a1659", m2: "#0032a0", cur: true},
+  {n: "Premier League", d: "Fútbol · Inglaterra", m1: "#38003c", m2: "#5b0a63", pronto: true},
+  {n: "LaLiga", d: "Fútbol · España", m1: "#1f1f1f", m2: "#3a3a3a", pronto: true},
+  {n: "Champions", d: "Fútbol · Europa", m1: "#0a1446", m2: "#1b2a7a", pronto: true},
+  {n: "Europa League", d: "Fútbol · Europa", m1: "#2b1a00", m2: "#5a3600", pronto: true}];
+const dlg = $("#modelos-dlg");
+$("#modelos-grid").innerHTML = MODELOS_NAV.map(m => `<a class="dlg-m ${m.cur ? "cur" : ""} ${m.pronto ? "soon" : ""}" ${m.url ? `href="${m.url}"` : 'aria-disabled="true"'} style="--m1:${m.m1};--m2:${m.m2}"><small>${m.d}</small><b>${m.n}</b></a>`).join("");
+$("#modelos-btn").onclick = () => { if (dlg.showModal) dlg.showModal(); else location.href = "../"; };
+$("#modelos-x").onclick = () => dlg.close();
+dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+dlg.querySelector(".dlg-m.cur").addEventListener("click", e => { e.preventDefault(); dlg.close(); location.hash = ""; });
+
+actualizarMine();
 init();
 </script>

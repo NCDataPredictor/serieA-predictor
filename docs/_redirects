@@ -1,0 +1,2 @@
+/futbol/serie-a /serie-a/ 301
+/futbol/serie-a/* /serie-a/:splat 301

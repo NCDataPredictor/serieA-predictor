@@ -1,5 +1,6 @@
 <!doctype html><html lang="es"><meta charset="utf-8">
-<title>NCDataPredictor</title>
+<title>NCData Predictor</title>
+<meta name="description" content="NCData Predictor: simulaciones y picks de NBA y fútbol (Serie A y más ligas), con probabilidades, cuota justa y errores de cuota.">
 <meta name="theme-color" content="#0b0d1f">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -42,6 +43,22 @@ a.m:hover, a.m:focus-visible { transform: translateY(-2px); box-shadow: 0 10px 2
 .m .go { font: 600 13px var(--display); letter-spacing: .1em; text-transform: uppercase }
 .m.soon { filter: saturate(.35); opacity: .72 }
 .m .tag { position: absolute; top: 16px; right: 16px; font: 600 10.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; background: rgba(255,255,255,.2); padding: 4px 8px; border-radius: 999px }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px }
+.hero-cta a { font: 600 13px var(--display); letter-spacing: .1em; text-transform: uppercase; text-decoration: none; padding: 10px 16px; border-radius: 999px; background: #fff; color: var(--hero) }
+.hero-cta a.sec { background: rgba(255,255,255,.1); color: var(--hero-ink); border: 1px solid rgba(255,255,255,.3) }
+.steps { list-style: none; counter-reset: s; padding: 0; margin: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)) }
+.steps li { counter-increment: s; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 14px 14px 56px; position: relative }
+.steps li::before { content: counter(s); position: absolute; left: 14px; top: 14px; width: 30px; height: 30px; border-radius: 9px; background: #0578ff; color: #fff; display: grid; place-items: center; font: 700 16px var(--display) }
+.steps b { display: block; font: 600 15px var(--display); text-transform: uppercase; letter-spacing: .05em } .steps span { color: var(--muted); font-size: 14px }
+.hoy { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)) }
+.hoy a { display: block; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid #0578ff; border-radius: 12px; padding: 12px 14px; text-decoration: none; color: inherit; transition: transform .15s }
+.hoy a:hover { transform: translateY(-2px) } .hoy a.err { border-left-color: #db052b }
+.hoy small { display: block; font: 500 11.5px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .05em }
+.hoy b { font-size: 15px } .hoy .k { font: 600 13px var(--mono); margin-top: 4px }
+.muted-p { color: var(--muted); margin: 0 }
+@keyframes up { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
+.m, .hoy a, .steps li { animation: up .5s cubic-bezier(.2,.7,.2,1) both }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important } }
 .how { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)) }
 .how div { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px }
 .how b { font: 600 15px var(--display); text-transform: uppercase; letter-spacing: .05em }
@@ -49,13 +66,23 @@ a.m:hover, a.m:focus-visible { transform: translateY(-2px); box-shadow: 0 10px 2
 footer { color: var(--muted); font-size: 12px; padding-bottom: 30px }
 </style>
 <header class="gutter"><div class="inner">
-  <div><span class="eyebrow">NCDataPredictor</span><h1>Modelos de predicción</h1>
-    <p>Simulaciones Monte Carlo de cada partido, con el contexto de los dos equipos, las bajas y el árbitro. Elige un modelo.</p></div>
+  <div><span class="eyebrow">Simulaciones y picks de NBA y fútbol</span><h1>NCData Predictor</h1>
+    <p>Cada partido se simula miles de veces con el contexto de los dos equipos, las bajas, el árbitro y el estilo de juego. El resultado: la probabilidad de cada mercado, su cuota justa y los picks donde la casa paga más de lo que debería.</p>
+    <div class="hero-cta"><a href="#modelos-t">Elegir un modelo</a><a class="sec" href="#como">Cómo usarlo</a></div></div>
   <button class="theme" id="theme" aria-label="Modo claro / oscuro" title="Modo claro / oscuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
 </div></header>
 <main class="gutter"><div class="inner">
-  <h2>Modelos</h2>
+  <h2 id="modelos-t">Modelos</h2>
   <div class="grid" id="modelos"></div>
+  <h2 id="hoy-t">Picks del día</h2>
+  <div id="hoy" class="hoy"><p class="muted-p">Cargando…</p></div>
+  <h2 id="como">Cómo usarlo</h2>
+  <ol class="steps">
+    <li><b>Elige un modelo</b><span>NBA, Serie A y las ligas que se vayan sumando.</span></li>
+    <li><b>Mira la jornada</b><span>Cada partido con su probabilidad de 1X2, goles o puntos, y las estadísticas esperadas.</span></li>
+    <li><b>Revisa los picks</b><span>Solo líneas con cuota real donde modelo e histórico coinciden y el valor esperado es positivo. Los errores de cuota van aparte.</span></li>
+    <li><b>Guarda y mide</b><span>Añade picks a Mis picks, arma tu combinada y sigue tu rendimiento.</span></li>
+  </ol>
   <h2>Cómo funcionan</h2>
   <div class="how">
     <div><b>Simulación</b><p>Cada partido se juega miles de veces. De ahí salen todos los mercados a la vez, de equipo y de jugadores, coherentes entre sí.</p></div>
@@ -70,7 +97,7 @@ footer { color: var(--muted); font-size: 12px; padding-bottom: 30px }
 const MODELOS = [
   {id: "nba", deporte: "Baloncesto", nombre: "NBA", texto: "Picks, props y parlays de cada jornada, con avisos por bajas.", url: "https://nba-predictor-9hf.pages.dev/",
    c1: "#0b1a3a", c2: "#1d428a", stripe: "linear-gradient(90deg,#c8102e 0 62%,#fff 62% 64%,#1d428a 64%)", ink: "#f4f6fb"},
-  {id: "serie-a", deporte: "Fútbol · Italia", nombre: "Serie A", texto: "Simulación minuto a minuto: equipos, jugadores, árbitro, tramos de 15' y suplente de oro.", url: "futbol/serie-a/", datos: "futbol/serie-a/data/index.json",
+  {id: "serie-a", deporte: "Fútbol · Italia", nombre: "Serie A", texto: "Simulación minuto a minuto: equipos, jugadores, árbitro, tramos de 15' y suplente de oro.", url: "serie-a/", datos: "serie-a/data/index.json",
    c1: "#1a1659", c2: "#0032a0", stripe: "linear-gradient(90deg,#00a346 0 33.3%,#fff 33.3% 66.6%,#db052b 66.6%)", ink: "#f5f6fc"},
   {id: "premier", deporte: "Fútbol · Inglaterra", nombre: "Premier League", texto: "Mismo modelo de fútbol con parámetros propios.", pronto: true, c1: "#38003c", c2: "#5b0a63", stripe: "#00ff85", ink: "#fff"},
   {id: "laliga", deporte: "Fútbol · España", nombre: "LaLiga", texto: "Mismo modelo de fútbol con parámetros propios.", pronto: true, c1: "#1f1f1f", c2: "#3a3a3a", stripe: "#ff4b44", ink: "#fff"},
@@ -88,9 +115,25 @@ for (const m of MODELOS.filter(x => x.datos)) {
   fetch(m.datos, {cache: "no-cache"}).then(r => r.ok ? r.json() : Promise.reject()).then(d => {
     const ps = d.partidos || [];
     const j = ps.length ? ps[0].jornada : null;
+    const np = ps.reduce((a, p) => a + (p.n_picks || 0), 0), ne = ps.reduce((a, p) => a + (p.n_errores || 0), 0);
     document.getElementById("live-" + m.id).textContent = ps.length
-      ? `Jornada ${j} · ${ps.length} partidos${d.ejemplo ? " · datos de ejemplo" : ""}` : "Sin jornada publicada";
+      ? `Jornada ${j} · ${ps.length} partidos · ${np} picks${ne ? ` · ${ne} errores de cuota` : ""}${d.ejemplo ? " · datos de ejemplo" : ""}` : "Sin jornada publicada";
+    hoy(m, ps);
   }).catch(() => { const el = document.getElementById("live-" + m.id); if (el) el.textContent = "Sin jornada publicada"; });
+}
+// Picks del día: los 6 mejores de cada liga con datos (se leen sus JSON de partido).
+const STATN = {goles: "goles", corners: "córners", tarjetas: "tarjetas", amarillas: "amarillas", remates: "remates", remates_puerta: "remates a puerta", faltas: "faltas", offsides: "fueras de lugar"};
+const HOY = [];
+async function hoy(m, ps) {
+  const base = m.datos.replace(/index\.json$/, "");
+  const ds = await Promise.all(ps.filter(p => p.n_picks).map(p => fetch(base + p.id + ".json").then(r => r.ok ? r.json() : null).catch(() => null)));
+  for (const d of ds.filter(Boolean)) for (const k of d.picks) HOY.push({...k, liga: m.nombre, url: m.url + "#" + d.id, game: d.match.local + "–" + d.match.visitante, hora: d.match.hora_bogota});
+  HOY.sort((a, b) => (b.puntaje ?? b.ev * b.p) - (a.puntaje ?? a.ev * a.p));
+  const el = document.getElementById("hoy");
+  el.innerHTML = HOY.length ? HOY.slice(0, 6).map((k, i) => `<a href="${esc(k.url)}" class="${k.error_cuota ? "err" : ""}" style="animation-delay:${i * 60}ms"><small>${esc(k.liga)} · ${esc(k.game)} · ${esc(k.hora || "")}${k.error_cuota ? " · error de cuota" : ""}</small>
+      <b>${esc(k.jugador === "partido" ? "Total del partido" : k.jugador)} · ${k.lado === "over" ? "Más de" : "Menos de"} ${String(k.linea).replace(".", ",")} ${esc(STATN[k.stat] || k.stat)}</b>
+      <div class="k">cuota ${k.cuota.toFixed(2)} · prob. ${(k.p * 100).toFixed(0)}% · EV ${(k.ev * 100).toFixed(1)}%</div></a>`).join("")
+    : `<p class="muted-p">Todavía no hay picks con cuota real para hoy.</p>`;
 }
 document.getElementById("theme").onclick = () => {
   const cur = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
