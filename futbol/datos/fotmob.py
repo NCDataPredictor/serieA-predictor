@@ -56,9 +56,10 @@ SITUACION = {"RegularPlay": "jugada", "FastBreak": "contragolpe", "FromCorner": 
              "FreeKick": "balon_parado", "ThrowInSetPiece": "balon_parado", "IndirectFreeKick": "balon_parado",
              "Penalty": "penalti"}
 GRUPO_POS = {0: "POR", 1: "DEF", 2: "MED", 3: "ATA"}
-# Zona del remate por la coordenada y (0-68, normalizada atacando hacia x=105). Si se comprueba que y=0 es la
-# derecha del atacante (por ejemplo con los remates de un extremo izquierdo conocido), cambiar a True.
-INVERTIR_Y = False
+# Zona del remate por la coordenada y (0-68, normalizada atacando hacia x=105). Comprobado el 22-nov-2026 con
+# 2025-26 y 2026-27: y=0 es la DERECHA del atacante. Extremos izquierdos (Leão, Lang, Zaccagni, Lookman,
+# Dimarco) rematan con y media 37-41; derechos (Isaksen, Politano, Orsolini, Dumfries) con y media 24-28.
+INVERTIR_Y = True
 
 
 def codigo(nombre):
@@ -153,10 +154,12 @@ def _zona(y):
     return z
 
 
-def _lado_layout(x):
-    if x is None:
+def _lado_layout(y):
+    """Lado por horizontalLayout.y (ancho del campo): 0 = izquierda, 1 = derecha. horizontalLayout.x es la
+    profundidad (portero→delanteros), no el lado. Comprobado: Dimarco 0,11, Zaccagni 0,21, Politano 0,82."""
+    if y is None:
         return "centro"
-    return "izq" if x < 0.36 else ("der" if x > 0.64 else "centro")
+    return "izq" if y < 0.36 else ("der" if y > 0.64 else "centro")
 
 
 def _pos(grupo, lado):
@@ -198,7 +201,7 @@ def normalizar(d, temporada):
         for titular, lst in ((True, eq.get("starters") or []), (False, eq.get("subs") or [])):
             for p in lst:
                 grupo = GRUPO_POS.get(p.get("usualPlayingPositionId"), "MED")
-                lado = _lado_layout((p.get("horizontalLayout") or {}).get("x")) if titular else "centro"
+                lado = _lado_layout((p.get("horizontalLayout") or {}).get("y")) if titular else "centro"
                 info[str(p["id"])] = {"t": t, "titular": titular, "grupo": grupo, "lado": lado, "nombre": p.get("name"),
                                       "dorsal": _num(p.get("shirtNumber")) or None}
     # eventos de partido: cambios, tarjetas, goles
@@ -331,7 +334,9 @@ def cmd_proximos(jornada=None):
     lg = liga()
     time.sleep(PAUSA)
     temp = temporada_nuestra(lg["details"]["selectedSeason"])
-    pend = [m for m in lg["fixtures"]["allMatches"] if not (m.get("status") or {}).get("finished") and not m["status"].get("cancelled")]
+    # solo los que no han empezado: un partido en juego ya no se predice con el modelo previo
+    pend = [m for m in lg["fixtures"]["allMatches"] if not (m.get("status") or {}).get("started")
+            and not m["status"].get("finished") and not m["status"].get("cancelled")]
     if not pend:
         print("No quedan partidos por jugar")
         return

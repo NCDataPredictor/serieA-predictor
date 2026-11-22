@@ -4,3 +4,5 @@ __pycache__/
 futbol/*/historico/ejemplo_*.json
 # crudos descargados (pesan mucho; se guardan en el PC)
 futbol/*/raw/
+# entorno virtual local
+.venv/

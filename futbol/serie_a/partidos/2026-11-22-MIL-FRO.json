@@ -1,0 +1,123 @@
+{
+ "id": "2026-11-22-MIL-FRO",
+ "fuente": "fotmob",
+ "fuente_id": "5749750",
+ "match": {
+  "liga": "serie_a",
+  "temporada": "2026-27",
+  "jornada": 12,
+  "fecha": "2026-11-22",
+  "hora_local": "18:00",
+  "hora_bogota": "12:00",
+  "utc": "2026-11-22T17:00:00.000Z",
+  "local": "MIL",
+  "visitante": "FRO",
+  "estadio": "Stadio Giuseppe Meazza",
+  "neutral": false,
+  "competicion": "liga"
+ },
+ "contexto": {
+  "arbitro": "Luca Pairetto",
+  "arbitro_fotmob": {
+   "nombre": "Luca Pairetto",
+   "partidos": 25,
+   "amarillas_pp": 4.56,
+   "liga_amarillas_pp": 3.67,
+   "faltas_pp": 24.33,
+   "rojas": 5,
+   "penaltis": 6
+  },
+  "clima": {
+   "temperature": 8,
+   "windSpeed": 2,
+   "windDirectionCardinal": "WSW",
+   "iconCode": 11,
+   "relativeHumidity": 94,
+   "precipChance": 35,
+   "precipitation": 0.08,
+   "snow": 0,
+   "cloudCover": 81,
+   "description": "Light Rain",
+   "apiUsed": "forecast",
+   "lastUpdated": "2026-11-22T14:00:10Z",
+   "localizedKey": "weather_condition_light_rain",
+   "defaultTitle": "Light Rain"
+  }
+ },
+ "alineaciones": {
+  "estado": null
+ },
+ "bajas": {
+  "MIL": [
+   {
+    "jugador": "MIL-281762",
+    "nombre": "Pietro Terracciano",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MIL-749662",
+    "nombre": "Fikayo Tomori",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MIL-844996",
+    "nombre": "Matteo Gabbia",
+    "motivo": "lesion",
+    "regreso": "Early January 2027",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MIL-921341",
+    "nombre": "Alexis Saelemaekers",
+    "motivo": "lesion",
+    "regreso": "Mid January 2027",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MIL-604982",
+    "nombre": "Ruben Loftus-Cheek",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MIL-688300",
+    "nombre": "Samuel Chukwueze",
+    "motivo": "lesion",
+    "regreso": "Mid January 2027",
+    "p_juega": 0.0
+   }
+  ],
+  "FRO": [
+   {
+    "jugador": "FRO-1396091",
+    "nombre": "Gabriele Bracaglia",
+    "motivo": "sancion",
+    "regreso": "Late November 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "FRO-617044",
+    "nombre": "Florian Grillitsch",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "FRO-1256534",
+    "nombre": "Antonio Raimondo",
+    "motivo": "lesion",
+    "regreso": "Late January 2027",
+    "p_juega": 0.0
+   }
+  ]
+ },
+ "cuotas": {
+  "casas": []
+ },
+ "props": {}
+}
