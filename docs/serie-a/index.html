@@ -297,6 +297,20 @@ button.home-link { cursor: pointer }
 .dlg-m.soon::after { content: "Pronto"; position: absolute; bottom: 8px; right: 8px; font: 600 9.5px var(--mono); text-transform: uppercase; background: rgba(255,255,255,.2); padding: 2px 6px; border-radius: 999px }
 @media (max-width: 520px) { .home-link { padding: 7px 10px; font-size: 12px } }
 
+/* alineaciones: campo con titulares y banco */
+.campo { position: relative; border-radius: 14px; padding: 14px 6px; display: grid; gap: 14px; min-height: 420px; align-content: space-between;
+  background: repeating-linear-gradient(180deg, #1f7a3a 0 44px, #22843f 44px 88px); box-shadow: inset 0 0 0 2px rgba(255,255,255,.35) }
+.campo::before { content: ""; position: absolute; left: 12%; right: 12%; top: 50%; border-top: 2px solid rgba(255,255,255,.35) }
+.campo::after { content: ""; position: absolute; left: 50%; top: 50%; width: 76px; height: 76px; margin: -38px 0 0 -38px; border: 2px solid rgba(255,255,255,.35); border-radius: 50% }
+.linea { position: relative; z-index: 1; display: flex; justify-content: space-evenly; gap: 4px }
+.pj { display: grid; justify-items: center; gap: 3px; width: 74px; text-align: center; color: #fff; animation: up .45s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 40ms) }
+.pj .ph { box-shadow: 0 0 0 2px #fff, 0 3px 8px rgba(0,0,0,.35) }
+.pj b { font: 600 11px/1.15 var(--body); text-shadow: 0 1px 2px rgba(0,0,0,.6); max-width: 74px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.pj small { font: 600 9.5px var(--mono); background: rgba(0,0,0,.35); border-radius: 999px; padding: 1px 6px }
+.pj .dor { position: absolute; transform: translate(16px, -4px); font: 700 10px var(--mono); background: var(--tf2, #fff); color: var(--tc2, #000); border-radius: 999px; min-width: 18px; padding: 0 4px }
+.banco { margin-top: 12px } .banco table td:first-child { white-space: normal }
+@media (max-width: 420px) { .pj { width: 60px } .pj b { font-size: 10px; max-width: 60px } .campo { min-height: 380px } }
+
 /* animaciones */
 @keyframes up { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
 @keyframes growx { from { transform: scaleX(0) } to { transform: scaleX(1) } }
@@ -509,7 +523,7 @@ async function verPartido(id) {
   let d;
   try { d = await partido(id); } catch (e) { $("#app").innerHTML = `<p class="empty">No se pudo cargar el partido.</p>`; return; }
   const m = d.match, L = m.local, V = m.visitante, pa = d.partido;
-  const tabs = [["resumen", "Resumen"], ["picks", `Picks${d.picks.length ? ` (${d.picks.length})` : ""}`], ["contexto", "Contexto"], ["distribucion", "Distribución"], ["jugadores", "Jugadores"], ["bajas", "Bajas"]];
+  const tabs = [["resumen", "Resumen"], ["alineaciones", "Alineaciones"], ["picks", `Picks${d.picks.length ? ` (${d.picks.length})` : ""}`], ["contexto", "Contexto"], ["distribucion", "Distribución"], ["jugadores", "Jugadores"], ["bajas", "Bajas"]];
   $("#app").innerHTML = `
   <div class="card mcard reveal" style="padding:0;gap:0;--c1:${tcol(L)[1]};--c2:${tcol(V)[1]};transform:none">
     <div class="mhead" style="margin:0">
@@ -525,7 +539,7 @@ async function verPartido(id) {
   pintar(d);
 }
 function pintar(d) {
-  const f = {resumen, picks: picksPartido, contexto, distribucion, jugadores, bajas}[TAB] || resumen;
+  const f = {resumen, alineaciones, picks: picksPartido, contexto, distribucion, jugadores, bajas}[TAB] || resumen;
   $("#tab").innerHTML = "";
   f(d, $("#tab"));
 }
@@ -867,6 +881,38 @@ async function misPicks() {
   };
   document.querySelectorAll(".cb").forEach(c => c.onchange = combi); combi();
   document.querySelectorAll(".del").forEach(b => b.onclick = () => { mine.set(mine.get().filter(x => x.key !== b.dataset.key)); misPicks(); });
+}
+
+/* -- Alineaciones: titulares sobre el campo y suplentes -- */
+const LINEA = {POR: 0, DFC: 1, LI: 1, LD: 1, MC: 2, MI: 2, MD: 2, DC: 3, EI: 3, ED: 3};
+const LADO = {LI: 0, MI: 0, EI: 0, DFC: 1, MC: 1, DC: 1, POR: 1, LD: 2, MD: 2, ED: 2};
+function alineaciones(d, el) {
+  const L = d.match.local, V = d.match.visitante;
+  const one = (c, k) => {
+    const al = d.alineacion[c], xi = new Set(al.xi), t = tcol(c);
+    const fuera = new Set((d.bajas[c].lista || []).filter(b => !(b.p_juega > 0)).map(b => b.jugador));
+    const js = d.jugadores[c];
+    const tit = js.filter(j => xi.has(j.nombre)), sup = js.filter(j => !xi.has(j.nombre) && !fuera.has(j.nombre));
+    const lineas = [[], [], [], []];
+    tit.forEach(j => lineas[LINEA[j.pos] ?? 2].push(j));
+    lineas.forEach(l => l.sort((a, b) => (LADO[a.pos] ?? 1) - (LADO[b.pos] ?? 1)));
+    let i = 0;
+    const ficha = j => `<div class="pj" style="--i:${i++}" title="${esc(j.nombre)} · ${esc(j.pos)} · ${f1(j.min_medio)}' esperados">${foto(j.id, j.nombre, c, 40)}${j.dorsal != null ? `<span class="dor" style="--tc2:${t[2]};--tf2:${t[1]}">${j.dorsal}</span>` : ""}<b>${esc(j.nombre.split(" ").slice(-1)[0])}</b><small>${esc(j.pos)}</small></div>`;
+    const sist = lineas.slice(1).map(l => l.length).filter(Boolean).join("-");
+    return `<div class="card" style="border-top:4px solid ${t[1]}">
+      <div class="toolbar"><h3 class="who" style="gap:8px">${crest(c, 26)}${esc(tname(c))}</h3>
+        <span><span class="tag ${al.estado === "oficial" ? "ok" : ""}">XI ${esc(al.estado)}</span> <span class="tag">${esc(sist)}</span></span></div>
+      <div class="campo">${lineas.slice().reverse().map(l => `<div class="linea">${l.map(ficha).join("")}</div>`).join("")}</div>
+      <div class="banco"><h4 style="margin:0 0 4px;font:600 13px var(--display);letter-spacing:.06em;text-transform:uppercase">Suplentes · ${sup.length}</h4>
+        <div class="scroll"><table><tr><th>Jugador</th><th title="Probabilidad de que entre al partido">Entra</th><th title="Minutos esperados si entra">Min.</th></tr>
+        ${sup.sort((a, b) => b.p_juega - a.p_juega).map(j => `<tr><td><span class="who" style="gap:8px">${foto(j.id, j.nombre, c, 28)}<span>${j.dorsal != null ? `<span class="sub">${j.dorsal} · </span>` : ""}${esc(j.nombre)}<span class="pos">${esc(j.pos)}</span></span></span></td><td class="p ${j.p_juega >= .5 ? "hi" : ""}">${pct(j.p_juega)}</td><td class="n">${j.p_juega > 0 ? f1(j.min_medio) : "–"}</td></tr>`).join("")}</table></div></div>
+      ${fuera.size ? `<p class="note">No juegan: ${[...fuera].map(esc).join(", ")} (ver Bajas).</p>` : ""}
+    </div>`;
+  };
+  const ofi = [L, V].every(c => d.alineacion[c].estado === "oficial");
+  el.innerHTML = `${ofi ? "" : `<div class="card callout" style="margin-bottom:14px">Alineación ${[L, V].map(c => `${esc(c)}: ${esc(d.alineacion[c].estado)}`).join(" · ")}. Mientras no sea la oficial, el XI es el más probable según los últimos partidos; se actualiza cuando el club la publica (≈1 h antes).</div>`}
+    <div class="grid2">${one(L, 0)}${one(V, 1)}</div>
+    <p class="note">Titulares sobre el campo (la posición sale de dónde juega cada uno). En suplentes, "Entra" es la probabilidad de que juegue algún minuto y "Min." los minutos que suele jugar cuando entra.</p>`;
 }
 
 /* ---------- navegación: volver al punto anterior y modal de modelos ---------- */
