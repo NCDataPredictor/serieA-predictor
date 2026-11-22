@@ -74,6 +74,8 @@ class Equipo:
         self.salida = [x["salida"] for x in self.jug]
         self.p_tit = np.array([x["p_titular"] for x in self.jug])
         self.es_por = np.array([x["grupo"] == "POR" for x in self.jug])
+        # el esperado de pases del equipo es de pases TOTALES; los de jugador se miden como ACERTADOS (FotMob)
+        self.prec_pase = float(prep.get("precision_pase", 0.84))
 
 
 def _alineaciones(eq, N, rng):
@@ -185,8 +187,10 @@ def simular(pid, A, B, N=None, local_es_A=True):
             base = g_eq[t] * f_roja
 
             def lam(s):
-                # los pases son mucho más estables que los remates: solo una fracción de la gamma del partido
-                b_ = base if s != "pases" else (g_eq[t] ** 0.25) * f_roja
+                # cada estadística toma una fracción de la gamma del partido (backtest 2026-27: con la gamma entera la
+                # desviación de remates, faltas y a puerta salía ~30% mayor que la real)
+                ex = P.GAMMA_EXP.get(s, 1.0)
+                b_ = base if ex == 1.0 else (g_eq[t] ** ex) * f_roja
                 x = e.esp[s] * e.perfil[s][k] * 6 / P.MINUTOS * b_
                 if s in P.ESTADO:
                     x = x * np.array(P.ESTADO[s])[est_idx]
@@ -225,7 +229,7 @@ def simular(pid, A, B, N=None, local_es_A=True):
             den = w.sum(1, keepdims=True)
             den[den == 0] = 1
             pa = rng.poisson(lam("pases")[:, None] * w / den)
-            jug[t]["pases"] += pa
+            jug[t]["pases"] += rng.binomial(pa, e.prec_pase)
             team[t]["pases"] += pa.sum(1)
             tramos[t]["pases"][:, k] += np.minimum(pa.sum(1), 32000).astype(np.int16)
             # ---- faltas cometidas por jugador (y recibidas por los del rival)

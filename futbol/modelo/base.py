@@ -102,13 +102,20 @@ def _liga(ps, temporada):
     sit = {s: 0.0 for s in SITUACIONES}
     local_g = visit_g = 0.0
     nl = 0
+    # medias por temporada por separado: el nivel de la liga cambia de un año a otro (2026-27 trae ~20% más remates
+    # y ~14% menos faltas que 2025-26), así que la media es la de la temporada en curso encogida hacia la anterior
+    tot_t = {k: _vacio_stats() for k in ("act", "ant")}
+    n_t = {"act": 0, "ant": 0}
     for p in ps:
         w = 1.0 if p["temporada"] == temporada else 0.6
+        k_t = "act" if p["temporada"] == temporada else "ant"
         for eq in (p["local"], p["visitante"]):
             st = p["equipos"][eq]
             for s in P.STATS_EQUIPO:
                 tot[s] += w * st.get(s, 0)
+                tot_t[k_t][s] += st.get(s, 0)
             n += w
+            n_t[k_t] += 1
         local_g += w * p["equipos"][p["local"]]["goles"]
         visit_g += w * p["equipos"][p["visitante"]]["goles"]
         nl += w
@@ -123,7 +130,13 @@ def _liga(ps, temporada):
                     zonas[ev["zona"]] += w
                 if ev.get("situacion") in sit:
                     sit[ev["situacion"]] += w
-    medias = {s: (tot[s] / n if n else 0.0) for s in P.STATS_EQUIPO}
+    medias_mix = {s: (tot[s] / n if n else 0.0) for s in P.STATS_EQUIPO}
+    m_ant = {s: (tot_t["ant"][s] / n_t["ant"] if n_t["ant"] else medias_mix[s]) for s in P.STATS_EQUIPO}
+    m_act = {s: (tot_t["act"][s] / n_t["act"] if n_t["act"] else m_ant[s]) for s in P.STATS_EQUIPO}
+    w_act = n_t["act"] / (n_t["act"] + P.NIVEL_LIGA_K)
+    medias = {s: w_act * m_act[s] + (1 - w_act) * m_ant[s] for s in P.STATS_EQUIPO}
+    # factor para llevar lo de la temporada anterior (por equipo) al nivel de la actual
+    nivel = {s: (medias[s] / m_ant[s] if m_ant[s] > 0 else 1.0) for s in P.STATS_EQUIPO}
     perfil = {}
     for s, v in tramos.items():
         t = sum(v)
@@ -131,7 +144,7 @@ def _liga(ps, temporada):
         perfil[s] = [x / t for x in v] if t > 0 else [1 / 6] * 6
     zt = sum(zonas.values()) or 1
     stt = sum(sit.values()) or 1
-    return {"medias": medias, "perfil_tramos": perfil,
+    return {"medias": medias, "nivel_temporada": nivel, "perfil_tramos": perfil,
             "zonas": {z: zonas[z] / zt if sum(zonas.values()) else 1 / 3 for z in ZONAS},
             "situaciones": {s: sit[s] / stt if sum(sit.values()) else 0.25 for s in SITUACIONES},
             "localia_goles": (local_g / visit_g) if visit_g else P.LOCALIA_GOLES, "n_partidos_eq": n}
@@ -149,7 +162,7 @@ def _equipos(ps, temporada, temporada_ant, liga):
         "tramos_contra": {s: [0.0] * 6 for s in P.STATS_EQUIPO},
         "zonas_ataque": {z: 0.0 for z in ZONAS}, "zonas_concede": {z: 0.0 for z in ZONAS},
         "sit_ataque": {s: 0.0 for s in SITUACIONES}, "sit_concede": {s: 0.0 for s in SITUACIONES},
-        "posesion": [], "partidos": [],
+        "posesion": [], "partidos": [], "pases_ok": 0.0, "pases_tot": 0.0,
     })
     for p in ps:
         actual = p["temporada"] == temporada
@@ -174,6 +187,11 @@ def _equipos(ps, temporada, temporada_ant, liga):
                 for s in P.STATS_EQUIPO:
                     e["favor_ant"][s] += fav.get(s, 0)
                     e["contra_ant"][s] += con.get(s, 0)
+            # Precisión de pase del equipo: FotMob da pases ACERTADOS por jugador y pases TOTALES por equipo.
+            pj_ok = sum(j.get("pases", 0) or 0 for j in p.get("jugadores", {}).get(eq, []))
+            if pj_ok > 0 and fav.get("pases"):
+                e["pases_ok"] += pj_ok
+                e["pases_tot"] += fav["pases"]
             # Tramos, zonas y tipos de jugada: temporada actual y anterior (la anterior pesa 0,6).
             w = 1.0 if actual else 0.6
             for t, k, c in eventos_tramo(p, eq):

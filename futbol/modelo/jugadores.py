@@ -89,6 +89,8 @@ def preparar_equipo(db, partido, eq):
     out_ids = {jid for jid, j in js.items() if j["nombre"] in bajas or jid in bajas}
     dudas = {jid: bajas.get(j["nombre"], bajas.get(jid, {})).get("p_juega", 0.0) for jid, j in js.items() if jid in out_ids}
 
+    # últimos 5 partidos del equipo: una baja que ya no jugaba en ellos ya está descontada en la forma reciente
+    ult5 = {x["id"] for x in (db["equipos"].get(eq) or {}).get("partidos", [])[-5:]}
     jug = []
     for jid, j in js.items():
         if j["convocado_u10"] == 0 and j["act"]["pj"] == 0:
@@ -116,6 +118,7 @@ def preparar_equipo(db, partido, eq):
             "amarillas90": round(am90, 3), "min_vistos": mins_vistos,
             "baja": jid in out_ids, "p_juega": dudas.get(jid, 1.0),
             "con_sin": j.get("con_sin"),
+            "reciente": round(sum(1 for x in j["partidos"] if x["id"] in ult5 and x["min"] > 0) / max(1, len(ult5)), 2),
             "ultimos": j["partidos"][-10:],
         })
 
@@ -159,14 +162,17 @@ def preparar_equipo(db, partido, eq):
                         "motivo": (bajas.get(x["nombre"]) or bajas.get(x["id"]) or {}).get("motivo", "baja"),
                         "era_titular": round(p_baja_tit, 2), "heredero": her["nombre"] if her else None,
                         "heredero_id": her["id"] if her else None, "con_sin": x.get("con_sin"),
-                        "tasas90": x["tasas90"],
+                        "tasas90": x["tasas90"], "reciente": x["reciente"],
                         "_share": {s: round(x["tasas90"][s] * max(0.3, p_baja_tit) / tot_hab[s], 4) for s in ("remates", "pases")}})
     if not xi_dado:
         xi = _xi_por_frecuencia([x for x in jug if x["p_titular"] > 0 and (not x["baja"] or x["p_juega"] > 0)])
     xi_ids = [x["id"] for x in xi]
     jugadores_ok = [x for x in jug if not (x["baja"] and x["p_juega"] <= 0)]
+    de = db["equipos"].get(eq) or {}
+    # pases acertados / totales del equipo, encogido hacia la media de Serie A (~0,84) con 3000 pases de prior
+    prec = (de.get("pases_ok", 0) + 0.84 * 3000) / (de.get("pases_tot", 0) + 3000)
     return {"equipo": eq, "jugadores": jugadores_ok, "xi": xi_ids, "estado_alineacion": estado or "prevista (últimos 10)",
-            "bajas": impacto}
+            "bajas": impacto, "precision_pase": round(prec, 4)}
 
 
 def _xi_por_frecuencia(cands):
@@ -221,11 +227,18 @@ def ajustes_bajas(prep, base_esperado):
             share_her = (her["tasas90"][s_tasa] / tot[s_tasa]) if her else 0.0
             perdida = P.BAJA_PERDIDA * max(0.0, share_baja - share_her)
             teorico = 1 - perdida
+            if medido is not None:
+                medido = max(0.85, min(1.15, medido))   # con/sin es muy ruidoso con pocos partidos
             m = (1 - w) * teorico + w * (medido if medido is not None else teorico)
-            m = 1 - (1 - m) * (1 - b["p_juega"])
+            # solo cuenta lo que el equipo no haya absorbido ya: si no jugaba en los últimos 5, su ausencia ya
+            # está en la forma reciente del equipo
+            m = 1 - (1 - m) * (1 - b["p_juega"]) * b.get("reciente", 1.0)
             mult[s] *= m
-            d["equipo"][s] = {"mult": round(m, 3), "medido": round(medido, 3) if medido else None, "peso_medido": round(w, 2)}
+            d["equipo"][s] = {"mult": round(m, 3), "medido": round(medido, 3) if medido else None, "peso_medido": round(w, 2),
+                              "reciente": b.get("reciente", 1.0)}
         detalle.append(d)
+    # tope: las bajas no pueden mover el volumen del equipo más de un 20% en ningún sentido
+    mult = {s: max(0.8, min(1.2, v)) for s, v in mult.items()}
     return mult, detalle
 
 

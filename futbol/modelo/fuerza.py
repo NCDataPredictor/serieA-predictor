@@ -23,7 +23,7 @@ def _goles_ef(st):
     return g
 
 
-def ajustar(partidos, fecha_ref, prior_n=3.0, ascendidos=(), prior_ascendidos=(0.85, 1.12), prior_n_ascendidos=8.0, iters=60):
+def ajustar(partidos, fecha_ref, prior_n=3.0, ascendidos=(), prior_ascendidos=(0.85, 1.12), prior_n_ascendidos=8.0, iters=60, temporada=None):
     ref = date.fromisoformat(fecha_ref[:10])
     eqs = sorted({p["local"] for p in partidos} | {p["visitante"] for p in partidos})
     att = {e: 1.0 for e in eqs}
@@ -38,7 +38,7 @@ def ajustar(partidos, fecha_ref, prior_n=3.0, ascendidos=(), prior_ascendidos=(0
             continue
         w = math.exp(-math.log(2) * dias / P.VIDA_MEDIA_DIAS)
         L, V = p["local"], p["visitante"]
-        filas.append((L, V, _goles_ef(p["equipos"][L]), _goles_ef(p["equipos"][V]), w))
+        filas.append((L, V, _goles_ef(p["equipos"][L]), _goles_ef(p["equipos"][V]), w, p.get("temporada") == temporada))
     if not filas:
         return {"mu": 1.3, "localia": P.LOCALIA_GOLES, "att": att, "def": dfn, "rho": 0.0, "n": 0}
     sw = sum(f[4] for f in filas)
@@ -48,7 +48,7 @@ def ajustar(partidos, fecha_ref, prior_n=3.0, ascendidos=(), prior_ascendidos=(0
         # ataque
         num = {e: pn[e] * prior[e][0] for e in eqs}
         den = {e: pn[e] for e in eqs}
-        for L, V, gl, gv, w in filas:
+        for L, V, gl, gv, w, _ in filas:
             num[L] += w * gl
             den[L] += w * mu * loc * dfn[V]
             num[V] += w * gv
@@ -57,7 +57,7 @@ def ajustar(partidos, fecha_ref, prior_n=3.0, ascendidos=(), prior_ascendidos=(0
         # defensa
         num = {e: pn[e] * prior[e][1] for e in eqs}
         den = {e: pn[e] for e in eqs}
-        for L, V, gl, gv, w in filas:
+        for L, V, gl, gv, w, _ in filas:
             num[V] += w * gl
             den[V] += w * mu * loc * att[L]
             num[L] += w * gv
@@ -68,17 +68,27 @@ def ajustar(partidos, fecha_ref, prior_n=3.0, ascendidos=(), prior_ascendidos=(0
         gd = math.exp(sum(math.log(dfn[e]) for e in eqs) / len(eqs))
         att = {e: att[e] / ga for e in eqs}
         dfn = {e: dfn[e] / gd for e in eqs}
-        nl = sum(w * gl for L, V, gl, gv, w in filas)
-        dl = sum(w * mu * att[L] * dfn[V] for L, V, gl, gv, w in filas)
-        nv = sum(w * gv for L, V, gl, gv, w in filas)
-        dv = sum(w * att[V] * dfn[L] for L, V, gl, gv, w in filas)
+        nl = sum(w * gl for L, V, gl, gv, w, _ in filas)
+        # tasa local / tasa visitante con las mismas fuerzas (antes dl llevaba mu y la localía salía ≈ loc/mu)
+        dl = sum(w * att[L] * dfn[V] for L, V, gl, gv, w, _ in filas)
+        nv = sum(w * gv for L, V, gl, gv, w, _ in filas)
+        dv = sum(w * att[V] * dfn[L] for L, V, gl, gv, w, _ in filas)
         # localía encogida hacia el valor de partida (pseudo-muestra LOCALIA_K) y acotada: una racha de temporada
         # no puede volver la localía una desventaja
         loc = (nl / dl / (nv / dv) * sw + P.LOCALIA_GOLES * P.LOCALIA_K) / (sw + P.LOCALIA_K)
         loc = min(P.LOCALIA_MAX, max(P.LOCALIA_MIN, loc))
         mu = nv / dv
+    # Nivel goleador de la temporada en curso (lección 10 del README: el nivel de liga no se fija, se mezcla con
+    # la temporada actual). Goles efectivos reales / esperados con las fuerzas ajustadas, encogido con NIVEL_K goles.
+    act = [f for f in filas if f[5]]
+    nivel = 1.0
+    if act:
+        real = sum(gl + gv for L, V, gl, gv, w, _ in act)
+        esp = sum(mu * (loc * att[L] * dfn[V] + att[V] * dfn[L]) for L, V, gl, gv, w, _ in act)
+        nivel = (real + P.NIVEL_K) / (esp + P.NIVEL_K)
+        mu *= nivel
     rho = _rho(partidos, att, dfn, mu, loc)
-    return {"mu": mu, "localia": loc, "att": att, "def": dfn, "rho": rho, "n": len(filas)}
+    return {"mu": mu, "localia": loc, "att": att, "def": dfn, "rho": rho, "n": len(filas), "nivel_temporada": nivel}
 
 
 def esperados(fz, local, visitante, neutral=False):

@@ -58,7 +58,7 @@ def _sim_partido(liga, p, hist, sims, con_alineacion):
     db = base.construir(hist, cfg["temporada"], hasta=p["fecha"], temporada_ant=cfg["anterior"])
     eq_act = {t for x in db["partidos"] if x["temporada"] == cfg["temporada"] for t in (x["local"], x["visitante"])}
     eq_ant = {t for x in db["partidos"] if x["temporada"] == cfg["anterior"] for t in (x["local"], x["visitante"])}
-    fz = fuerza.ajustar(db["partidos"], p["fecha"], ascendidos=(eq_act - eq_ant) if eq_ant else set())
+    fz = fuerza.ajustar(db["partidos"], p["fecha"], ascendidos=(eq_act - eq_ant) if eq_ant else set(), temporada=cfg["temporada"])
     ctx = contexto.armar(db, lambda a, b, n: fuerza.esperados(fz, a, b, n), partido)
     prep = {t: jugadores.preparar_equipo(db, partido, t) for t in (L, V)}
     eqs = {}

@@ -50,6 +50,7 @@ ROJA_RIVAL = 1.22       # tasa ofensiva del rival del equipo con un expulsado
 # Ensanchar si más del 10% de los resultados reales cae fuera de p10-p90 (lección 1.5.2 de NBA).
 GAMMA_COMUN = 25.0      # forma de la gamma común (ritmo del partido)
 GAMMA_EQUIPO = 14.0     # forma de la gamma propia de cada equipo
+GAMMA_EXP = {"pases": 0.25, "remates": 0.5, "faltas": 0.4, "corners": 0.7}   # fracción de la gamma por estadística
 
 # --- Tarjetas ----------------------------------------------------------------------------------------------
 P_SEGUNDA_AMARILLA_ROJA = 1.0   # una segunda amarilla del mismo jugador es roja (regla)
@@ -64,6 +65,8 @@ DERBI_GOLES = 0.95              # derbis algo más cerrados
 LOCALIA_GOLES = 1.10    # ~+0,25 goles en Serie A; se re-estima en fuerza.py con encogimiento
 LOCALIA_K = 150         # partidos de pseudo-muestra para la localía (es muy ruidosa)
 LOCALIA_MIN, LOCALIA_MAX = 1.0, 1.25
+NIVEL_K = 60            # goles de pseudo-muestra para el nivel goleador de la temporada en curso (fuerza.py)
+NIVEL_LIGA_K = 30       # partidos-equipo de pseudo-muestra para la media de liga de la temporada en curso (base.py)
 LOCALIA_OTROS = {"remates": 1.08, "corners": 1.08, "pases": 1.03, "faltas": 0.97, "amarillas": 0.92, "offsides": 1.0}
 
 # --- Bajas -------------------------------------------------------------------------------------------------

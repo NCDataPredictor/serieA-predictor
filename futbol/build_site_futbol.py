@@ -46,7 +46,7 @@ def predecir(liga, partido, historico, sims):
     eq_act = {t for p in db["partidos"] if p["temporada"] == cfg["temporada"] for t in (p["local"], p["visitante"])}
     eq_ant = {t for p in db["partidos"] if p["temporada"] == cfg["anterior"] for t in (p["local"], p["visitante"])}
     ascendidos = set(partido.get("ascendidos", ())) | ((eq_act - eq_ant) if eq_ant else set())
-    fz = fuerza.ajustar(db["partidos"], m["fecha"], ascendidos=ascendidos)
+    fz = fuerza.ajustar(db["partidos"], m["fecha"], ascendidos=ascendidos, temporada=cfg["temporada"])
     ctx = contexto.armar(db, lambda a, b, neutral: fuerza.esperados(fz, a, b, neutral), partido)
     L, V = m["local"], m["visitante"]
     prep = {t: jugadores.preparar_equipo(db, partido, t) for t in (L, V)}

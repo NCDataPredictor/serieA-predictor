@@ -42,7 +42,9 @@ def _por_partido(tot, n):
 def _mezcla(e, liga, lado):
     """Por partido a favor ('favor') o en contra ('contra'): temporada actual + anterior + forma."""
     act = _por_partido(e[lado], e["pj"])
-    ant = _por_partido(e[lado + "_ant"], e["pj_ant"]) if e["pj_ant"] else dict(liga["medias"])
+    niv = liga.get("nivel_temporada", {})
+    ant = ({s: v * niv.get(s, 1.0) for s, v in _por_partido(e[lado + "_ant"], e["pj_ant"]).items()}
+           if e["pj_ant"] else dict(liga["medias"]))
     w = e["pj"] / (e["pj"] + P.PRIOR_K)
     temp = {s: w * act[s] + (1 - w) * ant[s] for s in P.STATS_EQUIPO}
     u10 = e.get("ultimos10", [])
@@ -92,11 +94,15 @@ def arbitro(db, nombre, externo=None):
         return {"nombre": nombre, "n": 0, "mult_amarillas": 1.0, "mult_faltas": 1.0, "mult_rojas": 1.0,
                 "media_amarillas": None, "ultimos5": []}
     n = len(ps)
-    am = sum(x["amarillas"] for x in ps) / n
-    ro = sum(x["rojas"] for x in ps) / n
-    fa = sum(x["faltas"] for x in ps) / n
+    # sus partidos de otras temporadas se llevan al nivel de la actual (2026-27 pita ~10% menos faltas)
+    niv = db["liga"].get("nivel_temporada", {})
+    temp = db.get("temporada")
+    k = lambda x, s: x[s] * (1.0 if temp is None or x.get("temporada") == temp else niv.get(s, 1.0))
+    am = sum(k(x, "amarillas") for x in ps) / n
+    ro = sum(k(x, "rojas") for x in ps) / n
+    fa = sum(k(x, "faltas") for x in ps) / n
     u5 = ps[-5:]
-    am5 = sum(x["amarillas"] for x in u5) / len(u5)
+    am5 = sum(k(x, "amarillas") for x in u5) / len(u5)
     # media del árbitro con más peso a sus últimos 5 partidos, luego encogida hacia la liga
     w5 = len(u5) / (len(u5) + P.ARBITRO_ULT_K)
     am_ref = (1 - w5) * am + w5 * am5

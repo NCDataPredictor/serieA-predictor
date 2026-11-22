@@ -62,6 +62,12 @@ GRUPO_POS = {0: "POR", 1: "DEF", 2: "MED", 3: "ATA"}
 INVERTIR_Y = True
 
 
+def _p_juega(un):
+    """Baja segura = 0; 'Doubtful' (en duda) = 0,5 hasta que salga la alineación oficial."""
+    txt = f'{un.get("type", "")} {un.get("expectedReturn", "")}'.lower()
+    return 0.5 if "doubt" in txt else 0.0
+
+
 def codigo(nombre):
     return CODIGOS.get(nombre) or "".join(c for c in nombre.upper() if c.isalpha())[:3]
 
@@ -360,7 +366,7 @@ def cmd_proximos(jornada=None):
                 un = u.get("unavailability") or {}
                 bajas[t].append({"jugador": f"{t}-{u['id']}", "nombre": u.get("name"),
                                  "motivo": {"injury": "lesion", "suspension": "sancion"}.get(un.get("type"), un.get("type") or "baja"),
-                                 "regreso": un.get("expectedReturn"), "p_juega": 0.0})
+                                 "regreso": un.get("expectedReturn"), "p_juega": _p_juega(un)})
         arb = arbitro_fotmob(d)
         pid = f"{utc.date().isoformat()}-{L}-{V}"
         out = {"id": pid, "fuente": "fotmob", "fuente_id": str(m["id"]),

@@ -2,151 +2,115 @@
  "liga": "Serie A",
  "temporada": "2026-27",
  "version": "futbol-0.1",
- "actualizado": "2026-11-22T14:32Z",
- "ejemplo": true,
+ "actualizado": "2026-11-22T15:30Z",
+ "ejemplo": false,
  "partidos": [
   {
-   "id": "2026-11-29-MIL-FIO",
-   "fecha": "2026-11-29",
-   "hora_local": "12:30",
-   "hora_bogota": "06:30",
-   "jornada": 13,
-   "local": "MIL",
-   "visitante": "FIO",
-   "estadio": "San Siro",
-   "derbi": null,
-   "arbitro": "Árbitro 1",
-   "1x2": [
-    0.412,
-    0.337,
-    0.25
-   ],
-   "goles": 2.08,
-   "over25": 0.345,
-   "ambos": 0.433,
-   "corners": 9.73,
-   "amarillas": 5.16,
-   "marcador": [
-    "1-0",
-    0.151
-   ],
-   "n_picks": 0,
-   "ejemplo": true,
-   "alineacion": {
-    "MIL": "probable",
-    "FIO": "probable"
-   },
-   "bajas": {
-    "MIL": 0,
-    "FIO": 0
-   }
-  },
-  {
-   "id": "2026-11-29-ATA-NAP",
-   "fecha": "2026-11-29",
-   "hora_local": "15:00",
-   "hora_bogota": "09:00",
-   "jornada": 13,
-   "local": "ATA",
-   "visitante": "NAP",
-   "estadio": "Gewiss Stadium",
-   "derbi": null,
-   "arbitro": "Árbitro 11",
-   "1x2": [
-    0.243,
-    0.33,
-    0.427
-   ],
-   "goles": 2.12,
-   "over25": 0.355,
-   "ambos": 0.436,
-   "corners": 11.2,
-   "amarillas": 5.97,
-   "marcador": [
-    "0-1",
-    0.152
-   ],
-   "n_picks": 0,
-   "ejemplo": true,
-   "alineacion": {
-    "ATA": "probable",
-    "NAP": "probable"
-   },
-   "bajas": {
-    "ATA": 1,
-    "NAP": 1
-   }
-  },
-  {
-   "id": "2026-11-29-ROM-LAZ",
-   "fecha": "2026-11-29",
+   "id": "2026-11-22-MIL-FRO",
+   "fecha": "2026-11-22",
    "hora_local": "18:00",
    "hora_bogota": "12:00",
-   "jornada": 13,
-   "local": "ROM",
-   "visitante": "LAZ",
-   "estadio": "Stadio Olimpico",
-   "derbi": "Derby della Capitale",
-   "arbitro": "Árbitro 7",
+   "jornada": 12,
+   "local": "MIL",
+   "visitante": "FRO",
+   "estadio": "Stadio Giuseppe Meazza",
+   "derbi": null,
+   "arbitro": "Luca Pairetto",
    "1x2": [
-    0.35,
-    0.327,
-    0.322
+    0.455,
+    0.261,
+    0.283
    ],
-   "goles": 2.14,
-   "over25": 0.358,
-   "ambos": 0.448,
-   "corners": 9.75,
-   "amarillas": 5.71,
+   "goles": 3.43,
+   "over25": 0.659,
+   "ambos": 0.695,
+   "corners": 9.67,
+   "amarillas": 4.28,
    "marcador": [
     "1-1",
-    0.139
+    0.108
    ],
    "n_picks": 0,
-   "ejemplo": true,
+   "ejemplo": false,
    "alineacion": {
-    "ROM": "probable",
-    "LAZ": "probable"
+    "MIL": "prevista (últimos 10)",
+    "FRO": "prevista (últimos 10)"
    },
    "bajas": {
-    "ROM": 0,
-    "LAZ": 0
+    "MIL": 6,
+    "FRO": 3
    }
   },
   {
-   "id": "2026-11-29-INT-JUV",
-   "fecha": "2026-11-29",
+   "id": "2026-11-22-ATA-INT",
+   "fecha": "2026-11-22",
    "hora_local": "20:45",
    "hora_bogota": "14:45",
-   "jornada": 13,
-   "local": "INT",
-   "visitante": "JUV",
-   "estadio": "San Siro",
-   "derbi": "Derby d'Italia",
-   "arbitro": "Árbitro 3",
+   "jornada": 12,
+   "local": "ATA",
+   "visitante": "INT",
+   "estadio": "New Balance Arena",
+   "derbi": null,
+   "arbitro": "Fabio Maresca",
    "1x2": [
-    0.328,
-    0.332,
-    0.34
+    0.223,
+    0.262,
+    0.515
    ],
-   "goles": 2.13,
-   "over25": 0.355,
-   "ambos": 0.445,
-   "corners": 9.27,
-   "amarillas": 4.33,
+   "goles": 3.03,
+   "over25": 0.573,
+   "ambos": 0.615,
+   "corners": 8.83,
+   "amarillas": 3.15,
    "marcador": [
     "1-1",
-    0.141
+    0.119
    ],
    "n_picks": 0,
-   "ejemplo": true,
+   "ejemplo": false,
    "alineacion": {
-    "INT": "probable",
-    "JUV": "probable"
+    "ATA": "prevista (últimos 10)",
+    "INT": "prevista (últimos 10)"
    },
    "bajas": {
-    "INT": 0,
-    "JUV": 1
+    "ATA": 2,
+    "INT": 2
+   }
+  },
+  {
+   "id": "2026-11-23-MON-FIO",
+   "fecha": "2026-11-23",
+   "hora_local": "20:45",
+   "hora_bogota": "14:45",
+   "jornada": 12,
+   "local": "MON",
+   "visitante": "FIO",
+   "estadio": "U-Power Stadium",
+   "derbi": null,
+   "arbitro": "Daniele Doveri",
+   "1x2": [
+    0.303,
+    0.281,
+    0.415
+   ],
+   "goles": 3.18,
+   "over25": 0.609,
+   "ambos": 0.666,
+   "corners": 8.8,
+   "amarillas": 4.01,
+   "marcador": [
+    "1-1",
+    0.12
+   ],
+   "n_picks": 0,
+   "ejemplo": false,
+   "alineacion": {
+    "MON": "prevista (últimos 10)",
+    "FIO": "prevista (últimos 10)"
+   },
+   "bajas": {
+    "MON": 2,
+    "FIO": 2
    }
   }
  ]
