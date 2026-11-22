@@ -1,0 +1,40 @@
+{
+ "id": "2026-11-29-ROM-LAZ",
+ "ejemplo": true,
+ "match": {
+  "liga": "serie_a",
+  "temporada": "2026-27",
+  "jornada": 13,
+  "fecha": "2026-11-29",
+  "hora_local": "18:00",
+  "hora_bogota": "12:00",
+  "local": "ROM",
+  "visitante": "LAZ",
+  "estadio": "Stadio Olimpico",
+  "neutral": false,
+  "competicion": "liga"
+ },
+ "contexto": {
+  "arbitro": "Árbitro 7",
+  "clima": {
+   "lluvia_mm": 0.0,
+   "viento_kmh": 8
+  },
+  "descanso_dias": {
+   "ROM": 6,
+   "LAZ": 6
+  },
+  "europa_entre_semana": {
+   "ROM": null,
+   "LAZ": null
+  }
+ },
+ "alineaciones": {
+  "estado": "probable"
+ },
+ "bajas": {},
+ "cuotas": {
+  "casas": []
+ },
+ "props": {}
+}

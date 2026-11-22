@@ -1,0 +1,55 @@
+{
+ "id": "2026-11-29-ATA-NAP",
+ "ejemplo": true,
+ "match": {
+  "liga": "serie_a",
+  "temporada": "2026-27",
+  "jornada": 13,
+  "fecha": "2026-11-29",
+  "hora_local": "15:00",
+  "hora_bogota": "09:00",
+  "local": "ATA",
+  "visitante": "NAP",
+  "estadio": "Gewiss Stadium",
+  "neutral": false,
+  "competicion": "liga"
+ },
+ "contexto": {
+  "arbitro": "Árbitro 11",
+  "clima": {
+   "lluvia_mm": 0.0,
+   "viento_kmh": 8
+  },
+  "descanso_dias": {
+   "ATA": 6,
+   "NAP": 6
+  },
+  "europa_entre_semana": {
+   "ATA": null,
+   "NAP": null
+  }
+ },
+ "alineaciones": {
+  "estado": "probable"
+ },
+ "bajas": {
+  "NAP": [
+   {
+    "jugador": "NAP · Extremo derecho 15",
+    "motivo": "sancion",
+    "p_juega": 0.0
+   }
+  ],
+  "ATA": [
+   {
+    "jugador": "ATA · Mediapunta 13",
+    "motivo": "lesion",
+    "p_juega": 0.4
+   }
+  ]
+ },
+ "cuotas": {
+  "casas": []
+ },
+ "props": {}
+}

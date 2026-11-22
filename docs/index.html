@@ -1,0 +1,101 @@
+<!doctype html><html lang="es"><meta charset="utf-8">
+<title>NCDataPredictor</title>
+<meta name="theme-color" content="#0b0d1f">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap">
+<script>try { const t = localStorage.getItem("ncdp-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<style>
+/* Portada de NCDataPredictor: un modelo por tarjeta. Cada tarjeta lleva los colores de su competición.
+   Para añadir un modelo nuevo basta con sumar una entrada a MODELOS (abajo, en el script). */
+:root {
+  --bg: #f2f3f8; --surface: #ffffff; --ink: #10122a; --muted: #5c6079; --line: #dfe1ea;
+  --hero: #0b0d1f; --hero-2: #1b2150; --hero-ink: #f4f5fb; --hero-muted: #aeb3d1;
+  --display: "Oswald", "Arial Narrow", system-ui, sans-serif; --body: "Roboto", system-ui, sans-serif; --mono: "Roboto Mono", ui-monospace, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #07081a; --surface: #11132c; --ink: #eef0fb; --muted: #9da2c4; --line: #23264b; color-scheme: dark } }
+:root[data-theme="dark"] { --bg: #07081a; --surface: #11132c; --ink: #eef0fb; --muted: #9da2c4; --line: #23264b; color-scheme: dark }
+* { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--body) }
+.gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+.inner { max-width: 1080px; margin: 0 auto }
+header { background: radial-gradient(120% 140% at 100% 0%, var(--hero-2) 0%, var(--hero) 60%); color: var(--hero-ink) }
+header .inner { padding-block: calc(36px + env(safe-area-inset-top, 0px)) 40px; display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between }
+.eyebrow { font: 500 12px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--hero-muted) }
+h1 { font: 700 clamp(36px, 7vw, 60px)/1 var(--display); text-transform: uppercase; letter-spacing: .02em; margin: 6px 0 10px }
+header p { margin: 0; max-width: 560px; color: var(--hero-muted) }
+.theme { width: 40px; height: 40px; border-radius: 999px; border: 1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.08); color: var(--hero-ink); cursor: pointer; display: grid; place-items: center }
+.theme svg { width: 20px; height: 20px }
+main { padding-block: 28px 60px }
+h2 { font: 700 22px var(--display); text-transform: uppercase; letter-spacing: .04em; margin: 26px 0 12px }
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)) }
+.m { position: relative; display: flex; flex-direction: column; gap: 10px; min-height: 210px; padding: 20px; border-radius: 16px; text-decoration: none; color: var(--c-ink);
+  background: linear-gradient(140deg, var(--c1) 0%, var(--c1) 55%, var(--c2) 100%); overflow: hidden; transition: transform .15s, box-shadow .15s; box-shadow: 0 1px 0 rgba(0,0,0,.05) }
+.m::after { content: ""; position: absolute; inset: auto 0 0 0; height: 5px; background: var(--stripe) }
+a.m:hover, a.m:focus-visible { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.18); outline: none }
+.m .sport { font: 500 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; opacity: .8 }
+.m h3 { font: 700 30px/1 var(--display); text-transform: uppercase; letter-spacing: .02em; margin: 0 }
+.m p { margin: 0; font-size: 14px; opacity: .9 }
+.m .live { margin-top: auto; font: 500 12.5px var(--mono); background: rgba(0,0,0,.22); border-radius: 8px; padding: 8px 10px }
+.m .go { font: 600 13px var(--display); letter-spacing: .1em; text-transform: uppercase }
+.m.soon { filter: saturate(.35); opacity: .72 }
+.m .tag { position: absolute; top: 16px; right: 16px; font: 600 10.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; background: rgba(255,255,255,.2); padding: 4px 8px; border-radius: 999px }
+.how { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)) }
+.how div { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px }
+.how b { font: 600 15px var(--display); text-transform: uppercase; letter-spacing: .05em }
+.how p { margin: 6px 0 0; color: var(--muted); font-size: 14px }
+footer { color: var(--muted); font-size: 12px; padding-bottom: 30px }
+</style>
+<header class="gutter"><div class="inner">
+  <div><span class="eyebrow">NCDataPredictor</span><h1>Modelos de predicción</h1>
+    <p>Simulaciones Monte Carlo de cada partido, con el contexto de los dos equipos, las bajas y el árbitro. Elige un modelo.</p></div>
+  <button class="theme" id="theme" aria-label="Modo claro / oscuro" title="Modo claro / oscuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
+</div></header>
+<main class="gutter"><div class="inner">
+  <h2>Modelos</h2>
+  <div class="grid" id="modelos"></div>
+  <h2>Cómo funcionan</h2>
+  <div class="how">
+    <div><b>Simulación</b><p>Cada partido se juega miles de veces. De ahí salen todos los mercados a la vez, de equipo y de jugadores, coherentes entre sí.</p></div>
+    <div><b>Contexto</b><p>Últimos 10 partidos, cruces de la temporada pasada, estilos de juego, árbitro, bajas y quién hereda los minutos.</p></div>
+    <div><b>Contra la casa</b><p>El modelo parte del precio de la casa y solo lo mueve un poco. Sin cuota real no hay pick.</p></div>
+  </div>
+</div></main>
+<footer class="gutter"><div class="inner">Cuotas decimales · horas de Bogotá (UTC−5)</div></footer>
+<script>
+"use strict";
+// Un modelo por entrada. `datos` (opcional) es un index.json ligero del que se muestra un resumen de la jornada.
+const MODELOS = [
+  {id: "nba", deporte: "Baloncesto", nombre: "NBA", texto: "Picks, props y parlays de cada jornada, con avisos por bajas.", url: "https://nba-predictor-9hf.pages.dev/",
+   c1: "#0b1a3a", c2: "#1d428a", stripe: "linear-gradient(90deg,#c8102e 0 62%,#fff 62% 64%,#1d428a 64%)", ink: "#f4f6fb"},
+  {id: "serie-a", deporte: "Fútbol · Italia", nombre: "Serie A", texto: "Simulación minuto a minuto: equipos, jugadores, árbitro, tramos de 15' y suplente de oro.", url: "futbol/serie-a/", datos: "futbol/serie-a/data/index.json",
+   c1: "#1a1659", c2: "#0032a0", stripe: "linear-gradient(90deg,#00a346 0 33.3%,#fff 33.3% 66.6%,#db052b 66.6%)", ink: "#f5f6fc"},
+  {id: "premier", deporte: "Fútbol · Inglaterra", nombre: "Premier League", texto: "Mismo modelo de fútbol con parámetros propios.", pronto: true, c1: "#38003c", c2: "#5b0a63", stripe: "#00ff85", ink: "#fff"},
+  {id: "laliga", deporte: "Fútbol · España", nombre: "LaLiga", texto: "Mismo modelo de fútbol con parámetros propios.", pronto: true, c1: "#1f1f1f", c2: "#3a3a3a", stripe: "#ff4b44", ink: "#fff"},
+  {id: "champions", deporte: "Fútbol · Europa", nombre: "Champions League", texto: "Fuerza entre ligas con ClubElo.", pronto: true, c1: "#0a1446", c2: "#1b2a7a", stripe: "#c0c7d8", ink: "#fff"},
+  {id: "europa", deporte: "Fútbol · Europa", nombre: "Europa League", texto: "Fuerza entre ligas con ClubElo.", pronto: true, c1: "#2b1a00", c2: "#5a3600", stripe: "#ff6900", ink: "#fff"},
+];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+document.getElementById("modelos").innerHTML = MODELOS.map(m => {
+  const tag = m.pronto ? `<span class="tag">Próximamente</span>` : "";
+  const body = `<span class="sport">${esc(m.deporte)}</span><h3>${esc(m.nombre)}</h3><p>${esc(m.texto)}</p>${m.datos ? `<div class="live" id="live-${m.id}">Cargando jornada…</div>` : ""}${m.pronto ? "" : `<span class="go">Entrar →</span>`}`;
+  const st = `--c1:${m.c1};--c2:${m.c2};--stripe:${m.stripe};--c-ink:${m.ink}`;
+  return m.pronto ? `<div class="m soon" style="${st}">${tag}${body}</div>` : `<a class="m" href="${esc(m.url)}" style="${st}">${tag}${body}</a>`;
+}).join("");
+for (const m of MODELOS.filter(x => x.datos)) {
+  fetch(m.datos, {cache: "no-cache"}).then(r => r.ok ? r.json() : Promise.reject()).then(d => {
+    const ps = d.partidos || [];
+    const j = ps.length ? ps[0].jornada : null;
+    document.getElementById("live-" + m.id).textContent = ps.length
+      ? `Jornada ${j} · ${ps.length} partidos${d.ejemplo ? " · datos de ejemplo" : ""}` : "Sin jornada publicada";
+  }).catch(() => { const el = document.getElementById("live-" + m.id); if (el) el.textContent = "Sin jornada publicada"; });
+}
+document.getElementById("theme").onclick = () => {
+  const cur = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const nx = cur === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = nx;
+  try { localStorage.setItem("ncdp-theme", nx); } catch (e) {}
+};
+</script>
