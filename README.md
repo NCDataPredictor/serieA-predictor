@@ -5,7 +5,7 @@ Web estática en `docs/` (Cloudflare Pages, carpeta de salida `docs`, sin paso d
 | Ruta | Qué es |
 |---|---|
 | `docs/index.html` | **Portada**: una tarjeta por modelo. NBA enlaza a su web actual (https://nba-predictor-9hf.pages.dev/). Para añadir un modelo: una entrada en `MODELOS` del script. |
-| `docs/futbol/serie-a/` | **Serie A Predictor**: jornada, panel de cada partido (Resumen, Contexto, Distribución, Jugadores, Bajas). Lee `data/index.json` y `data/<id>.json`. |
+| `docs/serie-a/` | **Serie A Predictor**: jornada, panel de cada partido (Resumen, Contexto, Distribución, Jugadores, Bajas). Lee `data/index.json` y `data/<id>.json`. |
 
 El contexto completo del proyecto (cómo se hizo la NBA, lecciones, plan de fútbol) está en
 [`futbol/CONTEXTO.md`](futbol/CONTEXTO.md).
@@ -16,7 +16,7 @@ El contexto completo del proyecto (cómo se hizo la NBA, lecciones, plan de fút
 futbol/datos/*            descargadores por fuente → futbol/serie_a/historico/*.json (formato: futbol/datos/FORMATO.md)
 futbol/serie_a/partidos/  un JSON por partido a predecir: árbitro, alineación probable/oficial, bajas, cuotas, props
 python -m futbol.build_site_futbol serie_a [FECHA] [--sims N]
-                          → docs/futbol/serie-a/data/index.json + <id>.json
+                          → docs/serie-a/data/index.json + <id>.json
 ```
 
 ## El modelo (`futbol/modelo/`, versión `futbol-0.1`)

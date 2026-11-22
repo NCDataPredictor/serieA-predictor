@@ -1,4 +1,4 @@
-"""Simula los partidos de una liga y escribe la web: docs/futbol/<liga>/data/.
+"""Simula los partidos de una liga y escribe la web: docs/<liga-web>/data/.
 
     python -m futbol.build_site_futbol serie_a                 # todos los partidos de futbol/serie_a/partidos/
     python -m futbol.build_site_futbol serie_a 2026-11-29      # solo los de esa fecha
@@ -9,8 +9,8 @@ Entradas (ver futbol/datos/FORMATO.md):
   futbol/<liga>/partidos/*.json    un JSON por partido a predecir (README §7.4): alineaciones, bajas, árbitro, cuotas
 
 Salida:
-  docs/futbol/<liga-web>/data/index.json   resumen ligero de la jornada (lo lee también la portada)
-  docs/futbol/<liga-web>/data/<id>.json    todo el partido: contexto, mercados, tramos, jugadores, bajas, picks
+  docs/<liga-web>/data/index.json   resumen ligero de la jornada (lo lee también la portada)
+  docs/<liga-web>/data/<id>.json    todo el partido: contexto, mercados, tramos, jugadores, bajas, picks
 """
 import argparse
 import glob
@@ -190,7 +190,7 @@ def main():
     partidos = cargar(os.path.join(RAIZ, "futbol", a.liga, "partidos", "*.json"))
     if a.fecha:
         partidos = [p for p in partidos if p["match"]["fecha"] == a.fecha]
-    outdir = os.path.join(RAIZ, "docs", "futbol", cfg["web"], "data")
+    outdir = os.path.join(RAIZ, "docs", cfg["web"], "data")
     os.makedirs(outdir, exist_ok=True)
     idx_path = os.path.join(outdir, "index.json")
     idx = {"partidos": []}

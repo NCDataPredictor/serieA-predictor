@@ -9,7 +9,7 @@ cada número sin leer una explicación larga, y que la página se sienta viva y 
 
 ## Dónde está todo
 - `docs/index.html`: portada con una tarjeta por modelo.
-- `docs/futbol/serie-a/index.html`: Serie A Predictor (HTML + CSS + JS en un solo archivo, sin build).
+- `docs/serie-a/index.html`: Serie A Predictor (HTML + CSS + JS en un solo archivo, sin build).
   Lee `data/index.json` (jornada) y `data/<id>.json` (cada partido). Los JSON los genera
   `python -m futbol.build_site_futbol serie_a`; no los edites a mano.
 - Se publica tal cual con Cloudflare Pages (carpeta de salida `docs`).
