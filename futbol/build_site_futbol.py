@@ -85,7 +85,58 @@ def predecir(liga, partido, historico, sims):
     return res
 
 
-STATS_PICK_EQUIPO = ("goles", "corners", "amarillas", "remates", "remates_puerta", "faltas", "offsides")
+STATS_PICK_EQUIPO = ("goles", "corners", "amarillas", "tarjetas", "remates", "remates_puerta", "faltas", "offsides")
+
+# Picks de equipo con cuota real (provisional hasta tener backtest de estas reglas; ver README):
+# la probabilidad que se usa mezcla la casa sin margen con la "evidencia" = media del modelo y del cumplimiento
+# histórico de la línea (encogido hacia la casa). Además el modelo y el histórico deben estar a favor por separado.
+EVID_W = 0.35          # peso de la evidencia (modelo + histórico) frente a la casa
+HIST_K = 4             # encogimiento del % de cumplimiento hacia la casa: (aciertos + K·p_casa) / (n + K)
+ERR_MIN_HIST = 0.70    # error de cuota: el histórico cumple ≥ 70%…
+ERR_MAX_CASA = 0.45    # …y la casa le da ≤ 45% (sin margen)…
+ERR_DIST = 0.20        # …con el promedio al menos un 20% lejos de la línea, y el modelo del mismo lado (≥ 50%)
+
+
+def _historial_linea(res, s, ambito):
+    """Valores de esa estadística en la temporada para juzgar una línea, con el rival en cuenta:
+    equipo → lo que hizo ese equipo + lo que concedió el rival; total → totales de los partidos de ambos."""
+    m = res["match"]
+    L, V = m["local"], m["visitante"]
+
+    def val(x, lado, k):
+        if k == "tarjetas":
+            return x[lado]["amarillas"] + x[lado]["rojas"]
+        return x[lado].get(k)
+
+    forma = res.get("forma") or {}
+    if ambito == "total":
+        return [val(x, "favor", s) + val(x, "contra", s) for t in (L, V) for x in forma.get(t, [])]
+    t, r = (L, V) if ambito == "local" else (V, L)
+    return [val(x, "favor", s) for x in forma.get(t, [])] + [val(x, "contra", s) for x in forma.get(r, [])]
+
+
+def _candidato_equipo(out, base, p_over, media_mod, valores, c_over, c_under):
+    p_casa = MK.sin_margen([c_over, c_under]) if c_over and c_under else None
+    if not p_casa:
+        return
+    linea = base["linea"]
+    valores = [v for v in valores if v is not None]
+    n = len(valores)
+    prom = sum(valores) / n if n else None
+    for lado, p_mod, cuota, pc in (("over", p_over, c_over, p_casa[0]), ("under", 1 - p_over, c_under, p_casa[1])):
+        hits = sum((v > linea) if lado == "over" else (v < linea) for v in valores)
+        p_hist = (hits + HIST_K * pc) / (n + HIST_K) if n else None
+        evid = (p_mod + p_hist) / 2 if p_hist is not None else p_mod
+        p = MK.mezclar(evid, pc, EVID_W)
+        e = MK.ev(p, cuota)
+        a_favor = p_mod >= 0.5 and (p_hist is None or p_hist >= 0.5)
+        lejos = prom is not None and ((lado == "over" and prom >= linea * (1 + ERR_DIST)) or (lado == "under" and prom <= linea * (1 - ERR_DIST)))
+        error = bool(n >= 6 and hits / n >= ERR_MIN_HIST and pc <= ERR_MAX_CASA and lejos and p_mod >= 0.5)
+        if error or (a_favor and p >= P.MIN_P and e >= P.VALUE_EV):
+            out.append({**base, "lado": lado, "cuota": cuota, "p_modelo": round(p_mod, 3), "p_casa": round(pc, 3),
+                        "p_hist": round(p_hist, 3) if p_hist is not None else None, "aciertos": hits, "n_hist": n,
+                        "prom_hist": round(prom, 2) if prom is not None else None, "media_modelo": round(media_mod, 2),
+                        "p": round(p, 3), "ev": round(e, 3), "error_cuota": error, "puntaje": round(e * p + (0.05 if error else 0), 4)})
 
 
 def _candidato(out, base, p_over, c_over, c_under):
@@ -143,19 +194,31 @@ def picks(res, partido, sim, eqs):
                     continue
                 _candidato(out, {"tipo": "jugador", "jugador": nombre, "equipo": t, "stat": stat, "linea": linea,
                                  "suplente_oro": oro}, float((v > linea).mean()), c_over, c_under)
-    # ---- equipo y partido
+    # ---- equipo y partido: modelo + cumplimiento histórico + cuota (picks de valor y errores de cuota)
+    eq_out = []
     for c in (partido.get("cuotas") or {}).get("equipo") or []:
         s = c.get("stat")
         if s not in STATS_PICK_EQUIPO:
             continue
-        tl, tv = sim["team"][0][s], sim["team"][1][s]
-        x = {"total": tl + tv, "local": tl, "visitante": tv}.get(c.get("ambito", "total"))
+        sim_stat = lambda i: (sim["team"][i]["amarillas"] + sim["team"][i]["rojas"]) if s == "tarjetas" else sim["team"][i][s]
+        tl, tv = sim_stat(0), sim_stat(1)
+        ambito = c.get("ambito", "total")
+        x = {"total": tl + tv, "local": tl, "visitante": tv}.get(ambito)
         if x is None:
             continue
-        quien = {"total": "partido", "local": L, "visitante": V}[c.get("ambito", "total")]
-        _candidato(out, {"tipo": "equipo", "jugador": quien, "equipo": quien, "stat": s, "linea": c["linea"],
-                         "casa": c.get("casa"), "suplente_oro": False}, float((x > c["linea"]).mean()), c.get("over"), c.get("under"))
-    out.sort(key=lambda x: -x["ev"] * x["p"])
+        quien = {"total": "partido", "local": L, "visitante": V}[ambito]
+        valores = _historial_linea(res, s, ambito)
+        _candidato_equipo(eq_out, {"tipo": "equipo", "jugador": quien, "equipo": quien, "stat": s, "linea": c["linea"],
+                                   "casa": c.get("casa"), "suplente_oro": False},
+                          float((x > c["linea"]).mean()), float(x.mean()), valores, c.get("over"), c.get("under"))
+    # un solo lado/línea por mercado: el de mayor puntaje (evita recomendar 4 líneas del mismo mercado)
+    mejor = {}
+    for x in eq_out:
+        k = (x["equipo"], x["stat"], x["lado"])
+        if k not in mejor or x["puntaje"] > mejor[k]["puntaje"]:
+            mejor[k] = x
+    out.extend(mejor.values())
+    out.sort(key=lambda x: -(x.get("puntaje") or x["ev"] * x["p"]))
     por_j = {}
     final = []
     for x in out:
@@ -175,6 +238,8 @@ def resumen(res):
             "over25": next(p for l, p in pa["total_goles"]["over"] if l == 2.5), "ambos": pa["ambos_marcan"],
             "corners": pa["totales"]["corners"]["dist"]["media"], "amarillas": pa["totales"]["amarillas"]["dist"]["media"],
             "marcador": pa["marcadores"][0], "n_picks": len(res["picks"]), "ejemplo": res["ejemplo"],
+            "n_errores": sum(1 for x in res["picks"] if x.get("error_cuota")),
+            "cuotas_capturadas": (res.get("cuotas_casa") or {}).get("capturado"),
             "alineacion": {t: res["alineacion"][t]["estado"] for t in (L, V)},
             "bajas": {t: len(res["bajas"][t]["lista"]) for t in (L, V)}}
 
@@ -198,8 +263,22 @@ def main():
         with open(idx_path, encoding="utf-8") as fh:
             idx = json.load(fh)
     viejos = {p["id"]: p for p in idx.get("partidos", [])}
+    from futbol.datos import betano
     for p in partidos:
+        pid = p.get("id") or f'{p["match"]["fecha"]}-{p["match"]["local"]}-{p["match"]["visitante"]}'
+        f_cuotas = os.path.join(RAIZ, "futbol", a.liga, "cuotas", pid + ".json")
+        extracto = None
+        if os.path.exists(f_cuotas):
+            with open(f_cuotas, encoding="utf-8") as fh:
+                extracto = json.load(fh)
+            cu = dict(p.get("cuotas") or {})
+            cu["equipo"] = list(cu.get("equipo") or []) + betano.cuotas_equipo(p, extracto)
+            p = {**p, "cuotas": cu}
         res = predecir(a.liga, p, hist, a.sims)
+        if extracto:
+            mk = extracto.get("mercados") or {}
+            res["cuotas_casa"] = {"casa": extracto.get("casa"), "capturado": extracto.get("capturado"),
+                                  "1x2": mk.get("Resultado del partido"), "ambos": mk.get("Ambos equipos anotan")}
         with open(os.path.join(outdir, res["id"] + ".json"), "w", encoding="utf-8") as fh:
             json.dump(res, fh, ensure_ascii=False, separators=(",", ":"))
         viejos[res["id"]] = resumen(res)
@@ -210,6 +289,18 @@ def main():
            "ejemplo": any(x.get("ejemplo") for x in lista), "partidos": lista}
     with open(idx_path, "w", encoding="utf-8") as fh:
         json.dump(idx, fh, ensure_ascii=False, indent=1)
+    # Resultados reales de los partidos ya jugados (para liquidar "Mis picks" en la web): stats por equipo.
+    jugados = {}
+    for x in hist:
+        if x.get("temporada") != cfg["temporada"] or not x.get("equipos"):
+            continue
+        jugados[x["id"]] = {"local": x["local"], "visitante": x["visitante"],
+                            "equipos": {t: {k: v for k, v in e.items() if k in STATS_RESULTADO} for t, e in x["equipos"].items()}}
+    with open(os.path.join(outdir, "resultados.json"), "w", encoding="utf-8") as fh:
+        json.dump({"actualizado": idx["actualizado"], "partidos": jugados}, fh, ensure_ascii=False, separators=(",", ":"))
+
+
+STATS_RESULTADO = ("goles", "corners", "amarillas", "rojas", "faltas", "remates", "remates_puerta", "offsides")
 
 
 if __name__ == "__main__":
