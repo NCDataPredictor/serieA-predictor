@@ -6,3 +6,6 @@ futbol/*/historico/ejemplo_*.json
 futbol/*/raw/
 # entorno virtual local
 .venv/
+
+# la NBA se copia en el build de Cloudflare (scripts/pages_build.sh)
+docs/nba/
