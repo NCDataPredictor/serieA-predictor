@@ -1,0 +1,149 @@
+<!doctype html><html lang="es"><meta charset="utf-8">
+<title>Manual · Serie A Predictor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1a1659">
+<link rel="icon" href="../../icon.svg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap">
+<script>try { const t = localStorage.getItem("ncdp-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<style>
+:root { --bg: #f1f3f9; --surface: #fff; --ink: #0e0d33; --muted: #5a5f7a; --line: #dfe2ec; --soft: #f6f7fb; --accent: #0032a0; --accent-2: #0578ff; --accent-soft: #e3ebfb;
+  --banner: #1a1659; --banner-2: #0032a0; --good: #00a346; --bad: #db052b; color-scheme: light;
+  --display: "Oswald", "Arial Narrow", sans-serif; --body: "Roboto", system-ui, sans-serif; --mono: "Roboto Mono", ui-monospace, monospace }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #07061c; --surface: #100e2e; --ink: #eef0fb; --muted: #9a9fc4; --line: #24214f; --soft: #151239;
+  --accent: #5b8dff; --accent-2: #3d9bff; --accent-soft: #1a1f5c; --banner: #0b0930; --banner-2: #0a2a85; --good: #2fd27a; --bad: #ff5470; color-scheme: dark } }
+:root[data-theme="dark"] { --bg: #07061c; --surface: #100e2e; --ink: #eef0fb; --muted: #9a9fc4; --line: #24214f; --soft: #151239;
+  --accent: #5b8dff; --accent-2: #3d9bff; --accent-soft: #1a1f5c; --banner: #0b0930; --banner-2: #0a2a85; --good: #2fd27a; --bad: #ff5470; color-scheme: dark }
+* { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 var(--body) }
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 max(16px, env(safe-area-inset-left)) }
+header { background: linear-gradient(115deg, var(--banner) 55%, var(--banner-2)); color: #f5f6fc; padding: 26px 0 22px; position: relative }
+header::after { content: ""; position: absolute; inset: auto 0 0 0; height: 4px; background: linear-gradient(90deg, var(--good) 0 33.3%, #fff 33.3% 66.6%, var(--bad) 66.6%) }
+header a { color: #b3b8e0; font: 500 12px var(--mono); text-decoration: none; letter-spacing: .08em; text-transform: uppercase }
+h1, h2, h3 { font-family: var(--display); text-transform: uppercase; letter-spacing: .02em; line-height: 1.1; margin: 0 }
+h1 { font-size: clamp(30px, 6vw, 44px); margin-top: 8px }
+header p { margin: 6px 0 0; color: #d6d9f2 }
+nav.toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 }
+nav.toc a { font: 600 12px var(--display); letter-spacing: .08em; text-transform: uppercase; text-decoration: none; color: var(--accent); border: 1px solid var(--line); background: var(--surface); padding: 7px 12px; border-radius: 999px }
+section { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px; margin: 16px 0; scroll-margin-top: 12px }
+section h2 { font-size: 24px; display: flex; align-items: center; gap: 10px; margin-bottom: 8px }
+section h2 .n { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 9px; background: var(--accent-2); color: #fff; font-size: 17px }
+h3 { font-size: 16px; margin: 16px 0 4px; letter-spacing: .05em }
+p, li { color: var(--ink) } .muted { color: var(--muted) }
+ul { padding-left: 20px } li { margin: 4px 0 }
+.ej { background: var(--soft); border-left: 3px solid var(--accent-2); border-radius: 0 10px 10px 0; padding: 10px 14px; margin: 10px 0; font-size: 15px }
+.ej b { font-family: var(--mono) }
+dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 8px 0 }
+dt { font: 600 13px var(--mono); color: var(--accent); white-space: nowrap } dd { margin: 0 }
+@media (max-width: 560px) { dl { grid-template-columns: 1fr } dt { margin-top: 6px } }
+code { font: 500 .9em var(--mono); background: var(--soft); padding: 1px 5px; border-radius: 4px }
+.warn { border-color: color-mix(in srgb, var(--bad) 45%, var(--line)) }
+footer { color: var(--muted); font-size: 13px; padding: 20px 0 40px }
+a { color: var(--accent) }
+</style>
+<header><div class="wrap">
+  <a href="../">← Volver a Serie A Predictor</a>
+  <h1>Manual de uso</h1>
+  <p>Cómo leer cada número de la página, de dónde salen los picks y cómo llevar tus apuestas.</p>
+</div></header>
+<main class="wrap">
+<nav class="toc">
+  <a href="#que-es">Qué es</a><a href="#jornada">La jornada</a><a href="#partido">Un partido</a><a href="#numeros">Probabilidad, cuota y EV</a>
+  <a href="#picks">Picks</a><a href="#errores">Errores de cuota</a><a href="#mis-picks">Mis picks y combinada</a><a href="#glosario">Glosario</a>
+</nav>
+
+<section id="que-es"><h2><span class="n">1</span>Qué es</h2>
+<p>Serie A Predictor <b>simula cada partido 20.000 veces minuto a minuto</b>: quién está en la cancha, el marcador en cada momento, las tarjetas y los cambios. De esas simulaciones salen las probabilidades de todo: resultado, goles, córners, tarjetas, remates, faltas, fueras de lugar y estadísticas de cada jugador.</p>
+<p>La simulación tiene en cuenta la fuerza de ataque y defensa de cada equipo, la localía, el <b>árbitro</b>, el cara a cara, el cruce de estilos (por dónde ataca uno y por dónde concede el otro), los <b>tramos de 15'</b> en que cada equipo suele hacer cada cosa, las <b>bajas</b> y la alineación (probable u oficial).</p>
+<p class="muted">Todas las horas están en Bogotá (UTC−5). Las cuotas son decimales.</p>
+</section>
+
+<section id="jornada"><h2><span class="n">2</span>La jornada (página principal)</h2>
+<h3>Tarjeta de cada partido</h3>
+<ul>
+  <li><b>% gana</b> bajo cada escudo: probabilidad de que gane ese equipo. El favorito sale en verde.</li>
+  <li><b>Marcador más probable</b> en el centro, con su probabilidad (en fútbol rara vez pasa del 12%).</li>
+  <li><b>Barra 1 · X · 2</b>: local, empate y visitante, con los colores de cada club.</li>
+  <li><b>Mosaicos</b>: goles esperados, probabilidad de más de 2,5 goles y de que marquen los dos, córners y amarillas esperados y empate. Los medidores se ponen verdes desde 55%.</li>
+  <li><b>XI oficial / prevista</b>: si la alineación ya es la oficial o la estimada con los últimos 10 partidos.</li>
+</ul>
+<h3>Picks de la jornada y errores de cuota</h3>
+<p>Debajo de las tarjetas están las líneas recomendadas de todos los partidos y, aparte, los errores de cuota (ver secciones 5 y 6).</p>
+</section>
+
+<section id="partido"><h2><span class="n">3</span>Un partido, pestaña por pestaña</h2>
+<dl>
+  <dt>Resumen</dt><dd>Resultado (1X2, doble oportunidad, al descanso), marcadores más probables, goles por línea con su cuota justa, la tabla de <b>estadísticas de equipo</b> y las <b>líneas de equipo</b> de cada estadística.</dd>
+  <dt>Picks</dt><dd>Las líneas recomendadas de ese partido y sus errores de cuota, con la cuota de la casa y la hora en que se tomó.</dd>
+  <dt>Contexto</dt><dd>Forma de los últimos partidos, árbitro (amarillas por partido y su efecto), cara a cara y <b>estilos de juego</b>: por qué zona remata cada equipo y cuánto concede el rival por ese lado (×1,20 = concede un 20% más que la media de la liga).</dd>
+  <dt>Distribución</dt><dd>Mapa de calor: qué parte de cada estadística cae en cada tramo de 15'. Azul = menos de lo normal, naranja/rojo = más; el recuadro marca el tramo pico. Debajo, dos gráficos por equipo: cuánto hace en cada tramo (contra su promedio) y la probabilidad de que haga al menos uno en ese tramo.</dd>
+  <dt>Jugadores</dt><dd>Probabilidad de ser titular y de jugar, minutos y probabilidad de superar cada línea (remates, a puerta, faltas, pases, atajadas). Toca un jugador para ver todas sus líneas.</dd>
+  <dt>Bajas</dt><dd>Quién no juega, quién hereda su puesto y cómo cambia el equipo y sus compañeros sin él.</dd>
+</dl>
+<h3>Tabla de estadísticas de equipo</h3>
+<ul>
+  <li>Cada equipo tiene su columna con su color; <b>Total partido</b> suma los dos.</li>
+  <li>El número grande es la media esperada; debajo, el <b>rango habitual</b> (8 de cada 10 simulaciones caen ahí).</li>
+  <li><b>Liga: X por equipo</b> es lo que hace un equipo promedio de la Serie A, para comparar.</li>
+  <li><b>¿Quién hace más?</b> es la probabilidad de que cada equipo termine con más que el otro en esa estadística, con una barra repartida (local · iguales · visitante).</li>
+</ul>
+<div class="ej">Ejemplo: <b>FRO 55% hace más</b> en remates = en 55 de cada 100 simulaciones Frosinone remató más que Milan.</div>
+</section>
+
+<section id="numeros"><h2><span class="n">4</span>Probabilidad, cuota y EV</h2>
+<dl>
+  <dt>Probabilidad</dt><dd>Veces que pasó en las simulaciones. 62% = pasó en 62 de cada 100 partidos simulados.</dd>
+  <dt>Cuota justa</dt><dd><code>1 / probabilidad</code>. Con 62% la cuota justa es 1,61. Si la casa paga más que la cuota justa, la apuesta tiene valor.</dd>
+  <dt>Prob. de la casa</dt><dd>Lo que la cuota de la casa dice, <b>sin su margen</b> (la casa cobra ~5%; se reparte entre los dos lados).</dd>
+  <dt>EV</dt><dd>Valor esperado por unidad apostada: <code>probabilidad × cuota − 1</code>. EV +10% = a la larga ganas 0,10 por cada 1 apostado. Negativo = pierdes a la larga.</dd>
+</dl>
+<div class="ej">Cuota <b>1,90</b> y probabilidad <b>59%</b> → EV = 0,59 × 1,90 − 1 = <b>+12%</b>.</div>
+<p class="muted">Un EV alto con probabilidad baja (por ejemplo 25% a cuota 5) es una apuesta muy volátil: por eso los picks exigen al menos 50%.</p>
+</section>
+
+<section id="picks"><h2><span class="n">5</span>Cómo se eligen los picks</h2>
+<p>Solo hay picks donde hay <b>cuota real de la casa</b> (Betano) a los dos lados: el modelo nunca supone una cuota. Para cada línea se miran tres cosas:</p>
+<ol>
+  <li><b>Modelo</b>: probabilidad en las simulaciones.</li>
+  <li><b>Cumplió</b>: cuántas veces se cumplió la línea en los partidos recientes, mirando lo que hizo ese equipo y lo que concedió el rival (en totales, los partidos de los dos). Se encoge hacia la casa cuando hay pocos partidos.</li>
+  <li><b>Casa</b>: la probabilidad que da la cuota, sin margen.</li>
+</ol>
+<p>Un pick entra si <b>el modelo y lo que pasó en la cancha están del mismo lado</b> (los dos ≥ 50%) y la probabilidad final —65% la de la casa + 35% el promedio de modelo e histórico— deja <b>EV ≥ 3%</b>. De cada mercado se recomienda solo la mejor línea.</p>
+<div class="ej">Atalanta menos de 10,5 faltas a 1,90: modelo 82%, cumplió 16 de 20 (80%), casa 49% → probabilidad final 59%, EV +12,7%.</div>
+<p class="muted">Estas reglas son provisionales: se van a medir con el histórico real de picks (backtest) y se ajustarán si no dan ventaja.</p>
+</section>
+
+<section id="errores" class="warn"><h2><span class="n">6</span>Errores de cuota</h2>
+<p>Son líneas donde la casa está claramente lejos de lo que pasa en la cancha. Se marcan cuando se cumple todo esto:</p>
+<ul>
+  <li>la línea se cumplió en <b>≥ 70%</b> de los partidos recientes (con al menos 6 partidos),</li>
+  <li>la casa le da <b>≤ 45%</b>,</li>
+  <li>el promedio real está al menos un <b>20% lejos</b> de la línea,</li>
+  <li>y el modelo está del mismo lado.</li>
+</ul>
+<div class="ej">Caso real: Betano puso a Milan en 18,5 remates cuando su promedio era 11,5 y había quedado por debajo en 9 de 11 partidos.</div>
+<p class="muted">Una casa a veces sabe algo que no vemos (una baja de última hora, un cambio de sistema). Revisa la alineación antes de apostar.</p>
+</section>
+
+<section id="mis-picks"><h2><span class="n">7</span>Mis picks y Mi combinada</h2>
+<ul>
+  <li>Toca <b>+</b> en cualquier pick para guardarlo. Se guarda en este navegador (no hace falta cuenta); el contador verde del menú dice cuántos tienes.</li>
+  <li>En <b>Mis picks</b> se liquidan solos cuando el partido termina y entra al histórico: <b>ganado / perdido</b>, el valor real y las unidades (apuesta de 1 unidad por pick).</li>
+  <li>Arriba ves tu <b>rendimiento</b>: % de acierto, unidades y ROI, en total y separado en picks de equipo y de jugador.</li>
+  <li><b>Mi combinada</b>: marca 2 o más picks pendientes y verás la cuota combinada, la probabilidad (producto de las probabilidades), el EV y la cuota justa. Si hay patas del mismo partido te avisa: no son independientes.</li>
+</ul>
+<p class="muted">Si borras los datos del navegador o cambias de dispositivo, Mis picks empieza vacío.</p>
+</section>
+
+<section id="glosario"><h2><span class="n">8</span>Glosario</h2>
+<dl>
+  <dt>p10–p90</dt><dd>Rango habitual: 8 de cada 10 simulaciones caen entre esos dos valores.</dd>
+  <dt>Tramo</dt><dd>Bloque de 15 minutos (0-15', 16-30', 31-45+', 46-60', 61-75', 76-90+').</dd>
+  <dt>H2H</dt><dd>Cara a cara: partidos entre los dos equipos esta temporada y la anterior.</dd>
+  <dt>Suplente de oro</dt><dd>Algunas casas mantienen la apuesta de un jugador si sale y la continúa quien entra por él. Con la casilla ★ las probabilidades incluyen al reemplazo.</dd>
+  <dt>Heredero</dt><dd>Quién ocupa el puesto de una baja.</dd>
+  <dt>Unidad (u)</dt><dd>Lo que apuestas en cada pick (por ejemplo, 1 u = 10.000 pesos). +0,90 u = ganaste 0,9 veces lo apostado.</dd>
+  <dt>ROI</dt><dd>Unidades ganadas dividido entre unidades apostadas.</dd>
+</dl>
+</section>
+<footer>Serie A Predictor es una herramienta de análisis: muestra probabilidades, no garantías. Apuesta solo lo que puedas perder y nunca persigas pérdidas.</footer>
+</main>

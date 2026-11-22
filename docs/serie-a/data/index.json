@@ -2,7 +2,7 @@
  "liga": "Serie A",
  "temporada": "2026-27",
  "version": "futbol-0.1",
- "actualizado": "2026-11-22T16:45Z",
+ "actualizado": "2026-11-22T18:01Z",
  "ejemplo": false,
  "partidos": [
   {
@@ -32,6 +32,8 @@
    ],
    "n_picks": 0,
    "ejemplo": false,
+   "n_errores": 0,
+   "cuotas_capturadas": null,
    "alineacion": {
     "MIL": "oficial",
     "FRO": "oficial"
@@ -66,8 +68,10 @@
     "1-1",
     0.119
    ],
-   "n_picks": 0,
+   "n_picks": 4,
    "ejemplo": false,
+   "n_errores": 0,
+   "cuotas_capturadas": "2026-11-22T17:59Z",
    "alineacion": {
     "ATA": "prevista (últimos 10)",
     "INT": "prevista (últimos 10)"
@@ -102,8 +106,10 @@
     "1-1",
     0.12
    ],
-   "n_picks": 0,
+   "n_picks": 2,
    "ejemplo": false,
+   "n_errores": 0,
+   "cuotas_capturadas": "2026-11-22T18:00Z",
    "alineacion": {
     "MON": "prevista (últimos 10)",
     "FIO": "prevista (últimos 10)"
