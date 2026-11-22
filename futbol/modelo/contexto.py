@@ -14,7 +14,7 @@ contexto), con estas piezas, cada una guardada en `factores` para mostrarla:
   tramos       en qué tramo de 15' hace y recibe cada estadística (la "distribución" del equipo)
 """
 from . import params as P
-from .base import ZONAS, SITUACIONES, ESPEJO, tipos_evento, tramo_de
+from .base import ZONAS, SITUACIONES, ESPEJO
 
 FORMA_W = 0.35          # peso de los últimos 10 frente a la temporada (forma ruidosa en fútbol: README §3.3.7)
 TRAMO_K = 40            # eventos: perfil por tramos del equipo frente al de la liga
@@ -74,12 +74,20 @@ def _perfil(e, liga, s, lado):
     return [w * (v[i] / t if t else 0) + (1 - w) * pl[i] for i in range(6)]
 
 
-def arbitro(db, nombre):
+def arbitro(db, nombre, externo=None):
     """Multiplicadores de tarjetas y faltas del árbitro + resumen (media y últimos 5)."""
     lm = db["liga"]["medias"]
     am_liga = 2 * lm["amarillas"]
     fa_liga = 2 * lm["faltas"]
     ps = db["arbitros"].get(nombre or "", [])
+    if not ps and externo and externo.get("amarillas_pp") and externo.get("partidos"):
+        # árbitro sin partidos en nuestro histórico: se usan los promedios de FotMob (solo si son de la Serie A)
+        n = externo["partidos"]
+        w = n / (n + P.ARBITRO_K)
+        mult = (w * externo["amarillas_pp"] + (1 - w) * am_liga) / am_liga if am_liga else 1.0
+        return {"nombre": nombre, "n": 0, "n_externo": n, "media_amarillas": externo["amarillas_pp"], "liga_amarillas": round(am_liga, 2),
+                "media_amarillas_u5": None, "mult_amarillas": round(mult, 3), "mult_faltas": 1.0, "mult_rojas": 1.0,
+                "ultimos5": [], "fuente": "fotmob"}
     if not ps:
         return {"nombre": nombre, "n": 0, "mult_amarillas": 1.0, "mult_faltas": 1.0, "mult_rojas": 1.0,
                 "media_amarillas": None, "ultimos5": []}
@@ -211,7 +219,7 @@ def armar(db, fz_goles, partido):
         con[t], d2 = _mezcla(e, liga, "contra")
         det[t] = {"favor": d1, "contra": d2}
 
-    arb = arbitro(db, partido.get("contexto", {}).get("arbitro"))
+    arb = arbitro(db, partido.get("contexto", {}).get("arbitro"), partido.get("contexto", {}).get("arbitro_fotmob"))
     derbi = m.get("derbi") or bool(nombre_derbi(L, V))
     ps_h2h = h2h(db, L, V)
     est = {L: _estilo_equipo(eL, liga), V: _estilo_equipo(eV, liga)}
@@ -224,11 +232,10 @@ def armar(db, fz_goles, partido):
         return lm[s] * _ratio(fav[t][s], lm[s]) * _ratio(con[r][s], lm[s])
 
     h2h_mult, n_h2h = h2h_factores(db, L, V, ps_h2h, base)
-    gl, gv = fuerza_goles = (fz_goles(L, V, neutral))
+    gl, gv = fz_goles(L, V, neutral)
     esperado = {}
     factores = {}
     for t in (L, V):
-        r = V if t == L else L
         es_local = t == L and not neutral
         esp = {}
         fac = {}
@@ -277,7 +284,6 @@ def armar(db, fz_goles, partido):
     # Perfil por tramos de 15' de cada estadística en ESTE partido: lo que hace el equipo y lo que concede el rival.
     perfiles = {}
     for t in (L, V):
-        r = V if t == L else L
         e, er = (eL, eV) if t == L else (eV, eL)
         perfiles[t] = {}
         for s in P.STATS_EQUIPO:

@@ -47,6 +47,29 @@ def tipos_evento(ev):
     return [t]
 
 
+REPARTO_TIEMPO = {"1": [(0, 0.30), (1, 0.32), (2, 0.38)], "2": [(3, 0.31), (4, 0.32), (5, 0.37)]}
+
+
+def eventos_tramo(p, eq):
+    """(estadística, tramo, cantidad) de `eq` en el partido: de los eventos con minuto y, para las estadísticas que no
+    traen eventos (córners, faltas, fueras de lugar en FotMob), de los totales por tiempo repartidos en sus 3 tramos."""
+    out = []
+    con_eventos = set()
+    for ev in p.get("eventos", []):
+        if ev["equipo"] != eq:
+            continue
+        for t in tipos_evento(ev):
+            con_eventos.add(t)
+            out.append((t, tramo_de(ev["min"]), 1.0))
+    for tiempo, st in ((p.get("por_tiempo") or {}).get(eq) or {}).items():
+        for s, v in st.items():
+            if s in con_eventos or not v:
+                continue
+            for k, w in REPARTO_TIEMPO.get(tiempo, []):
+                out.append((s, k, v * w))
+    return out
+
+
 def _vacio_stats():
     return {s: 0.0 for s in P.STATS_EQUIPO}
 
@@ -89,11 +112,12 @@ def _liga(ps, temporada):
         local_g += w * p["equipos"][p["local"]]["goles"]
         visit_g += w * p["equipos"][p["visitante"]]["goles"]
         nl += w
+        for eq in (p["local"], p["visitante"]):
+            for t, k, c in eventos_tramo(p, eq):
+                if t in tramos:
+                    tramos[t][k] += w * c
         for ev in p.get("eventos", []):
             s = ev["tipo"]
-            for t in tipos_evento(ev):
-                if t in tramos:
-                    tramos[t][tramo_de(ev["min"])] += w
             if s == "remates":
                 if ev.get("zona") in zonas:
                     zonas[ev["zona"]] += w
@@ -152,28 +176,27 @@ def _equipos(ps, temporada, temporada_ant, liga):
                     e["contra_ant"][s] += con.get(s, 0)
             # Tramos, zonas y tipos de jugada: temporada actual y anterior (la anterior pesa 0,6).
             w = 1.0 if actual else 0.6
+            for t, k, c in eventos_tramo(p, eq):
+                if t in e["tramos_favor"]:
+                    e["tramos_favor"][t][k] += w * c
+            for t, k, c in eventos_tramo(p, r):
+                if t in e["tramos_contra"]:
+                    e["tramos_contra"][t][k] += w * c
+            # zonas y tipo de jugada de los remates (los que concede se guardan desde el lado del DEFENSOR)
             for ev in p.get("eventos", []):
-                s = ev["tipo"]
-                if s not in P.STATS_EQUIPO:
+                if ev["tipo"] != "remates":
                     continue
-                k = tramo_de(ev["min"])
+                z, si = ev.get("zona"), ev.get("situacion")
                 if ev["equipo"] == eq:
-                    for t in tipos_evento(ev):
-                        e["tramos_favor"][t][k] += w
-                    if s == "remates":
-                        if ev.get("zona") in ZONAS:
-                            e["zonas_ataque"][ev["zona"]] += w
-                        if ev.get("situacion") in SITUACIONES:
-                            e["sit_ataque"][ev["situacion"]] += w
+                    if z in ZONAS:
+                        e["zonas_ataque"][z] += w
+                    if si in SITUACIONES:
+                        e["sit_ataque"][si] += w
                 else:
-                    for t in tipos_evento(ev):
-                        e["tramos_contra"][t][k] += w
-                    if s == "remates":
-                        if ev.get("zona") in ZONAS:
-                            # guardado desde el lado del DEFENSOR: por qué banda propia le atacan
-                            e["zonas_concede"][ESPEJO[ev["zona"]]] += w
-                        if ev.get("situacion") in SITUACIONES:
-                            e["sit_concede"][ev["situacion"]] += w
+                    if z in ZONAS:
+                        e["zonas_concede"][ESPEJO[z]] += w
+                    if si in SITUACIONES:
+                        e["sit_concede"][si] += w
             e["partidos"].append(_resumen_partido(p, eq))
     out = {}
     for eq, e in E.items():
@@ -249,6 +272,20 @@ def _jugadores(ps, temporada, temporada_ant):
                 rec["partidos"].append({"id": p["id"], "fecha": p["fecha"], "titular": bool(j.get("titular")), "min": mins,
                                         "rival": _rival(p, eq),
                                         **{s: j.get(s, 0) for s in P.STATS_JUGADOR}})
+    # Banda de cada jugador según dónde remata (más fiable que la posición del dibujo táctico): con 6+ remates
+    # con zona, si más del 50% caen por un lado, ese es su lado.
+    zonas_j = defaultdict(lambda: defaultdict(int))
+    for p in ps:
+        for ev in p.get("eventos", []):
+            if ev["tipo"] == "remates" and ev.get("jugador") and ev.get("zona"):
+                zonas_j[ev["jugador"]][ev["zona"]] += 1
+    for eq in J:
+        for jid, rec in J[eq].items():
+            z = zonas_j.get(jid)
+            if z and sum(z.values()) >= 6:
+                top = max(z, key=z.get)
+                if top != "centro" and z[top] / sum(z.values()) > 0.5:
+                    rec["lado"] = top
     # defaultdict -> dict (JSON)
     for eq in J:
         for rec in J[eq].values():

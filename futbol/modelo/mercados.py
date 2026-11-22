@@ -109,7 +109,6 @@ def jugadores(sim, t, eq):
     entra, sale, repl, titular = sim["lineups"][t]
     mins = sim["minutos"][t]
     J = sim["jug"][t]
-    N = sim["N"]
     out = []
     for i, x in enumerate(eq.jug):
         juega = mins[:, i] > 0

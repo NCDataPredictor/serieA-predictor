@@ -43,8 +43,8 @@ Mientras llegan los datos reales, `python futbol/serie_a/ejemplo/generar.py` cre
 
 ## Pendiente antes de publicar picks con dinero
 
-1. Descargadores reales (Sofascore / 365Scores / football-data / Understat) desde el PC de Nicolas: desde la
-   nube todas esas webs están bloqueadas.
+1. Datos reales: `python -m futbol.datos.fotmob historico` y `... proximos` **desde el PC de Nicolas** (desde la nube
+   las webs de fútbol están bloqueadas). Fuentes probadas en [`futbol/datos/FUENTES.md`](futbol/datos/FUENTES.md).
 2. Backtest por temporadas: log loss frente a la cuota de cierre, calibración por rango, % fuera de p10–p90,
    empates simulados frente a reales.
 3. Unas semanas de picks "en seco".
