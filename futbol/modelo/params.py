@@ -62,6 +62,8 @@ DERBI_GOLES = 0.95              # derbis algo más cerrados
 
 # --- Localía -----------------------------------------------------------------------------------------------
 LOCALIA_GOLES = 1.10    # ~+0,25 goles en Serie A; se re-estima en fuerza.py con encogimiento
+LOCALIA_K = 150         # partidos de pseudo-muestra para la localía (es muy ruidosa)
+LOCALIA_MIN, LOCALIA_MAX = 1.0, 1.25
 LOCALIA_OTROS = {"remates": 1.08, "corners": 1.08, "pases": 1.03, "faltas": 0.97, "amarillas": 0.92, "offsides": 1.0}
 
 # --- Bajas -------------------------------------------------------------------------------------------------

@@ -26,7 +26,7 @@ from . import params as P
 from .base import tramo_de
 
 TRAMO_DE_MIN = np.array([tramo_de(m) for m in range(1, P.MINUTOS + 1)])
-STATS_J_SIM = ["remates", "remates_puerta", "faltas_cometidas", "faltas_recibidas", "pases", "amarillas", "goles"]
+STATS_J_SIM = ["remates", "remates_puerta", "faltas_cometidas", "faltas_recibidas", "pases", "amarillas", "goles", "atajadas"]
 
 
 def _semilla(pid):
@@ -73,6 +73,7 @@ class Equipo:
         self.p_roja = P.ROJA_DIRECTA_POR_FALTA * arb.get("mult_rojas", 1.0) * (P.DERBI_TARJETAS if derbi else 1.0)
         self.salida = [x["salida"] for x in self.jug]
         self.p_tit = np.array([x["p_titular"] for x in self.jug])
+        self.es_por = np.array([x["grupo"] == "POR" for x in self.jug])
 
 
 def _alineaciones(eq, N, rng):
@@ -202,6 +203,10 @@ def simular(pid, A, B, N=None, local_es_A=True):
             jug[t]["remates"] += rem
             jug[t]["remates_puerta"] += pue
             jug[t]["goles"] += gol
+            # atajadas: remates a puerta que no son gol, para el portero rival que esté en el campo
+            paradas = (pue.sum(1) - gol.sum(1)).astype(np.int32)
+            if paradas.any():
+                jug[r]["atajadas"] += paradas[:, None] * (on_r & o.es_por[None, :])
             rt, pt, gt = rem.sum(1), pue.sum(1), gol.sum(1)
             team[t]["remates"] += rt
             team[t]["remates_puerta"] += pt

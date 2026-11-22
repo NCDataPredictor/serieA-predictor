@@ -14,7 +14,7 @@ LINEAS_EQUIPO = {
     "pases": [750.5, 800.5, 850.5, 900.5, 950.5],
     "rojas": [0.5],
 }
-STATS_PROP = ["remates", "remates_puerta", "faltas_recibidas", "faltas_cometidas", "pases"]
+STATS_PROP = ["remates", "remates_puerta", "faltas_recibidas", "faltas_cometidas", "pases", "atajadas"]
 
 
 def _r(x, d=3):
@@ -132,6 +132,8 @@ def jugadores(sim, t, eq):
                 top = np.argsort(-cnt)[:3]
                 rec["suplentes_oro"] = [[eq.jug[j]["nombre"], _r(cnt[j])] for j in top if cnt[j] > 0.05]
         for s in STATS_PROP:
+            if (s == "atajadas") != (x["grupo"] == "POR"):
+                continue   # atajadas solo para porteros; los porteros no llevan el resto de props
             x_s = J[s][:, i]
             xs = x_s[juega]
             if s == "pases":

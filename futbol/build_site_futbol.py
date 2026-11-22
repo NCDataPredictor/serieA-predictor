@@ -42,7 +42,11 @@ def predecir(liga, partido, historico, sims):
     cfg = LIGAS[liga]
     m = partido["match"]
     db = base.construir(historico, cfg["temporada"], hasta=m["fecha"], temporada_ant=cfg["anterior"])
-    fz = fuerza.ajustar(db["partidos"], m["fecha"], ascendidos=partido.get("ascendidos", ()))
+    # ascendidos: juegan esta temporada pero no estaban en la anterior de la liga (si hay datos de la anterior)
+    eq_act = {t for p in db["partidos"] if p["temporada"] == cfg["temporada"] for t in (p["local"], p["visitante"])}
+    eq_ant = {t for p in db["partidos"] if p["temporada"] == cfg["anterior"] for t in (p["local"], p["visitante"])}
+    ascendidos = set(partido.get("ascendidos", ())) | ((eq_act - eq_ant) if eq_ant else set())
+    fz = fuerza.ajustar(db["partidos"], m["fecha"], ascendidos=ascendidos)
     ctx = contexto.armar(db, lambda a, b, neutral: fuerza.esperados(fz, a, b, neutral), partido)
     L, V = m["local"], m["visitante"]
     prep = {t: jugadores.preparar_equipo(db, partido, t) for t in (L, V)}
@@ -60,7 +64,7 @@ def predecir(liga, partido, historico, sims):
         "id": partido.get("id") or f'{m["fecha"]}-{L}-{V}',
         "ejemplo": bool(partido.get("ejemplo")),
         "match": m, "contexto_partido": partido.get("contexto", {}),
-        "modelo": {"version": P.MODEL_VERSION, "sims": sim["N"], "fuerza": {"mu": round(fz["mu"], 3), "localia": round(fz["localia"], 3),
+        "modelo": {"version": P.MODEL_VERSION, "ascendidos": sorted(ascendidos), "sims": sim["N"], "fuerza": {"mu": round(fz["mu"], 3), "localia": round(fz["localia"], 3),
                    "rho": fz["rho"], "att": {t: round(fz["att"].get(t, 1), 3) for t in (L, V)},
                    "def": {t: round(fz["def"].get(t, 1), 3) for t in (L, V)}}, "n_historico": db["n_partidos"]},
         "partido": mercados.partido(sim, L, V),
@@ -77,48 +81,80 @@ def predecir(liga, partido, historico, sims):
                       "efecto_equipo": bajas_det[t], "companeros": cambios_cs[t]} for t in (L, V)},
         "jugadores": {t: mercados.jugadores(sim, i, eqs[t]) for i, t in enumerate((L, V))},
     }
-    res["picks"] = picks(res, partido)
+    res["picks"] = picks(res, partido, sim, eqs)
     return res
 
 
-def picks(res, partido):
-    """Picks de props con cuota real: mezcla con la casa (MKT_W), EV ≥ VALUE_EV, p ≥ MIN_P, topes.
+STATS_PICK_EQUIPO = ("goles", "corners", "amarillas", "remates", "remates_puerta", "faltas", "offsides")
 
-    Si la casa ofrece suplente de oro en ese mercado (`"suplente_oro": true` en la prop), la prob. del modelo es
-    la del titular + su reemplazo. Sin cuotas no hay picks (regla del proyecto: nunca suponer una cuota).
+
+def _candidato(out, base, p_over, c_over, c_under):
+    """Añade los lados que pasan los filtros: mezcla con la casa (MKT_W), p ≥ MIN_P, EV ≥ VALUE_EV."""
+    p_casa = MK.sin_margen([c_over, c_under]) if c_over and c_under else None
+    if not p_casa:
+        return   # sin cuota a los dos lados no hay precio sin margen: no es pick (regla del proyecto)
+    for lado, p_mod, cuota, pc in (("over", p_over, c_over, p_casa[0]), ("under", 1 - p_over, c_under, p_casa[1])):
+        p = MK.mezclar(p_mod, pc, P.MKT_W)
+        e = MK.ev(p, cuota)
+        if p >= P.MIN_P and e >= P.VALUE_EV:
+            out.append({**base, "lado": lado, "cuota": cuota, "p_modelo": round(p_mod, 3), "p_casa": round(pc, 3),
+                        "p": round(p, 3), "ev": round(e, 3)})
+
+
+def picks(res, partido, sim, eqs):
+    """Picks con cuota real: props de jugador (incluidas atajadas del portero) y mercados de equipo y de partido.
+
+    Props: `partido["props"] = {"Jugador": {"remates_puerta": [[línea, over, under, suplente_oro?], ...]}}`; con
+    suplente de oro la prob. del modelo es la del titular + su reemplazo (condicionada a que sea titular).
+    Equipo: `partido["cuotas"]["equipo"] = [{"ambito": "total|local|visitante", "stat": "corners", "linea": 9.5,
+    "over": 1.85, "under": 1.95, "casa": "Betano"}]`. La probabilidad sale de las simulaciones para la línea exacta.
     """
+    import numpy as np
+    m = res["match"]
+    L, V = m["local"], m["visitante"]
     out = []
-    props = partido.get("props") or {}
-    por_nombre = {}
-    for t, js in res["jugadores"].items():
-        for j in js:
-            por_nombre[j["nombre"]] = (t, j)
-    for nombre, mk in props.items():
-        if nombre not in por_nombre:
+    # ---- jugadores
+    idx = {}
+    for t_i, t in enumerate((L, V)):
+        for j_i, x in enumerate(eqs[t].jug):
+            idx[x["nombre"]] = (t_i, t, j_i)
+    for nombre, mk in (partido.get("props") or {}).items():
+        if nombre not in idx:
             continue
-        t, j = por_nombre[nombre]
+        t_i, t, j_i = idx[nombre]
+        J = sim["jug"][t_i]
+        entra, sale, repl, titular = sim["lineups"][t_i]
+        juega = sim["minutos"][t_i][:, j_i] > 0
         for stat, lineas in mk.items():
-            if stat not in j["stats"]:
+            if stat not in J:
                 continue
-            st = j["stats"][stat]
+            x = J[stat][:, j_i]
             for fila in lineas:
-                linea, c_over, c_under = fila[0], fila[1], fila[2] if len(fila) > 2 else None
+                linea, c_over = fila[0], fila[1]
+                c_under = fila[2] if len(fila) > 2 else None
                 oro = bool(fila[3]) if len(fila) > 3 else False
-                tabla = st.get("oro_over") if oro and st.get("oro_over") else st["over"]
-                p_over = next((p for l, p in tabla if abs(l - linea) < 1e-6), None)
-                if p_over is None:
+                if oro and titular[:, j_i].any():
+                    r_i = repl[:, j_i].astype(np.int64)
+                    otro = np.where(r_i >= 0, np.take_along_axis(J[stat], np.maximum(r_i, 0)[:, None], 1)[:, 0], 0)
+                    v = (x + otro)[titular[:, j_i]]
+                else:
+                    v = x[juega]
+                if v.size == 0:
                     continue
-                p_casa = MK.sin_margen([c_over, c_under]) if c_under else None
-                for lado, p_mod, cuota, pc in (("over", p_over, c_over, p_casa[0] if p_casa else None),
-                                               ("under", 1 - p_over, c_under, p_casa[1] if p_casa else None)):
-                    if not cuota or pc is None:
-                        continue
-                    p = MK.mezclar(p_mod, pc, P.MKT_W)
-                    e = MK.ev(p, cuota)
-                    if p >= P.MIN_P and e >= P.VALUE_EV:
-                        out.append({"jugador": nombre, "equipo": t, "stat": stat, "linea": linea, "lado": lado, "cuota": cuota,
-                                    "p_modelo": round(p_mod, 3), "p_casa": round(pc, 3), "p": round(p, 3), "ev": round(e, 3),
-                                    "suplente_oro": oro})
+                _candidato(out, {"tipo": "jugador", "jugador": nombre, "equipo": t, "stat": stat, "linea": linea,
+                                 "suplente_oro": oro}, float((v > linea).mean()), c_over, c_under)
+    # ---- equipo y partido
+    for c in (partido.get("cuotas") or {}).get("equipo") or []:
+        s = c.get("stat")
+        if s not in STATS_PICK_EQUIPO:
+            continue
+        tl, tv = sim["team"][0][s], sim["team"][1][s]
+        x = {"total": tl + tv, "local": tl, "visitante": tv}.get(c.get("ambito", "total"))
+        if x is None:
+            continue
+        quien = {"total": "partido", "local": L, "visitante": V}[c.get("ambito", "total")]
+        _candidato(out, {"tipo": "equipo", "jugador": quien, "equipo": quien, "stat": s, "linea": c["linea"],
+                         "casa": c.get("casa"), "suplente_oro": False}, float((x > c["linea"]).mean()), c.get("over"), c.get("under"))
     out.sort(key=lambda x: -x["ev"] * x["p"])
     por_j = {}
     final = []

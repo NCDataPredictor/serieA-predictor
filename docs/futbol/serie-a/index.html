@@ -211,9 +211,9 @@ const f1 = x => x == null ? "–" : (+x).toFixed(1);
 const f2 = x => x == null ? "–" : (+x).toFixed(2);
 const fair = p => p > 0 ? (1 / p).toFixed(2) : "–";
 const STAT = {goles: "Goles", corners: "Córners", offsides: "Fueras de lugar", amarillas: "Amarillas", rojas: "Rojas", faltas: "Faltas",
-  remates: "Remates", remates_puerta: "Remates a puerta", pases: "Pases", faltas_recibidas: "Faltas recibidas", faltas_cometidas: "Faltas cometidas"};
+  remates: "Remates", remates_puerta: "Remates a puerta", pases: "Pases", atajadas: "Atajadas", faltas_recibidas: "Faltas recibidas", faltas_cometidas: "Faltas cometidas"};
 const STATS_EQ = ["goles", "remates", "remates_puerta", "corners", "faltas", "amarillas", "rojas", "offsides", "pases"];
-const STATS_J = ["remates", "remates_puerta", "faltas_recibidas", "faltas_cometidas", "pases"];
+const STATS_J = ["remates", "remates_puerta", "faltas_recibidas", "faltas_cometidas", "pases", "atajadas"];
 const TRAMOS = ["0-15", "16-30", "31-45+", "46-60", "61-75", "76-90+"];
 const ZONA = {izq: "Izquierda", centro: "Centro", der: "Derecha"};
 const SIT = {jugada: "Jugada elaborada", contragolpe: "Contragolpe", balon_parado: "Balón parado", penalti: "Penalti"};
@@ -289,7 +289,7 @@ function inicio() {
   if (picks) Promise.all(ps.filter(p => p.n_picks).map(p => partido(p.id))).then(ds => {
     const rows = ds.flatMap(d => d.picks.map(k => ({...k, id: d.id, game: d.match.local + "–" + d.match.visitante})));
     rows.sort((a, b) => b.ev * b.p - a.ev * a.p);
-    $("#picks").innerHTML = `<div class="card scroll"><table><tr><th>Pick</th><th>Partido</th><th>Prob.</th><th>Cuota</th><th>EV</th></tr>${rows.map(k => `<tr><td>${esc(k.jugador)} · ${k.lado === "over" ? "Más de" : "Menos de"} ${k.linea} ${esc(STAT[k.stat].toLowerCase())}${k.suplente_oro ? ' <span class="oro" title="Con suplente de oro">★ oro</span>' : ""}</td><td><a href="#${esc(k.id)}">${esc(k.game)}</a></td><td class="p">${pct(k.p, 1)}</td><td class="n">${k.cuota.toFixed(2)}</td><td class="n">${(k.ev * 100).toFixed(1)}%</td></tr>`).join("")}</table></div>`;
+    $("#picks").innerHTML = `<div class="card scroll"><table><tr><th>Pick</th><th>Partido</th><th>Prob.</th><th>Cuota</th><th>EV</th></tr>${rows.map(k => `<tr><td>${esc(k.tipo === "equipo" ? (k.jugador === "partido" ? "Total del partido" : tname(k.jugador)) : k.jugador)} · ${k.lado === "over" ? "Más de" : "Menos de"} ${String(k.linea).replace(".", ",")} ${esc(STAT[k.stat].toLowerCase())}${k.suplente_oro ? ' <span class="oro" title="Con suplente de oro">★ oro</span>' : ""}</td><td><a href="#${esc(k.id)}">${esc(k.game)}</a></td><td class="p">${pct(k.p, 1)}</td><td class="n">${k.cuota.toFixed(2)}</td><td class="n">${(k.ev * 100).toFixed(1)}%</td></tr>`).join("")}</table></div>`;
   });
 }
 function fecha(s) { const d = new Date(s + "T12:00:00"); return d.toLocaleDateString("es-CO", {weekday: "short", day: "numeric", month: "short"}); }
@@ -480,8 +480,8 @@ function jugadores(d, el) {
   el.querySelector("#j-oro").onchange = e => { J_ORO = e.target.checked; tabla(); };
   const xi = new Set(d.alineacion[J_TEAM].xi);
   function tabla() {
-    const js = d.jugadores[J_TEAM];
     const s = J_STAT;
+    const js = d.jugadores[J_TEAM].filter(j => j.stats[s]);
     const lineas = [...new Set(js.flatMap(j => j.stats[s].over.map(o => o[0])))].sort((a, b) => a - b).slice(0, s === "pases" ? 99 : 4);
     const lin = s === "pases" ? null : lineas;
     const get = (j, l) => { const st = j.stats[s]; const tb = J_ORO && st.oro_over ? st.oro_over : st.over; const r = tb.find(o => o[0] === l); return r ? r[1] : null; };
@@ -501,8 +501,8 @@ function ficha(row, j) {
   const cols = row.children.length;
   const tr = document.createElement("tr");
   tr.className = "ficha";
-  const cards = STATS_J.map(s => { const st = j.stats[s];
-    return `<div class="card"><b>${STAT[s]}</b> <span class="sub">media ${f2(st.media)} · ${f2(j.tasas90[s])}/90'</span>
+  const cards = STATS_J.filter(s => j.stats[s]).map(s => { const st = j.stats[s];
+    return `<div class="card"><b>${STAT[s]}</b> <span class="sub">media ${f2(st.media)}${j.tasas90[s] != null ? ` · ${f2(j.tasas90[s])}/90'` : ""}</span>
       <table><tr><th>Más de</th><th>Prob.</th>${st.oro_over ? '<th class="oro">★ oro</th>' : ""}<th>Justa</th></tr>${st.over.map(([l, p], k) => `<tr><td>${String(l).replace(".", ",")}</td><td class="p">${pct(st.titular_over ? st.titular_over[k][1] : p)}</td>${st.oro_over ? `<td class="p oro">${pct(st.oro_over[k][1])}</td>` : ""}<td class="n">${fair(st.oro_over && J_ORO ? st.oro_over[k][1] : p)}</td></tr>`).join("")}</table></div>`; }).join("");
   const oro = j.suplentes_oro && j.suplentes_oro.length ? `Si sale (${pct(j.p_sustituido)} de las veces, completa ${pct(j.p_completa)}), suele entrar: ${j.suplentes_oro.map(([n, p]) => `${esc(n)} (${pct(p)})`).join(", ")}.` : "";
   tr.innerHTML = `<td colspan="${cols}"><p class="sub">Titular ${pct(j.p_titular)} · juega ${pct(j.p_juega)} · ${f1(j.min_si_titular)}' si es titular · amarilla ${pct(j.p_amarilla)} · gol ${pct(j.p_gol)}. ${oro}</p><div class="lines">${cards}</div></td>`;

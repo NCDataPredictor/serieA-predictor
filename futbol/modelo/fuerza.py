@@ -23,12 +23,14 @@ def _goles_ef(st):
     return g
 
 
-def ajustar(partidos, fecha_ref, prior_n=3.0, ascendidos=(), prior_ascendidos=(0.85, 1.12), iters=60):
+def ajustar(partidos, fecha_ref, prior_n=3.0, ascendidos=(), prior_ascendidos=(0.85, 1.12), prior_n_ascendidos=8.0, iters=60):
     ref = date.fromisoformat(fecha_ref[:10])
     eqs = sorted({p["local"] for p in partidos} | {p["visitante"] for p in partidos})
     att = {e: 1.0 for e in eqs}
     dfn = {e: 1.0 for e in eqs}
     prior = {e: (prior_ascendidos if e in ascendidos else (1.0, 1.0)) for e in eqs}
+    # Ascendidos: sin temporada previa en la liga, su arranque pesa demasiado; prior más fuerte y por debajo de la media.
+    pn = {e: (prior_n_ascendidos if e in ascendidos else prior_n) for e in eqs}
     filas = []
     for p in partidos:
         dias = (ref - date.fromisoformat(p["fecha"][:10])).days
@@ -44,8 +46,8 @@ def ajustar(partidos, fecha_ref, prior_n=3.0, ascendidos=(), prior_ascendidos=(0
     loc = P.LOCALIA_GOLES
     for _ in range(iters):
         # ataque
-        num = {e: prior_n * prior[e][0] for e in eqs}
-        den = {e: prior_n for e in eqs}
+        num = {e: pn[e] * prior[e][0] for e in eqs}
+        den = {e: pn[e] for e in eqs}
         for L, V, gl, gv, w in filas:
             num[L] += w * gl
             den[L] += w * mu * loc * dfn[V]
@@ -53,8 +55,8 @@ def ajustar(partidos, fecha_ref, prior_n=3.0, ascendidos=(), prior_ascendidos=(0
             den[V] += w * mu * dfn[L]
         att = {e: num[e] / den[e] for e in eqs}
         # defensa
-        num = {e: prior_n * prior[e][1] for e in eqs}
-        den = {e: prior_n for e in eqs}
+        num = {e: pn[e] * prior[e][1] for e in eqs}
+        den = {e: pn[e] for e in eqs}
         for L, V, gl, gv, w in filas:
             num[V] += w * gl
             den[V] += w * mu * loc * att[L]
@@ -70,8 +72,10 @@ def ajustar(partidos, fecha_ref, prior_n=3.0, ascendidos=(), prior_ascendidos=(0
         dl = sum(w * mu * att[L] * dfn[V] for L, V, gl, gv, w in filas)
         nv = sum(w * gv for L, V, gl, gv, w in filas)
         dv = sum(w * att[V] * dfn[L] for L, V, gl, gv, w in filas)
-        # localía encogida hacia el valor de partida (pseudo-muestra de 40 partidos)
-        loc = (nl / dl / (nv / dv) * sw + P.LOCALIA_GOLES * 40) / (sw + 40)
+        # localía encogida hacia el valor de partida (pseudo-muestra LOCALIA_K) y acotada: una racha de temporada
+        # no puede volver la localía una desventaja
+        loc = (nl / dl / (nv / dv) * sw + P.LOCALIA_GOLES * P.LOCALIA_K) / (sw + P.LOCALIA_K)
+        loc = min(P.LOCALIA_MAX, max(P.LOCALIA_MIN, loc))
         mu = nv / dv
     rho = _rho(partidos, att, dfn, mu, loc)
     return {"mu": mu, "localia": loc, "att": att, "def": dfn, "rho": rho, "n": len(filas)}
