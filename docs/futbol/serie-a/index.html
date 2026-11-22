@@ -125,9 +125,11 @@ main { padding-block: 22px 60px }
 .mc-mid b { font: 700 30px/1 var(--display); padding: 6px 12px; border-radius: 10px; background: var(--soft); border: 1px solid var(--line) }
 .mc-mid span { font: 500 10.5px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .04em; text-align: center }
 .mcard .bar3 { margin: 0 16px -6px }
+.ico { width: 1.15em; height: 1.15em; vertical-align: -0.2em; margin-right: .35em; flex: none }
+.tile span .ico { width: 13px; height: 13px; margin-right: 4px; vertical-align: -2px }
 .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px }
 .tile { background: var(--soft); border-radius: 10px; padding: 8px 10px; display: grid; gap: 4px; min-width: 0 }
-.tile span { font: 500 10.5px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.tile span { font: 500 10.5px/1.25 var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .03em; min-height: 2.5em; display: flex; align-items: flex-start }
 .tile b { font: 600 18px/1 var(--mono); font-variant-numeric: tabular-nums }
 .meter { height: 5px; border-radius: 3px; background: var(--line); overflow: hidden }
 .meter i { display: block; height: 100%; border-radius: 3px; background: var(--accent-2); transform-origin: left; animation: growx .8s cubic-bezier(.2,.7,.2,1) both }
@@ -306,6 +308,29 @@ const f2 = x => x == null ? "–" : (+x).toFixed(2);
 const fair = p => p > 0 ? (1 / p).toFixed(2) : "–";
 const STAT = {goles: "Goles", corners: "Córners", offsides: "Fueras de lugar", amarillas: "Amarillas", rojas: "Rojas", faltas: "Faltas",
   remates: "Remates", remates_puerta: "Remates a puerta", pases: "Pases", atajadas: "Atajadas", faltas_recibidas: "Faltas recibidas", faltas_cometidas: "Faltas cometidas"};
+// Íconos por estadística (SVG en línea, heredan el color del texto; tarjetas con su color real)
+const SV = (b, extra = "") => `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"${extra}>${b}</svg>`;
+const ICO = {
+  goles: SV('<circle cx="12" cy="12" r="9"/><path d="M12 7.5l3.4 2.5-1.3 4h-4.2l-1.3-4z" fill="currentColor"/><path d="M12 3v4.5M20.5 9.5l-5.1.5M17.5 19.5l-3.4-5.5M6.5 19.5l3.4-5.5M3.5 9.5l5.1.5"/>'),
+  remates: SV('<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/>'),
+  remates_puerta: SV('<path d="M3 19V6h18v13"/><path d="M3 10h18M7 6v13M11 6v13M15 6v13M19 6v13" stroke-width="1" opacity=".45"/><circle cx="12" cy="14" r="2.6" fill="currentColor" stroke="none"/>'),
+  corners: SV('<path d="M6 21V3"/><path d="M6 4h11l-3 3.5 3 3.5H6" fill="currentColor" fill-opacity=".25"/><path d="M3 21h9"/>'),
+  offsides: SV('<path d="M7 21V3"/><path d="M7 4h10v7H7" fill="currentColor" fill-opacity=".25"/><path d="M7 4l10 7M17 4L7 11" stroke-width="1.2"/>'),
+  faltas: SV('<circle cx="9" cy="14" r="5"/><path d="M13 11l7-4v4l-6 2"/><circle cx="9" cy="14" r="1.4" fill="currentColor"/>'),
+  amarillas: `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="3" width="11" height="16" rx="2" transform="rotate(8 12 11)" fill="#F5C518" stroke="#B58F00" stroke-width="1"/></svg>`,
+  rojas: `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="3" width="11" height="16" rx="2" transform="rotate(8 12 11)" fill="#DB052B" stroke="#8E0019" stroke-width="1"/></svg>`,
+  pases: SV('<path d="M4 17c4-8 9-8 16-8"/><path d="M16 5l4 4-4 4"/><circle cx="4" cy="17" r="1.6" fill="currentColor"/>'),
+  atajadas: SV('<path d="M8 21v-6L5 10.5a1.6 1.6 0 012.6-1.8L9 10V5a1.5 1.5 0 013 0v4-5.5a1.5 1.5 0 013 0V9V5.5a1.5 1.5 0 013 0V14c0 4-2.5 7-6 7z"/>'),
+  faltas_cometidas: SV('<circle cx="9" cy="14" r="5"/><path d="M13 11l7-4v4l-6 2"/><circle cx="9" cy="14" r="1.4" fill="currentColor"/>'),
+  faltas_recibidas: SV('<circle cx="15" cy="5" r="2"/><path d="M13.5 9L8 12l2.5 4.5L7 21M13.5 9l3 4 4 1M10.5 16.5L15 18"/>'),
+  empate: SV('<path d="M5 9h14M5 15h14"/>'),
+  ambos: SV('<circle cx="8" cy="12" r="5"/><circle cx="16" cy="12" r="5"/>'),
+  over: SV('<path d="M4 18l6-6 4 4 6-8"/><path d="M15 8h5v5"/>'),
+  arbitro: SV('<circle cx="9" cy="14" r="5"/><path d="M13 11l7-4v4l-6 2"/><circle cx="9" cy="14" r="1.4" fill="currentColor"/>'),
+  bajas: SV('<path d="M12 3a9 9 0 100 18 9 9 0 000-18zM5.6 5.6l12.8 12.8"/>'),
+};
+const ic = k => ICO[k] || "";
+const lbl = s => `${ic(s)}${STAT[s]}`;
 const STATS_EQ = ["goles", "remates", "remates_puerta", "corners", "faltas", "amarillas", "rojas", "offsides", "pases"];
 const STATS_J = ["remates", "remates_puerta", "faltas_recibidas", "faltas_cometidas", "pases", "atajadas"];
 const TRAMOS = ["0-15", "16-30", "31-45+", "46-60", "61-75", "76-90+"];
@@ -393,14 +418,14 @@ function inicio() {
       </div>
       ${bar3(x, L, V, i)}
       <div class="tiles">
-        <div class="tile"><span>Goles esperados</span><b>${f2(p.goles)}</b></div>
-        <div class="tile"><span>Más de 2,5 goles</span><b>${pct(p.over25)}</b>${meter(p.over25, .55)}</div>
-        <div class="tile"><span>Ambos marcan</span><b>${pct(p.ambos)}</b>${meter(p.ambos, .55)}</div>
-        <div class="tile"><span>Córners</span><b>${f1(p.corners)}</b></div>
-        <div class="tile"><span>Amarillas</span><b>${f1(p.amarillas)}</b></div>
-        <div class="tile"><span>Empate</span><b>${pct(x[1])}</b>${meter(x[1], .55)}</div>
+        <div class="tile"><span>${ic("goles")}Goles esperados</span><b>${f2(p.goles)}</b></div>
+        <div class="tile"><span>${ic("over")}Más de 2,5 goles</span><b>${pct(p.over25)}</b>${meter(p.over25, .55)}</div>
+        <div class="tile"><span>${ic("ambos")}Ambos marcan</span><b>${pct(p.ambos)}</b>${meter(p.ambos, .55)}</div>
+        <div class="tile"><span>${ic("corners")}Córners</span><b>${f1(p.corners)}</b></div>
+        <div class="tile"><span>${ic("amarillas")}Amarillas</span><b>${f1(p.amarillas)}</b></div>
+        <div class="tile"><span>${ic("empate")}Empate</span><b>${pct(x[1])}</b>${meter(x[1], .55)}</div>
       </div>
-      <div class="mc-foot"><span>Árbitro <b>${esc(p.arbitro || "por designar")}</b> · Bajas ${esc(L)} <b>${p.bajas[L] || 0}</b> · ${esc(V)} <b>${p.bajas[V] || 0}</b></span><span class="mc-go">Ver partido <span>→</span></span></div>
+      <div class="mc-foot"><span>${ic("arbitro")}Árbitro <b>${esc(p.arbitro || "por designar")}</b> · Bajas ${esc(L)} <b>${p.bajas[L] || 0}</b> · ${esc(V)} <b>${p.bajas[V] || 0}</b></span><span class="mc-go">Ver partido <span>→</span></span></div>
     </a>`; }).join("")}</div>
   <div class="section" style="margin-top:28px"><h2>Picks de la jornada</h2><span class="eyebrow">${picks} picks</span></div>
   ${picks ? "" : `<div class="card callout">Todavía no hay cuotas cargadas, así que no hay picks: el modelo nunca supone una cuota. Mientras tanto, en cada partido están sus probabilidades y la cuota justa (1 / probabilidad) para compararla con la de tu casa.</div>`}
@@ -409,7 +434,7 @@ function inicio() {
   if (picks) Promise.all(ps.filter(p => p.n_picks).map(p => partido(p.id))).then(ds => {
     const rows = ds.flatMap(d => d.picks.map(k => ({...k, id: d.id, game: d.match.local + "–" + d.match.visitante})));
     rows.sort((a, b) => b.ev * b.p - a.ev * a.p);
-    $("#picks").innerHTML = `<div class="card scroll"><table><tr><th>Pick</th><th>Partido</th><th>Prob.</th><th>Cuota</th><th>EV</th></tr>${rows.map(k => `<tr><td>${esc(k.tipo === "equipo" ? (k.jugador === "partido" ? "Total del partido" : tname(k.jugador)) : k.jugador)} · ${k.lado === "over" ? "Más de" : "Menos de"} ${String(k.linea).replace(".", ",")} ${esc(STAT[k.stat].toLowerCase())}${k.suplente_oro ? ' <span class="oro" title="Con suplente de oro">★ oro</span>' : ""}</td><td><a href="#${esc(k.id)}">${esc(k.game)}</a></td><td class="p">${pct(k.p, 1)}</td><td class="n">${k.cuota.toFixed(2)}</td><td class="n">${(k.ev * 100).toFixed(1)}%</td></tr>`).join("")}</table></div>`;
+    $("#picks").innerHTML = `<div class="card scroll"><table><tr><th>Pick</th><th>Partido</th><th>Prob.</th><th>Cuota</th><th>EV</th></tr>${rows.map(k => `<tr><td>${esc(k.tipo === "equipo" ? (k.jugador === "partido" ? "Total del partido" : tname(k.jugador)) : k.jugador)} · ${k.lado === "over" ? "Más de" : "Menos de"} ${String(k.linea).replace(".", ",")} ${ic(k.stat)}${esc(STAT[k.stat].toLowerCase())}${k.suplente_oro ? ' <span class="oro" title="Con suplente de oro">★ oro</span>' : ""}</td><td><a href="#${esc(k.id)}">${esc(k.game)}</a></td><td class="p">${pct(k.p, 1)}</td><td class="n">${k.cuota.toFixed(2)}</td><td class="n">${(k.ev * 100).toFixed(1)}%</td></tr>`).join("")}</table></div>`;
   });
 }
 // Los números cuentan desde 0 al aparecer (se respeta "reducir movimiento").
@@ -486,7 +511,7 @@ function resumen(d, el) {
           cmp = `<div class="cmp-l">${crest(w, 18)}${esc(w)} <span class="p ${pw >= .55 ? "hi" : ""}">${pct(pw)}</span> <span class="sub">${s === "goles" ? "gana" : "hace más"}</span></div>
             <div class="split" title="${esc(L)} ${pct(mq[0])} · iguales ${pct(mq[1])} · ${esc(V)} ${pct(mq[2])}"><i style="width:${mq[0] * 100}%;background:${tcol(L)[1]}"></i><i class="e" style="width:${mq[1] * 100}%"></i><i style="width:${mq[2] * 100}%;background:${tcol(V)[1]}"></i></div>
             <div class="split-l"><span>${esc(L)} ${pct(mq[0])}</span><span>${s === "goles" ? "empate" : "iguales"} ${pct(mq[1])}</span><span>${esc(V)} ${pct(mq[2])}</span></div>`; }
-        return `<tr><td><b>${STAT[s]}</b><span class="lg">Liga: ${f1(d.liga.medias[s])} por equipo</span></td><td class="n cl"><b>${f1(a.media)}</b><br><span class="sub">${a.p10}–${a.p90}</span></td><td class="n cv"><b>${f1(b.media)}</b><br><span class="sub">${b.p10}–${b.p90}</span></td><td class="n ct"><b>${f1(t.media)}</b><br><span class="sub">${t.p10}–${t.p90}</span></td><td class="cmp">${cmp}</td></tr>`; }).join("")}
+        return `<tr><td><b>${lbl(s)}</b><span class="lg">Liga: ${f1(d.liga.medias[s])} por equipo</span></td><td class="n cl"><b>${f1(a.media)}</b><br><span class="sub">${a.p10}–${a.p90}</span></td><td class="n cv"><b>${f1(b.media)}</b><br><span class="sub">${b.p10}–${b.p90}</span></td><td class="n ct"><b>${f1(t.media)}</b><br><span class="sub">${t.p10}–${t.p90}</span></td><td class="cmp">${cmp}</td></tr>`; }).join("")}
     </table></div>
     <p class="note">"Liga" es lo que hace un equipo promedio de la Serie A en un partido, para comparar. "¿Quién hace más?" es la probabilidad de que ese equipo termine con más que el rival en esa estadística.</p>
   </div>
@@ -517,7 +542,7 @@ function contexto(d, el) {
     const u = d.forma[c] || [];
     const avg = (k, s) => u.length ? u.reduce((a, x) => a + x[k][s], 0) / u.length : null;
     return `<div class="card" style="border-top:4px solid ${tcol(c)[1]}"><div class="toolbar"><h3 class="who" style="gap:8px">${crest(c, 26)}${esc(tname(c))} · últimos ${u.length}</h3><div class="forma">${u.slice().reverse().map(x => `<span class="pill ${x.res}" title="${esc(x.fecha)} ${x.local ? "vs" : "en"} ${esc(x.rival)} ${x.gf}-${x.gc}">${x.res}</span>`).join("")}</div></div>
-      <div class="scroll"><table><tr><th>Por partido</th><th>A favor</th><th>En contra</th><th>Prom. liga</th></tr>${STATS_EQ.map(s => `<tr><td>${STAT[s]}</td><td class="n">${f1(avg("favor", s))}</td><td class="n">${f1(avg("contra", s))}</td><td class="n">${f1(d.liga.medias[s])}</td></tr>`).join("")}</table></div>
+      <div class="scroll"><table><tr><th>Por partido</th><th>A favor</th><th>En contra</th><th>Prom. liga</th></tr>${STATS_EQ.map(s => `<tr><td>${lbl(s)}</td><td class="n">${f1(avg("favor", s))}</td><td class="n">${f1(avg("contra", s))}</td><td class="n">${f1(d.liga.medias[s])}</td></tr>`).join("")}</table></div>
       <details style="margin-top:8px"><summary class="sub">Partido a partido</summary><div class="scroll"><table><tr><th>Fecha</th><th>Rival</th><th>Res.</th><th>Rem.</th><th>Córn.</th><th>Faltas</th><th>Amar.</th></tr>${u.slice().reverse().map(x => `<tr><td>${esc(x.fecha.slice(5))}${x.derbi ? " ★" : ""}</td><td>${x.local ? "vs" : "en"} ${badge(x.rival)}</td><td><span class="pill ${x.res}">${x.gf}-${x.gc}</span></td><td class="n">${x.favor.remates}-${x.contra.remates}</td><td class="n">${x.favor.corners}-${x.contra.corners}</td><td class="n">${x.favor.faltas}-${x.contra.faltas}</td><td class="n">${x.favor.amarillas}-${x.contra.amarillas}</td></tr>`).join("")}</table></div></details></div>`;
   };
   const a = d.arbitro;
@@ -576,7 +601,7 @@ function distribucion(d, el) {
       const mx = Math.max(...v);
       // Color según cuánto se aleja del reparto parejo (1/6 = 16,7% por tramo); el tramo pico va recuadrado.
       const cls = r => r < .8 ? "h1" : r < .95 ? "h2" : r < 1.08 ? "h3" : r < 1.25 ? "h4" : "h5";
-      return `<tr><th style="text-align:left">${STAT[s]}</th>${v.map(x => { const sh = x / tot; return `<td class="${cls(sh * 6)}${x === mx ? " top" : ""}" title="${f2(x)} de media · ${pct(sh)} del partido">${pct(sh)}</td>`; }).join("")}</tr>`;
+      return `<tr><th style="text-align:left">${lbl(s)}</th>${v.map(x => { const sh = x / tot; return `<td class="${cls(sh * 6)}${x === mx ? " top" : ""}" title="${f2(x)} de media · ${pct(sh)} del partido">${pct(sh)}</td>`; }).join("")}</tr>`;
     }).join("");
     return `<div class="card reveal" style="border-top:4px solid ${tcol(c)[1]}"><h3 class="who" style="gap:8px">${crest(c, 26)}${esc(tname(c))}</h3><div class="scroll"><table class="heat"><tr><th></th>${TRAMOS.map(t => `<th>${t}'</th>`).join("")}</tr>${rows}</table></div>
       <div class="heat-legend"><span><i style="background:var(--h1)"></i>Mucho menos</span><span><i style="background:var(--h2)"></i>Algo menos</span><span><i style="background:var(--h3)"></i>Normal (≈17%)</span><span><i style="background:var(--h4)"></i>Algo más</span><span><i style="background:var(--h5)"></i>Mucho más</span><span><i style="box-shadow:inset 0 0 0 2px var(--ink)"></i>Tramo pico</span></div>
@@ -658,7 +683,7 @@ function ficha(row, j) {
   const tr = document.createElement("tr");
   tr.className = "ficha";
   const cards = STATS_J.filter(s => j.stats[s]).map(s => { const st = j.stats[s];
-    return `<div class="card"><b>${STAT[s]}</b> <span class="sub">media ${f2(st.media)}${j.tasas90[s] != null ? ` · ${f2(j.tasas90[s])}/90'` : ""}</span>
+    return `<div class="card"><b>${lbl(s)}</b> <span class="sub">media ${f2(st.media)}${j.tasas90[s] != null ? ` · ${f2(j.tasas90[s])}/90'` : ""}</span>
       <table><tr><th>Más de</th><th>Prob.</th>${st.oro_over ? '<th class="oro">★ oro</th>' : ""}<th>Justa</th></tr>${st.over.map(([l, p], k) => `<tr><td>${String(l).replace(".", ",")}</td><td class="p">${pct(st.titular_over ? st.titular_over[k][1] : p)}</td>${st.oro_over ? `<td class="p oro">${pct(st.oro_over[k][1])}</td>` : ""}<td class="n">${fair(st.oro_over && J_ORO ? st.oro_over[k][1] : p)}</td></tr>`).join("")}</table></div>`; }).join("");
   const oro = j.suplentes_oro && j.suplentes_oro.length ? `Si sale (${pct(j.p_sustituido)} de las veces, completa ${pct(j.p_completa)}), suele entrar: ${j.suplentes_oro.map(([n, p]) => `${esc(n)} (${pct(p)})`).join(", ")}.` : "";
   tr.innerHTML = `<td colspan="${cols}"><p class="sub">Titular ${pct(j.p_titular)} · juega ${pct(j.p_juega)} · ${f1(j.min_si_titular)}' si es titular · amarilla ${pct(j.p_amarilla)} · gol ${pct(j.p_gol)}. ${oro}</p><div class="lines">${cards}</div></td>`;
@@ -681,7 +706,7 @@ function bajas(d, el) {
           ${x.heredero ? `<p class="who" style="gap:8px">Hereda el puesto: ${foto(x.heredero_id, x.heredero, c, 28)}<b>${esc(x.heredero)}</b></p>` : ""}
           ${e ? `<p class="sub">Efecto en el equipo: ${Object.entries(e.equipo).map(([s, v]) => `${STAT[s].toLowerCase()} ×${f2(v.mult)}${v.medido ? ` (medido sin él ×${f2(v.medido)}, peso ${pct(v.peso_medido)})` : ""}`).join(" · ")}.</p>` : ""}
         </div>`; }).join("")}
-      ${b.companeros.length ? `<p class="eyebrow" style="margin-top:8px">Compañeros que cambian (medido en partidos sin la baja)</p><div class="scroll"><table><tr><th>Jugador</th>${STATS_J.map(s => `<th>${STAT[s]}</th>`).join("")}</tr>${b.companeros.map(x => `<tr><td>${esc(x.jugador)} <span class="sub">sin ${esc(x.sin)}</span></td>${STATS_J.map(s => `<td class="n">${f2(x.antes[s])}→<b>${f2(x.despues[s])}</b></td>`).join("")}</tr>`).join("")}</table></div>` : ""}
+      ${b.companeros.length ? `<p class="eyebrow" style="margin-top:8px">Compañeros que cambian (medido en partidos sin la baja)</p><div class="scroll"><table><tr><th>Jugador</th>${STATS_J.map(s => `<th>${lbl(s)}</th>`).join("")}</tr>${b.companeros.map(x => `<tr><td>${esc(x.jugador)} <span class="sub">sin ${esc(x.sin)}</span></td>${STATS_J.map(s => `<td class="n">${f2(x.antes[s])}→<b>${f2(x.despues[s])}</b></td>`).join("")}</tr>`).join("")}</table></div>` : ""}
       <p class="note">El volumen del ausente se reparte solo entre los que juegan, en proporción a lo que cada uno remata, pasa o recibe faltas: por eso suben las líneas de sus compañeros (en la pestaña Jugadores). El equipo pierde parte de ese volumen si el heredero es peor.</p></div>`;
   };
   el.innerHTML = `<div class="grid2">${one(L)}${one(V)}</div>`;
