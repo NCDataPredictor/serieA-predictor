@@ -45,6 +45,12 @@ jobs:
         id: kambi
         continue-on-error: true
         run: python -m futbol.datos.kambi
+      - name: Consenso de casas (The Odds API)
+        id: consenso
+        continue-on-error: true
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: python -m futbol.datos.oddsapi
       - name: Simular partidos por empezar
         id: sim
         continue-on-error: true
@@ -65,7 +71,7 @@ jobs:
           fi
           cat > futbol/serie_a/nube/estado.json <<JSON
           {"corrida": "$(date -u +%Y-%m-%dT%H:%MZ)", "fotmob_historico": "${{ steps.hist.outcome }}", "fotmob_proximos": "${{ steps.prox.outcome }}",
-           "kambi": "${{ steps.kambi.outcome }}", "simulacion": "${{ steps.sim.outcome }}", "run": "${{ github.run_id }}"}
+           "kambi": "${{ steps.kambi.outcome }}", "consenso": "${{ steps.consenso.outcome }}", "simulacion": "${{ steps.sim.outcome }}", "run": "${{ github.run_id }}"}
           JSON
           git add futbol/serie_a/nube/estado.json
           git commit -m "Jornada en la nube: datos, cuotas y simulación ($(date -u +%H:%M) UTC)"
