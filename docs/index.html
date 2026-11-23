@@ -1,4 +1,10 @@
 <!doctype html><html lang="es"><meta charset="utf-8">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="NCData">
+<script>if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("/sw.js", {scope: "/"}).catch(() => {}));</script>
+
 <title>NCData Predictor</title>
 <meta name="description" content="NCData Predictor: simulaciones y picks de NBA y fútbol (Serie A y más ligas), con probabilidades, cuota justa y errores de cuota.">
 <meta name="theme-color" content="#0b0d1f">
@@ -55,6 +61,7 @@ a.m:hover, a.m:focus-visible { transform: translateY(-2px); box-shadow: 0 10px 2
 .hoy a:hover { transform: translateY(-2px) } .hoy a.err { border-left-color: #db052b }
 .hoy small { display: block; font: 500 11.5px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .05em }
 .hoy b { font-size: 15px } .hoy .k { font: 600 13px var(--mono); margin-top: 4px }
+.ios-tip { margin-top: 10px; font-size: 13px; color: var(--hero-muted) }
 .muted-p { color: var(--muted); margin: 0 }
 @keyframes up { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
 .m, .hoy a, .steps li { animation: up .5s cubic-bezier(.2,.7,.2,1) both }
@@ -68,7 +75,8 @@ footer { color: var(--muted); font-size: 12px; padding-bottom: 30px }
 <header class="gutter"><div class="inner">
   <div><span class="eyebrow">Simulaciones y picks de NBA y fútbol</span><h1>NCData Predictor</h1>
     <p>Cada partido se simula miles de veces con el contexto de los dos equipos, las bajas, el árbitro y el estilo de juego. El resultado: la probabilidad de cada mercado, su cuota justa y los picks donde la casa paga más de lo que debería.</p>
-    <div class="hero-cta"><a href="#modelos-t">Elegir un modelo</a><a class="sec" href="#como">Cómo usarlo</a></div></div>
+    <div class="hero-cta"><a href="#modelos-t">Elegir un modelo</a><a class="sec" href="#como">Cómo usarlo</a><a class="sec" id="instalar" href="#" hidden>Instalar app</a></div>
+    <p id="ios-tip" class="ios-tip" hidden>En iPhone: toca Compartir y luego <b>Agregar a inicio</b> para tenerla como app.</p></div>
   <button class="theme" id="theme" aria-label="Modo claro / oscuro" title="Modo claro / oscuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
 </div></header>
 <main class="gutter"><div class="inner">
@@ -135,6 +143,11 @@ async function hoy(m, ps) {
       <div class="k">cuota ${k.cuota.toFixed(2)} · prob. ${(k.p * 100).toFixed(0)}% · EV ${(k.ev * 100).toFixed(1)}%</div></a>`).join("")
     : `<p class="muted-p">Todavía no hay picks con cuota real para hoy.</p>`;
 }
+// Instalar como app (Android/escritorio: aviso nativo; iPhone: instrucción de "Agregar a inicio")
+let PROMPT = null;
+addEventListener("beforeinstallprompt", e => { e.preventDefault(); PROMPT = e; document.getElementById("instalar").hidden = false; });
+document.getElementById("instalar").onclick = async e => { e.preventDefault(); if (!PROMPT) return; PROMPT.prompt(); await PROMPT.userChoice; PROMPT = null; e.target.hidden = true; };
+if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !navigator.standalone) document.getElementById("ios-tip").hidden = false;
 document.getElementById("theme").onclick = () => {
   const cur = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
   const nx = cur === "dark" ? "light" : "dark";

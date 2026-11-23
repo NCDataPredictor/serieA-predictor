@@ -1,0 +1,21 @@
+{
+ "name": "NCData Predictor",
+ "short_name": "NCData",
+ "description": "Simulaciones y picks de NBA y fútbol (Serie A y más ligas): probabilidades, cuota justa, picks con valor y errores de cuota.",
+ "lang": "es",
+ "id": "/",
+ "start_url": "/",
+ "scope": "/",
+ "display": "standalone",
+ "background_color": "#0b0d1f",
+ "theme_color": "#0b0d1f",
+ "icons": [
+  {"src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+  {"src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+ ],
+ "shortcuts": [
+  {"name": "Serie A", "url": "/serie-a/", "icons": [{"src": "/icons/icon-192.png", "sizes": "192x192"}]},
+  {"name": "NBA", "url": "/nba/", "icons": [{"src": "/icons/icon-192.png", "sizes": "192x192"}]},
+  {"name": "Mis picks · Serie A", "url": "/serie-a/#mis-picks", "icons": [{"src": "/icons/icon-192.png", "sizes": "192x192"}]}
+ ]
+}
