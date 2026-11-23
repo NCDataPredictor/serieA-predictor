@@ -82,7 +82,38 @@ def predecir(liga, partido, historico, sims):
         "jugadores": {t: mercados.jugadores(sim, i, eqs[t]) for i, t in enumerate((L, V))},
     }
     res["picks"] = picks(res, partido, sim, eqs)
+    res["ult_cols"] = list(ULT_COLS)
+    _recientes_jugadores(res, historico, m["fecha"])
     return res
+
+
+# Últimos partidos jugados de cada jugador (para la ficha del jugador y los mini gráficos de sus líneas en la web).
+# Compacto: una fila por partido con las columnas de ULT_COLS (de más viejo a más reciente).
+ULT_COLS = ("fecha", "rival", "local", "min", "titular", "remates", "remates_puerta", "faltas_cometidas",
+            "faltas_recibidas", "pases", "amarillas")
+ULT_N = 10
+
+
+def _recientes_jugadores(res, historico, fecha):
+    num = lambda pid: str(pid or "").split("-")[-1]
+    quiero = {num(j["id"]) for t in res["jugadores"] for j in res["jugadores"][t] if j.get("id")}
+    filas = {}
+    for x in historico:
+        if x.get("fecha", "") >= fecha or not x.get("jugadores"):
+            continue
+        for t, js in x["jugadores"].items():
+            rival = x["visitante"] if t == x["local"] else x["local"]
+            for j in js:
+                k = num(j.get("id"))
+                if k not in quiero or not j.get("jugo"):
+                    continue
+                mins = max(0, int(round((j.get("min_sale") or 0) - (j.get("min_entra") or 0))))
+                filas.setdefault(k, []).append([x["fecha"], rival, int(t == x["local"]), mins, int(bool(j.get("titular")))]
+                                               + [j.get(c) for c in ULT_COLS[5:]])
+    for t in res["jugadores"]:
+        for j in res["jugadores"][t]:
+            u = sorted(filas.get(num(j.get("id")), []), key=lambda r: r[0])
+            j["ult"] = u[-ULT_N:]
 
 
 STATS_PICK_EQUIPO = ("goles", "corners", "amarillas", "tarjetas", "remates", "remates_puerta", "faltas", "offsides")
