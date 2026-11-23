@@ -2,7 +2,7 @@
  "liga": "Serie A",
  "temporada": "2026-27",
  "version": "futbol-0.1",
- "actualizado": "2026-11-22T18:01Z",
+ "actualizado": "2026-11-23T02:39Z",
  "ejemplo": false,
  "partidos": [
   {
@@ -93,14 +93,14 @@
    "derbi": null,
    "arbitro": "Daniele Doveri",
    "1x2": [
-    0.303,
-    0.281,
-    0.415
+    0.302,
+    0.277,
+    0.421
    ],
-   "goles": 3.18,
-   "over25": 0.609,
-   "ambos": 0.666,
-   "corners": 8.8,
+   "goles": 3.15,
+   "over25": 0.602,
+   "ambos": 0.657,
+   "corners": 8.76,
    "amarillas": 4.01,
    "marcador": [
     "1-1",
