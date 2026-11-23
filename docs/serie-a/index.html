@@ -515,6 +515,67 @@ main { padding-bottom: 96px }
 .combos .card { display: grid; gap: 6px }
 .combos ul { margin: 0; padding-left: 18px; font-size: 13.5px }
 
+/* ---- tablas ordenables: toca el encabezado (mayor → menor → menor → mayor → orden original) ---- */
+th.ord { padding: 0 }
+th.ord .th-o { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: flex-end; gap: 4px; width: 100%; min-height: 34px; padding: 6px 8px;
+  cursor: pointer; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; text-align: inherit; border-radius: 6px; -webkit-tap-highlight-color: transparent }
+th.ord:first-child .th-o, th.ord[style*="text-align:left"] .th-o { justify-content: flex-start }
+th.ord .th-o:hover { color: var(--ink); background: var(--soft) }
+th.ord .th-o:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px }
+.th-a { flex: none; width: 7px; height: 11px; display: inline-block }
+.th-a path { fill: currentColor; opacity: .28; transition: opacity .15s }
+.tlin .th-o, .jlin .th-o, .jult .th-o, .lines .th-o, .tpicks .th-o { padding: 4px 5px !important; min-height: 30px !important }
+th[aria-sort="descending"], th[aria-sort="ascending"] { color: var(--accent) }
+th[aria-sort="descending"] .th-a .dn, th[aria-sort="ascending"] .th-a .up { opacity: 1 }
+th[aria-sort="descending"] .th-a .up, th[aria-sort="ascending"] .th-a .dn { opacity: .12 }
+td.ord-c { background: color-mix(in srgb, var(--accent) 6%, transparent) }
+.tstats td.ord-c { box-shadow: inset 0 0 0 999px color-mix(in srgb, var(--accent) 5%, transparent) }
+table.ordenada tr.grp { display: none }
+table tr.f-out { display: none }
+tr.f-vacio td { text-align: center !important; white-space: normal; color: var(--muted); padding: 18px 8px; font-size: 13.5px }
+tbody.ord-anim > tr { animation: up .3s ease-out both }
+
+/* ---- filtros rápidos en chips (envuelven: nunca desbordan) ---- */
+.filtros { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; margin: 4px 0 8px }
+.fgrp { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0 }
+.fchip { display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px;
+  padding: 5px 11px; min-height: 32px; font: 500 12.5px var(--body); cursor: pointer; white-space: nowrap; transition: background .15s, border-color .15s, color .15s }
+.fchip .ico { margin-right: 0 }
+.fchip small { font: 600 10.5px var(--mono); color: var(--muted) }
+.fchip:hover { border-color: var(--accent) }
+.fchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.fchip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent) }
+.fchip[aria-pressed="true"] small { color: inherit; opacity: .8 }
+.fchip:disabled { opacity: .45; cursor: default; border-style: dashed }
+.fchip.g-por, .fchip.g-def, .fchip.g-med, .fchip.g-del { border-color: color-mix(in srgb, var(--g) 45%, var(--line)) }
+.fchip.g-por::before, .fchip.g-def::before, .fchip.g-med::before, .fchip.g-del::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--g) }
+.fchip.g-por[aria-pressed="true"], .fchip.g-def[aria-pressed="true"], .fchip.g-med[aria-pressed="true"], .fchip.g-del[aria-pressed="true"] { background: var(--g); border-color: var(--g); color: #fff }
+.fchip.g-por[aria-pressed="true"]::before, .fchip.g-def[aria-pressed="true"]::before, .fchip.g-med[aria-pressed="true"]::before, .fchip.g-del[aria-pressed="true"]::before { background: #fff }
+:root[data-theme="dark"] .fchip[class*="g-"][aria-pressed="true"] { color: #07061c } :root[data-theme="dark"] .fchip[class*="g-"][aria-pressed="true"]::before { background: #07061c }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fchip[class*="g-"][aria-pressed="true"] { color: #07061c } :root:not([data-theme="light"]) .fchip[class*="g-"][aria-pressed="true"]::before { background: #07061c } }
+.fchip.tog::before { content: ""; width: 12px; height: 12px; border: 1.5px solid currentColor; border-radius: 3px; box-sizing: border-box }
+.fchip.tog[aria-pressed="true"]::before { content: "✓"; display: inline-grid; place-items: center; font: 700 9px/1 var(--mono); background: var(--on-accent); color: var(--accent); border-color: var(--on-accent) }
+.fq { flex: 1 1 170px; min-width: 0; max-width: 280px; font: 500 13.5px var(--body); padding: 6px 12px 6px 32px; min-height: 34px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a8fb0' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='6.5'/%3E%3Cpath d='M16 16l4.5 4.5'/%3E%3C/svg%3E") no-repeat 10px 50% / 15px; color: var(--ink) }
+.fq:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px }
+.f-cnt { font: 500 11.5px var(--mono); color: var(--muted); margin-left: auto; white-space: nowrap }
+.f-cnt button { all: unset; cursor: pointer; color: var(--accent); text-decoration: underline; margin-left: 6px }
+.f-cnt button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px }
+.ord-hint { font-size: 12px; color: var(--muted); margin: 0 0 4px }
+@media (max-width: 640px) { .fq { max-width: none; flex-basis: 100% } .f-cnt { margin-left: 0 } .fchip { padding: 5px 10px; font-size: 12px } }
+
+/* ---- volver arriba: abajo a la derecha (Mi combinada va a la izquierda) ---- */
+.arriba { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 70; width: 46px; height: 46px;
+  border-radius: 50%; border: 1px solid var(--accent); background: var(--surface); color: var(--accent); display: grid; place-items: center; cursor: pointer; padding: 0;
+  box-shadow: 0 6px 18px rgba(0,0,0,.28); opacity: 0; visibility: hidden; transform: translateY(14px) scale(.9);
+  transition: opacity .25s ease, transform .3s cubic-bezier(.2,.7,.2,1), visibility 0s linear .3s, background .15s }
+.arriba.on { opacity: 1; visibility: visible; transform: none; transition: opacity .25s ease, transform .3s cubic-bezier(.2,.7,.2,1), visibility 0s, background .15s }
+.arriba svg { width: 20px; height: 20px }
+.arriba:hover { background: var(--accent-soft) }
+.arriba:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+main:focus { outline: none }
+@media (max-width: 640px) { .arriba { right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); width: 42px; height: 42px } .combo.open ~ .arriba { display: none } }
+
 /* animaciones */
 @keyframes up { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
 @keyframes growx { from { transform: scaleX(0) } to { transform: scaleX(1) } }
@@ -576,8 +637,9 @@ main { padding-bottom: 96px }
     <div class="cb-foot" id="cb-foot"></div>
   </section>
 </div>
+<button type="button" class="arriba" id="arriba" aria-label="Volver arriba" title="Volver arriba"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button>
 <nav class="ticker" aria-label="Partidos de la jornada"><div class="track" id="track"></div></nav>
-<main class="gutter"><div class="inner" id="app"><p class="empty">Cargando…</p></div></main>
+<main class="gutter" id="main" tabindex="-1"><div class="inner" id="app"><p class="empty">Cargando…</p></div></main>
 <footer class="gutter"><div class="inner" id="foot"></div></footer>
 
 <script>
@@ -727,8 +789,8 @@ function inicio() {
     const rows = ds.flatMap(d => d.picks.map(k => ({...k, id: d.id, game: d.match.local + "–" + d.match.visitante, fecha: d.match.fecha, hora: d.match.hora_bogota})));
     rows.sort((a, b) => (b.puntaje ?? b.ev * b.p) - (a.puntaje ?? a.ev * a.p));
     const val = rows.filter(k => !k.error_cuota), err = rows.filter(k => k.error_cuota);
-    $("#picks").innerHTML = val.length ? tablaPicks(val, true) : `<div class="card callout">Sin picks de valor por ahora: ninguna línea pasó todos los filtros.</div>`;
-    $("#errores").innerHTML = err.length ? tablaPicks(err, true) : errVacio;
+    $("#picks").innerHTML = val.length ? tablaPicks(val, true, "picks-jornada") : `<div class="card callout">Sin picks de valor por ahora: ninguna línea pasó todos los filtros.</div>`;
+    $("#errores").innerHTML = err.length ? tablaPicks(err, true, "errores-jornada") : errVacio;
     bindPicks($("#app"), rows);
   });
 }
@@ -806,7 +868,7 @@ function resumen(d, el) {
           cmp = `<div class="cmp-l">${crest(w, 18)}${esc(w)} <span class="p ${pw >= .55 ? "hi" : ""}">${pct(pw)}</span> <span class="sub">${s === "goles" ? "gana" : "hace más"}</span></div>
             <div class="split" title="${esc(L)} ${pct(mq[0])} · iguales ${pct(mq[1])} · ${esc(V)} ${pct(mq[2])}"><i style="width:${mq[0] * 100}%;background:${tcol(L)[1]}"></i><i class="e" style="width:${mq[1] * 100}%"></i><i style="width:${mq[2] * 100}%;background:${tcol(V)[1]}"></i></div>
             <div class="split-l"><span>${esc(L)} ${pct(mq[0])}</span><span>${s === "goles" ? "empate" : "iguales"} ${pct(mq[1])}</span><span>${esc(V)} ${pct(mq[2])}</span></div>`; }
-        return `<tr><td><b>${lbl(s)}</b><span class="lg">Liga: ${f1(d.liga.medias[s])} por equipo</span></td><td class="n cl"><b>${f1(a.media)}</b><br><span class="sub">${a.p10}–${a.p90}</span></td><td class="n cv"><b>${f1(b.media)}</b><br><span class="sub">${b.p10}–${b.p90}</span></td><td class="n ct"><b>${f1(t.media)}</b><br><span class="sub">${t.p10}–${t.p90}</span></td><td class="cmp">${cmp}</td></tr>`; }).join("")}
+        return `<tr><td data-sort="${esc(STAT[s])}"><b>${lbl(s)}</b><span class="lg">Liga: ${f1(d.liga.medias[s])} por equipo</span></td><td class="n cl"><b>${f1(a.media)}</b><br><span class="sub">${a.p10}–${a.p90}</span></td><td class="n cv"><b>${f1(b.media)}</b><br><span class="sub">${b.p10}–${b.p90}</span></td><td class="n ct"><b>${f1(t.media)}</b><br><span class="sub">${t.p10}–${t.p90}</span></td><td class="cmp">${cmp}</td></tr>`; }).join("")}
     </table></div>
     <p class="note">"Liga" es lo que hace un equipo promedio de la Serie A en un partido, para comparar. "¿Quién hace más?" es la probabilidad de que ese equipo termine con más que el rival en esa estadística.</p>
   </div>
@@ -845,7 +907,7 @@ function contexto(d, el) {
     const avg = (k, s) => u.length ? u.reduce((a, x) => a + x[k][s], 0) / u.length : null;
     return `<div class="card" style="border-top:4px solid ${tcol(c)[1]}"><div class="toolbar"><h3 class="who" style="gap:8px">${crest(c, 26)}${esc(tname(c))} · últimos ${u.length}</h3><div class="forma">${u.slice().reverse().map(x => `<span class="pill ${x.res}" title="${esc(x.fecha)} ${x.local ? "vs" : "en"} ${esc(x.rival)} ${x.gf}-${x.gc}">${x.res}</span>`).join("")}</div></div>
       <div class="scroll"><table><tr><th>Por partido</th><th>A favor</th><th>En contra</th><th>Prom. liga</th></tr>${STATS_EQ.map(s => `<tr><td>${lbl(s)}</td><td class="n">${f1(avg("favor", s))}</td><td class="n">${f1(avg("contra", s))}</td><td class="n">${f1(d.liga.medias[s])}</td></tr>`).join("")}</table></div>
-      <details style="margin-top:8px"><summary class="sub">Partido a partido</summary><div class="scroll"><table><tr><th>Fecha</th><th>Rival</th><th>Res.</th><th>Rem.</th><th>Córn.</th><th>Faltas</th><th>Amar.</th></tr>${u.slice().reverse().map(x => `<tr><td>${esc(x.fecha.slice(5))}${x.derbi ? " ★" : ""}</td><td>${x.local ? "vs" : "en"} ${badge(x.rival)}</td><td><span class="pill ${x.res}">${x.gf}-${x.gc}</span></td><td class="n">${x.favor.remates}-${x.contra.remates}</td><td class="n">${x.favor.corners}-${x.contra.corners}</td><td class="n">${x.favor.faltas}-${x.contra.faltas}</td><td class="n">${x.favor.amarillas}-${x.contra.amarillas}</td></tr>`).join("")}</table></div></details></div>`;
+      <details style="margin-top:8px"><summary class="sub">Partido a partido</summary><div class="scroll"><table><tr><th>Fecha</th><th>Rival</th><th>Res.</th><th>Rem.</th><th>Córn.</th><th>Faltas</th><th>Amar.</th></tr>${u.slice().reverse().map(x => `<tr><td data-sort="${esc(x.fecha)}">${esc(x.fecha.slice(5))}${x.derbi ? " ★" : ""}</td><td>${x.local ? "vs" : "en"} ${badge(x.rival)}</td><td><span class="pill ${x.res}">${x.gf}-${x.gc}</span></td><td class="n">${x.favor.remates}-${x.contra.remates}</td><td class="n">${x.favor.corners}-${x.contra.corners}</td><td class="n">${x.favor.faltas}-${x.contra.faltas}</td><td class="n">${x.favor.amarillas}-${x.contra.amarillas}</td></tr>`).join("")}</table></div></details></div>`;
   };
   const a = d.arbitro;
   const h = d.h2h;
@@ -854,11 +916,11 @@ function contexto(d, el) {
   <div class="grid2" style="margin-top:14px">
     <div class="card"><h3>Árbitro · ${esc(a.nombre || "por designar")}</h3>
       ${(a.n || a.n_externo) ? `<div class="kv"><div><span>Amarillas/partido</span><b>${f2(a.media_amarillas)}</b></div><div><span>Últimos 5</span><b>${f2(a.media_amarillas_u5)}</b></div><div><span>Liga</span><b>${f2(a.liga_amarillas)}</b></div><div><span>Efecto</span><b>×${f2(a.mult_amarillas)}</b></div></div>
-      <div class="scroll" style="margin-top:10px"><table><tr><th>Últimos 5 que pitó</th><th>Amar.</th><th>Rojas</th><th>Faltas</th></tr>${a.ultimos5.map(x => `<tr><td>${esc(x.fecha)} · ${esc(x.partido)}</td><td class="n">${x.amarillas}</td><td class="n">${x.rojas}</td><td class="n">${x.faltas}</td></tr>`).join("")}</table></div>
+      <div class="scroll" style="margin-top:10px"><table><tr><th>Últimos 5 que pitó</th><th>Amar.</th><th>Rojas</th><th>Faltas</th></tr>${a.ultimos5.map(x => `<tr><td data-sort="${esc(x.fecha)}">${esc(x.fecha)} · ${esc(x.partido)}</td><td class="n">${x.amarillas}</td><td class="n">${x.rojas}</td><td class="n">${x.faltas}</td></tr>`).join("")}</table></div>
       <p class="note">${a.n ? a.n + " partidos dirigidos en nuestro histórico" : a.n_externo + " partidos en la Serie A según FotMob"}. Su media (con más peso en los últimos 5) se encoge hacia la de la liga según cuántos partidos tiene; el efecto multiplica las amarillas esperadas de los dos equipos.</p>` : `<p class="note">Sin árbitro designado o sin historial: se usa la media de la liga.</p>`}
     </div>
     <div class="card"><h3>Cara a cara${d.derbi ? ` · ${esc(d.derbi)}` : ""}</h3>
-      ${h.partidos.length ? `<div class="scroll"><table><tr><th>Partido</th><th>Res.</th><th>Rem.</th><th>Córn.</th><th>Amar.</th></tr>${h.partidos.slice().reverse().map(p => { const a1 = p.equipos[p.local], b1 = p.equipos[p.visitante]; return `<tr><td>${esc(p.fecha)} · ${esc(p.local)}–${esc(p.visitante)}</td><td class="n">${a1.goles}-${b1.goles}</td><td class="n">${a1.remates}-${b1.remates}</td><td class="n">${a1.corners}-${b1.corners}</td><td class="n">${a1.amarillas}-${b1.amarillas}</td></tr>`; }).join("")}</table></div>
+      ${h.partidos.length ? `<div class="scroll"><table><tr><th>Partido</th><th>Res.</th><th>Rem.</th><th>Córn.</th><th>Amar.</th></tr>${h.partidos.slice().reverse().map(p => { const a1 = p.equipos[p.local], b1 = p.equipos[p.visitante]; return `<tr><td data-sort="${esc(p.fecha)}">${esc(p.fecha)} · ${esc(p.local)}–${esc(p.visitante)}</td><td class="n">${a1.goles}-${b1.goles}</td><td class="n">${a1.remates}-${b1.remates}</td><td class="n">${a1.corners}-${b1.corners}</td><td class="n">${a1.amarillas}-${b1.amarillas}</td></tr>`; }).join("")}</table></div>
       <p class="note">Peso del cara a cara: ${h.n} partidos → ${pct(h.n / (h.n + 4))}. Efecto en el esperado: ${["goles", "remates", "corners", "faltas", "amarillas"].map(s => `${STAT[s].toLowerCase()} ×${f2(h.mult[s])}`).join(", ")}.</p>`
       : `<p class="note">No se enfrentaron la temporada pasada ni en esta.${d.derbi ? " Al ser derbi se aplica el efecto derbi de partida en tarjetas y faltas." : ""}</p>`}
     </div>
@@ -934,7 +996,7 @@ function distribucion(d, el) {
           <div class="gbars pb">${sim.p_alguno.map((v, i) => `<div class="gcol"><div class="gb p" style="--i:${i};height:${v * 100}%"><span>${pct(v)}</span></div></div>`).join("")}</div>
           ${labs}</div>
         <details style="margin-top:10px"><summary class="sub">Ver la tabla con los números</summary>
-        <div class="scroll"><table><tr><th>Tramo</th>${TRAMOS.map(t => `<th>${t}</th>`).join("")}</tr>
+        <div class="scroll"><table data-nosort><tr><th>Tramo</th>${TRAMOS.map(t => `<th>${t}</th>`).join("")}</tr>
           <tr><td>Esperado</td>${sim.media.map(v => `<td class="n">${f2(v)}</td>`).join("")}</tr>
           <tr><td>Al menos 1</td>${sim.p_alguno.map(v => `<td class="p">${pct(v)}</td>`).join("")}</tr>
           <tr><td>Histórico a favor</td>${hf.map(v => `<td class="n">${f2(v)}</td>`).join("")}</tr>
@@ -956,8 +1018,13 @@ function jugadores(d, el) {
     <select id="j-stat" aria-label="Estadística">${STATS_J.map(s => `<option value="${s}" ${s === J_STAT ? "selected" : ""}>${STAT[s]}</option>`).join("")}</select>
     <label class="sub" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="j-oro" ${J_ORO ? "checked" : ""}> <span class="oro">★</span> Suplente de oro</label>
   </div>
-  ${posLeyenda()}
-  <div class="card scroll" style="padding:6px 10px;margin-top:8px" id="j-tab"></div>
+  ${chipsBar("jug", "jugadores", [
+    ["pos", "Posición", [["all", "Todas"], ...GRUPOS.map(([g, , pl]) => [g, g === "med" ? "Medios" : pl, "g-" + g])]],
+    ["xi", "Titulares", [["si", "Solo titulares probables", "tog"]]],
+    ["min", "Umbral", [["50", '<span class="ml">≥ 50%</span>', "tog"]]]],
+    `<input type="search" class="fq" placeholder="Buscar jugador" aria-label="Buscar jugador por nombre" value="${esc(filtroDe("jug").q || "")}" autocomplete="off">`)}
+  <p class="ord-hint">Toca el encabezado de una columna para ordenar (de mayor a menor, al revés y vuelta al orden por posición).</p>
+  <div class="card scroll" style="padding:6px 10px" id="j-tab"></div>
   <p class="note">Toca un <b>jugador</b> para ver su ficha: últimos partidos y todas sus líneas. Toca un <b>%</b> para ver cuántas veces superó esa línea en sus últimos partidos. <span class="oro">★ Suplente de oro:</span> si el titular sale sin llegar a la línea, la continúa quien entra por él, sumando lo que ya llevaba el titular. Con la casilla marcada, las probabilidades de los titulares son las de titular + reemplazo (solo cuentan si es titular). Las demás son condicionadas a que juegue.</p>`;
   el.querySelectorAll("#j-team button").forEach(b => b.onclick = () => { J_TEAM = b.dataset.c; jugadores(d, el); });
   el.querySelector("#j-stat").onchange = e => { J_STAT = e.target.value; tabla(); };
@@ -976,10 +1043,11 @@ function jugadores(d, el) {
       return `<button type="button" class="pb" data-graf="${gi}" aria-label="${pct(p)}: ver sus últimos partidos con más de ${linTxt(l)}">${pct(p)}</button>`; };
     const fila = j => { const st = j.stats[s];
       const cells = lin ? lin.map(l => { const p = get(j, l); return `<td class="p ${p >= .55 ? "hi" : p < .2 ? "lo" : ""}">${p == null ? "–" : pctBtn(j, l, p)}</td>`; }).join("")
-        : (() => { const tb = J_ORO && st.oro_over ? st.oro_over : st.over; const mid = tb[Math.floor(tb.length / 2)]; return `<td class="n">${st.dist.p10}–${st.dist.p90}</td><td class="n">${linTxt(mid[0])} · <b>${pctBtn(j, mid[0], mid[1])}</b></td>`; })();
-      return `<tr class="prow" data-jug="${reg({d, t, j})}"><td><button type="button" class="jbtn who" data-jug="${reg({d, t, j})}">${foto(j.id, j.nombre, t)}<span>${xi.has(j.nombre) ? "" : '<span class="sub">banco · </span>'}<b style="font-weight:500">${esc(j.nombre)}</b>${posTag(j.pos)}${j.hereda_de ? ` <span class="tag ok" title="Hereda el puesto de ${esc(j.hereda_de)}">titular por baja</span>` : ""}</span></button></td>
+        : (() => { const tb = J_ORO && st.oro_over ? st.oro_over : st.over; const mid = tb[Math.floor(tb.length / 2)]; return `<td class="n">${st.dist.p10}–${st.dist.p90}</td><td class="n" data-sort="${mid[1]}">${linTxt(mid[0])} · <b>${pctBtn(j, mid[0], mid[1])}</b></td>`; })();
+      return `<tr class="prow" data-jug="${reg({d, t, j})}" data-f-pos="${GRUPO(j.pos)}" data-f-xi="${xi.has(j.nombre) ? "si" : "no"}" data-fq="${esc(j.nombre)}"><td data-sort="${esc(j.nombre)}"><button type="button" class="jbtn who" data-jug="${reg({d, t, j})}">${foto(j.id, j.nombre, t)}<span>${xi.has(j.nombre) ? "" : '<span class="sub">banco · </span>'}<b style="font-weight:500">${esc(j.nombre)}</b>${posTag(j.pos)}${j.hereda_de ? ` <span class="tag ok" title="Hereda el puesto de ${esc(j.hereda_de)}">titular por baja</span>` : ""}</span></button></td>
         <td class="p">${pct(j.p_titular)}</td><td class="n">${pct(j.p_juega)}</td><td class="n">${f1(j.min_medio)}</td><td class="n">${f2(st.media)}</td>${cells}</tr>`; };
-    el.querySelector("#j-tab").innerHTML = `<table><tr><th>Jugador</th><th>Titular</th><th>Juega</th><th>Min.</th><th>Media</th>${lin ? lin.map(l => `<th>${Math.ceil(l)}+</th>`).join("") : "<th>p10–p90</th><th>Línea · más de</th>"}</tr>
+    const sl = STAT[s].toLowerCase();
+    el.querySelector("#j-tab").innerHTML = `<table data-sort-key="jug" data-filtro="jug"><tr><th>Jugador</th><th title="Probabilidad de ser titular">Titular</th><th title="Probabilidad de jugar algún minuto">Juega</th><th title="Minutos esperados">Min.</th><th title="${esc(STAT[s])} esperados si juega">Media</th>${lin ? lin.map(l => `<th title="Probabilidad de ${Math.ceil(l)} o más ${esc(sl)} si juega">${Math.ceil(l)}+</th>`).join("") : `<th title="Rango habitual de ${esc(sl)}">p10–p90</th><th title="Probabilidad de superar la línea central">Línea · más de</th>`}</tr>
       ${GRUPOS.map(([g, , plural]) => { const xs = js.filter(j => GRUPO(j.pos) === g); return xs.length ? `<tr class="grp g-${g}"><th colspan="${ncol}"><i></i>${plural}<small>${xs.length}</small></th></tr>${xs.map(fila).join("")}` : ""; }).join("")}</table>`;
   }
   tabla();
@@ -1001,7 +1069,7 @@ function bajas(d, el) {
           ${x.heredero ? `<p class="who" style="gap:8px">Hereda el puesto: ${foto(x.heredero_id, x.heredero, c, 28)}<b>${esc(x.heredero)}</b></p>` : ""}
           ${e ? `<p class="sub">Efecto en el equipo: ${Object.entries(e.equipo).map(([s, v]) => `${STAT[s].toLowerCase()} ×${f2(v.mult)}${v.medido ? ` (medido sin él ×${f2(v.medido)}, peso ${pct(v.peso_medido)})` : ""}`).join(" · ")}.</p>` : ""}
         </div>`; }).join("")}
-      ${b.companeros.length ? `<p class="eyebrow" style="margin-top:8px">Compañeros que cambian (medido en partidos sin la baja)</p><div class="scroll"><table><tr><th>Jugador</th>${STATS_J.map(s => `<th>${lbl(s)}</th>`).join("")}</tr>${b.companeros.map(x => `<tr><td>${esc(x.jugador)} <span class="sub">sin ${esc(x.sin)}</span></td>${STATS_J.map(s => `<td class="n">${f2(x.antes[s])}→<b>${f2(x.despues[s])}</b></td>`).join("")}</tr>`).join("")}</table></div>` : ""}
+      ${b.companeros.length ? `<p class="eyebrow" style="margin-top:8px">Compañeros que cambian (medido en partidos sin la baja)</p><div class="scroll"><table><tr><th>Jugador</th>${STATS_J.map(s => `<th>${lbl(s)}</th>`).join("")}</tr>${b.companeros.map(x => `<tr><td>${esc(x.jugador)} <span class="sub">sin ${esc(x.sin)}</span></td>${STATS_J.map(s => `<td class="n" data-sort="${x.despues[s] ?? ""}">${f2(x.antes[s])}→<b>${f2(x.despues[s])}</b></td>`).join("")}</tr>`).join("")}</table></div>` : ""}
       <p class="note">El volumen del ausente se reparte solo entre los que juegan, en proporción a lo que cada uno remata, pasa o recibe faltas: por eso suben las líneas de sus compañeros (en la pestaña Jugadores). El equipo pierde parte de ese volumen si el heredero es peor.</p></div>`;
   };
   el.innerHTML = `<div class="grid2">${one(L)}${one(V)}</div>`;
@@ -1019,14 +1087,20 @@ const quienTxt = k => k.tipo === "equipo" ? (k.jugador === "partido" ? "Total de
 const pickTxt = k => `${quienTxt(k)} · ${k.lado === "over" ? "Más de" : "Menos de"} ${String(k.linea).replace(".", ",")} ${STAT[k.stat].toLowerCase()}`;
 const quienBadge = k => k.tipo === "equipo" && k.jugador !== "partido" ? crest(k.jugador, 18) : k.tipo === "equipo" ? ic("over") : "";
 
-function tablaPicks(rows, conPartido) {
-  return `<div class="card scroll" style="padding:6px 10px"><table class="tpicks">
+function tablaPicks(rows, conPartido, scope = "picks") {
+  const cuenta = f => rows.reduce((a, k) => (a[f(k)] = (a[f(k)] || 0) + 1, a), {});
+  const nst = cuenta(k => k.stat), ntp = cuenta(k => k.tipo === "equipo" ? "equipo" : "jugador");
+  const conFiltro = rows.length >= 3;
+  const barra = conFiltro ? chipsBar(scope, "picks", [
+    ...(Object.keys(nst).length > 1 ? [["stat", "Estadística", [["all", `Todas <small>${rows.length}</small>`], ...Object.entries(nst).sort((a, b) => b[1] - a[1]).map(([st, n]) => [st, `${ic(st)}${esc(STAT[st] || st)} <small>${n}</small>`])]]] : []),
+    ["tipo", "Tipo de pick", [["equipo", `Equipo <small>${ntp.equipo || 0}</small>`, "", !ntp.equipo], ["jugador", `Jugador <small>${ntp.jugador || 0}</small>`, "", !ntp.jugador]]]]) : "";
+  return `${barra}<div class="card scroll" style="padding:6px 10px"><table class="tpicks" data-sort-key="${esc(scope)}"${conFiltro ? ` data-filtro="${esc(scope)}"` : ""}>
     <tr><th>Pick</th>${conPartido ? "<th>Partido</th>" : ""}<th title="Veces que se cumplió en los partidos recientes; tócalo para verlos">Se cumplió</th><th>Cuota</th><th title="Probabilidad según la simulación">Modelo</th><th title="Probabilidad que da la casa, sin su margen">Casa</th><th title="Mezcla de casa, modelo e histórico: la que se usa para el EV">Prob.</th><th title="Ganancia esperada por unidad apostada">EV</th></tr>
     ${rows.map(k => { const ki = reg(k), hn = hitPick(k);
-      return `<tr class="${k.error_cuota ? "err" : ""}"><td><span class="who" style="gap:6px;align-items:flex-start">${quienBadge(k)}<span>${ic(k.stat)}${esc(pickTxt(k))}${k.error_cuota ? ' <span class="tag hot">error de cuota</span>' : ""}${k.suplente_oro ? ' <span class="oro">★ oro</span>' : ""}
+      return `<tr class="${k.error_cuota ? "err" : ""}" data-f-stat="${esc(k.stat)}" data-f-tipo="${k.tipo === "equipo" ? "equipo" : "jugador"}"><td data-sort="${esc(pickTxt(k))}"><span class="who" style="gap:6px;align-items:flex-start">${quienBadge(k)}<span>${ic(k.stat)}${esc(pickTxt(k))}${k.error_cuota ? ' <span class="tag hot">error de cuota</span>' : ""}${k.suplente_oro ? ' <span class="oro">★ oro</span>' : ""}
           ${k.prom_hist != null ? `<span class="sub" style="display:block">promedio reciente ${f1(k.prom_hist)} · modelo espera ${f1(k.media_modelo)}</span>` : ""}</span></span>
           <div class="pk-act">${btnTake(ki)}${btnCmb(ki)}</div></td>
-        ${conPartido ? `<td><a href="#${esc(k.id)}">${esc(k.game)}</a><span class="sub" style="display:block">${esc(k.hora || "")}</span></td>` : ""}
+        ${conPartido ? `<td data-sort="${esc(k.fecha + " " + (k.hora || ""))}"><a href="#${esc(k.id)}">${esc(k.game)}</a><span class="sub" style="display:block">${esc(k.hora || "")}</span></td>` : ""}
         <td>${hn && hn.n ? hitBtn(hn, reg(() => cfgPick(k))) : "–"}</td>
         <td class="n"><b>${k.cuota.toFixed(2)}</b></td>
         <td class="p ${k.p_modelo >= .55 ? "hi" : ""}">${pct(k.p_modelo)}</td>
@@ -1054,8 +1128,8 @@ function picksPartido(d, el) {
   el.innerHTML = consHTML + `
     ${cc ? `<p class="note" style="margin:0 0 10px">Cuotas de ${esc(cc.casa)} capturadas ${esc((cc.capturado || "").replace("T", " "))} UTC${cc["1x2"] ? ` · 1X2 ${cc["1x2"].map(x => x.toFixed(2)).join(" / ")} (modelo: ${d.partido["1x2"].map(p => fair(p)).join(" / ")})` : ""}.</p>`
       : `<div class="card callout">Todavía no hay cuotas de la casa para este partido, así que no hay picks: el modelo nunca supone una cuota. En Resumen tienes la cuota justa de cada línea para comparar.</div>`}
-    ${cc ? `<h3 style="margin:6px 0 10px">Líneas recomendadas</h3>${val.length ? tablaPicks(val, false) : `<div class="card callout">Ninguna línea de este partido pasó los filtros (modelo e histórico a favor y EV ≥ 3%).</div>`}
-    <h3 style="margin:22px 0 10px">Errores de cuota</h3>${err.length ? tablaPicks(err, false) : `<p class="note">Ninguno en este partido.</p>`}` : ""}`;
+    ${cc ? `<h3 style="margin:6px 0 10px">Líneas recomendadas</h3>${val.length ? tablaPicks(val, false, "picks-partido") : `<div class="card callout">Ninguna línea de este partido pasó los filtros (modelo e histórico a favor y EV ≥ 3%).</div>`}
+    <h3 style="margin:22px 0 10px">Errores de cuota</h3>${err.length ? tablaPicks(err, false, "errores-partido") : `<p class="note">Ninguno en este partido.</p>`}` : ""}`;
   bindPicks(el, rows);
 }
 
@@ -1068,7 +1142,7 @@ async function rendimiento() {
   const kpi = (t, r) => `<div class="tile"><span>${t}</span><b>${r.n ? pct(r.acierto) : "–"}</b><span class="sub">${r.ganados}/${r.n} · ${sg(r.unidades)} u${r.n ? ` · ROI ${(r.roi * 100).toFixed(1)}%` : ""}</span></div>`;
   const tabla = (titulo, obj, nom) => `<div class="card scroll reveal" style="padding:6px 10px"><table>
       <tr><th style="text-align:left">${titulo}</th><th>Picks</th><th>Acierto</th><th>Prob. media</th><th>Cuota media</th><th>Unid.</th><th>ROI</th></tr>
-      ${Object.entries(obj).filter(([, r]) => r.n).map(([k, r]) => `<tr><td style="text-align:left">${nom(k)}</td><td class="n">${r.ganados}/${r.n}</td>
+      ${Object.entries(obj).filter(([, r]) => r.n).map(([k, r]) => `<tr><td style="text-align:left" data-sort="${esc(k)}">${nom(k)}</td><td class="n" data-sort="${r.n}">${r.ganados}/${r.n}</td>
         <td class="p">${pct(r.acierto)}</td><td class="n">${pct(r.p_media)}</td><td class="n">${f2(r.cuota_media)}</td>
         <td class="n" style="color:${r.unidades >= 0 ? "var(--ok, #138a4b)" : "var(--hot, #c62828)"}">${sg(r.unidades)}</td><td class="n">${(r.roi * 100).toFixed(1)}%</td></tr>`).join("")}</table></div>`;
   const C = R.calibracion_1x2 || {}, RES = ["Local", "Empate", "Visitante"];
@@ -1089,7 +1163,7 @@ async function rendimiento() {
     <div class="card scroll reveal" style="margin-top:10px;padding:6px 10px"><table>
       <tr><th style="text-align:left">Partido</th><th>Marcador</th><th>Modelo 1·X·2</th><th>Mercado 1·X·2</th><th>Acertó</th></tr>
       ${R.partidos.map(p => { const fav = p.modelo.indexOf(Math.max(...p.modelo));
-        return `<tr><td style="text-align:left"><span class="who" style="gap:6px">${crest(p.local, 18)}${esc(tname(p.local))} – ${esc(tname(p.visitante))}${crest(p.visitante, 18)}</span></td>
+        return `<tr><td style="text-align:left" data-sort="${esc(tname(p.local) + " " + tname(p.visitante))}"><span class="who" style="gap:6px">${crest(p.local, 18)}${esc(tname(p.local))} – ${esc(tname(p.visitante))}${crest(p.visitante, 18)}</span></td>
         <td class="n"><b>${esc(p.marcador)}</b></td><td class="n">${p.modelo.map((x, i) => i === p.resultado ? `<b>${pct(x)}</b>` : pct(x)).join(" · ")}</td>
         <td class="n">${p.mercado ? p.mercado.map((x, i) => i === p.resultado ? `<b>${pct(x)}</b>` : pct(x)).join(" · ") : "–"}</td>
         <td><span class="tag ${fav === p.resultado ? "ok" : "hot"}">${fav === p.resultado ? "sí" : "no"} · ${RES[p.resultado]}</span></td></tr>`; }).join("")}
@@ -1097,8 +1171,8 @@ async function rendimiento() {
     <div class="section" style="margin-top:22px"><h2>Picks liquidados</h2><span class="eyebrow">${R.picks.length}</span></div>
     <div class="card scroll reveal" style="padding:6px 10px"><table>
       <tr><th style="text-align:left">Pick</th><th>Partido</th><th>Cuota</th><th>Prob.</th><th>Real</th><th>Estado</th><th>Unid.</th></tr>
-      ${R.picks.map(k => `<tr><td style="text-align:left;white-space:normal">${ic(k.stat)}${esc(pickTxt(k))}${k.error_cuota ? ' <span class="tag hot">error</span>' : ""}</td>
-        <td>${esc(tname(k.local))} – ${esc(tname(k.visitante))}<br><span class="sub">${esc(fecha(k.fecha))}</span></td>
+      ${R.picks.map(k => `<tr><td style="text-align:left;white-space:normal" data-sort="${esc(pickTxt(k))}">${ic(k.stat)}${esc(pickTxt(k))}${k.error_cuota ? ' <span class="tag hot">error</span>' : ""}</td>
+        <td data-sort="${esc(k.fecha)}">${esc(tname(k.local))} – ${esc(tname(k.visitante))}<br><span class="sub">${esc(fecha(k.fecha))}</span></td>
         <td class="n">${f2(k.cuota)}</td><td class="p">${pct(k.p)}</td><td class="n">${k.real ?? "–"}</td>
         <td><span class="tag ${k.estado === "ganado" ? "ok" : k.estado === "perdido" ? "hot" : ""}">${k.estado}</span></td><td class="n">${sg(k.u)}</td></tr>`).join("")}
     </table></div>`;
@@ -1141,7 +1215,7 @@ async function misPicks() {
     <p class="note">Apuesta de 1 unidad por pick o combinada. Se liquidan solos con el resultado real cuando el partido entra al histórico (por ahora solo las líneas de equipo; las de jugador quedan "sin datos").</p>` : ""}
     ${v.length ? `<div class="card scroll reveal" style="margin-top:14px;padding:6px 10px"><table class="tfija">
       <tr><th>Pick</th><th>Partido</th><th>Cuota</th><th>Prob.</th><th>Estado</th><th>Real</th><th>Unid.</th><th></th></tr>
-      ${L.map(k => `<tr><td style="text-align:left;white-space:normal;min-width:180px">${ic(k.stat)}${esc(pickTxt(k))}${k.error_cuota ? ' <span class="tag hot">error</span>' : ""}${k.estado === "pendiente" ? `<div class="pk-act">${btnCmb(reg(k))}</div>` : ""}</td><td>${IDX.partidos.some(p => p.id === k.id) ? `<a href="#${esc(k.id)}">${esc(k.game)}</a>` : esc(k.game)}</td>
+      ${L.map(k => `<tr><td style="text-align:left;white-space:normal;min-width:180px" data-sort="${esc(pickTxt(k))}">${ic(k.stat)}${esc(pickTxt(k))}${k.error_cuota ? ' <span class="tag hot">error</span>' : ""}${k.estado === "pendiente" ? `<div class="pk-act">${btnCmb(reg(k))}</div>` : ""}</td><td>${IDX.partidos.some(p => p.id === k.id) ? `<a href="#${esc(k.id)}">${esc(k.game)}</a>` : esc(k.game)}</td>
         <td class="n">${(+k.cuota).toFixed(2)}</td><td class="p">${pct(k.p)}</td>
         <td>${tagE(k.estado)}</td>
         <td class="n">${k.real ?? "–"}</td><td class="n">${k.u != null ? (k.u >= 0 ? "+" : "") + k.u.toFixed(2) : "–"}</td>
@@ -1184,7 +1258,7 @@ function alineaciones(d, el) {
       <div class="campo">${lineas.slice().reverse().map(fila).join("")}</div>
       <div class="banco"><h4 style="margin:0 0 4px;font:600 13px var(--display);letter-spacing:.06em;text-transform:uppercase">Suplentes · ${sup.length}</h4>
         <div class="scroll"><table><tr><th>Jugador</th><th title="Probabilidad de que entre al partido">Entra</th><th title="Minutos esperados si entra">Min.</th></tr>
-        ${sup.sort((a, b) => b.p_juega - a.p_juega).map(j => `<tr class="prow" data-jug="${reg({d, t: c, j})}"><td><button type="button" class="jbtn who" style="gap:8px" data-jug="${reg({d, t: c, j})}">${foto(j.id, j.nombre, c, 28)}<span>${j.dorsal != null ? `<span class="sub">${j.dorsal} · </span>` : ""}${esc(j.nombre)}${posTag(j.pos)}</span></button></td><td class="p ${j.p_juega >= .5 ? "hi" : ""}">${pct(j.p_juega)}</td><td class="n">${j.p_juega > 0 ? f1(j.min_medio) : "–"}</td></tr>`).join("")}</table></div></div>
+        ${sup.sort((a, b) => b.p_juega - a.p_juega).map(j => `<tr class="prow" data-jug="${reg({d, t: c, j})}"><td data-sort="${esc(j.nombre)}"><button type="button" class="jbtn who" style="gap:8px" data-jug="${reg({d, t: c, j})}">${foto(j.id, j.nombre, c, 28)}<span>${j.dorsal != null ? `<span class="sub">${j.dorsal} · </span>` : ""}${esc(j.nombre)}${posTag(j.pos)}</span></button></td><td class="p ${j.p_juega >= .5 ? "hi" : ""}">${pct(j.p_juega)}</td><td class="n">${j.p_juega > 0 ? f1(j.min_medio) : "–"}</td></tr>`).join("")}</table></div></div>
       ${fuera.size ? `<p class="note">No juegan: ${[...fuera].map(esc).join(", ")} (ver Bajas).</p>` : ""}
     </div>`;
   };
@@ -1299,7 +1373,7 @@ function abrirJugador(d, t, j) {
   const COLS = [["min", "Min.", "Minutos jugados"], ["remates", "Rem.", "Remates"], ["remates_puerta", "Pta.", "Remates a puerta"], ["faltas_cometidas", "F. com.", "Faltas cometidas"], ["faltas_recibidas", "F. rec.", "Faltas recibidas"], ["pases", "Pases", "Pases"], ["amarillas", "Amar.", "Amarillas"]];
   const media = k => u.length ? u.reduce((a, r) => a + (r[c(k)] || 0), 0) / u.length : null;
   const ult = u.length ? `<div class="scroll"><table class="jult tfija"><tr><th>Partido</th>${COLS.map(([k, n, tt]) => `<th title="${tt}">${n}</th>`).join("")}</tr>
-      ${u.map(r => `<tr><td>${esc(r[c("fecha")].slice(8, 10) + "/" + r[c("fecha")].slice(5, 7))} ${r[c("local")] ? "vs" : "en"} <b>${esc(r[c("rival")])}</b>${r[c("titular")] ? "" : ' <span class="sub" title="Entró desde el banco">(s)</span>'}</td>${COLS.map(([k]) => `<td class="n">${r[c(k)] ?? "–"}${k === "min" ? "'" : ""}</td>`).join("")}</tr>`).join("")}
+      ${u.map(r => `<tr><td data-sort="${esc(r[c("fecha")])}">${esc(r[c("fecha")].slice(8, 10) + "/" + r[c("fecha")].slice(5, 7))} ${r[c("local")] ? "vs" : "en"} <b>${esc(r[c("rival")])}</b>${r[c("titular")] ? "" : ' <span class="sub" title="Entró desde el banco">(s)</span>'}</td>${COLS.map(([k]) => `<td class="n">${r[c(k)] ?? "–"}${k === "min" ? "'" : ""}</td>`).join("")}</tr>`).join("")}
       <tr class="avg"><td>Media</td>${COLS.map(([k]) => `<td class="n">${k === "min" || k === "pases" ? Math.round(media(k)) : f1(media(k))}</td>`).join("")}</tr></table></div>`
     : `<p class="note">Sin partidos jugados en nuestro histórico (o este archivo del partido no trae el detalle).</p>`;
   const lin = STATS_J.filter(s => j.stats[s]).map(s => { const st = j.stats[s], ser = seriesJugador(d, t, j, s);
@@ -1504,6 +1578,185 @@ $("#avisos-btn").onclick = async () => {
 };
 $("#avisos-x").onclick = () => avDlg.close();
 avDlg.addEventListener("click", e => { if (e.target === avDlg) avDlg.close(); });
+
+/* ---------- tablas ordenables y filtros rápidos: se aplican solos a toda tabla que se pinte (también a las futuras) ----------
+   Encabezado → mayor a menor → menor a mayor → orden original (texto: A→Z primero). Se ordena por el valor real de la celda:
+   data-sort si lo tiene; si no, x/y por su razón y el primer número del texto (porcentajes, cuotas, "Más de 2,5"). "–" va siempre al final.
+   Filas que acompañan: tr.ficha / tr[data-sigue] van con la fila de arriba; tr.avg / tr[data-pin] quedan abajo; tr.grp (títulos de grupo) se ocultan al ordenar.
+   Filtros: una barra .filtros[data-filtro=X] con chips data-fg/data-fv filtra la tabla table[data-filtro=X] por sus filas data-f-<grupo>. */
+const sess = {get(k) { try { return JSON.parse(sessionStorage.getItem(k) || "{}") || {}; } catch (e) { return {}; } },
+  set(k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }};
+const ORD = sess.get("sap-orden"), FILT = sess.get("sap-filtros");
+const REDUCE = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+const thTxt = th => th.textContent.replace(/\s+/g, " ").trim();
+const esFila = tr => [...tr.cells].some(c => c.tagName === "TD") && !tr.classList.contains("grp") && !tr.classList.contains("f-vacio");
+const esSigue = tr => tr.classList.contains("ficha") || tr.hasAttribute("data-sigue");
+const esFija = tr => tr.classList.contains("avg") || tr.hasAttribute("data-pin");
+const filasDe = tb => [...tb.rows].slice(1);
+const FLECHA = `<svg class="th-a" viewBox="0 0 7 11" aria-hidden="true"><path class="up" d="M3.5 0L7 4.2H0z"/><path class="dn" d="M3.5 11L0 6.8h7z"/></svg>`;
+function valorCelda(td) {
+  if (!td) return null;
+  const ds = td.getAttribute("data-sort");
+  if (ds != null) { if (ds === "") return null; const n = Number(ds); return isNaN(n) ? ds.toLowerCase() : n; }
+  const t = td.textContent.replace(/\s+/g, " ").trim();
+  if (!t || /^[–—-]+$/.test(t)) return null;
+  let m = t.match(/(\d+)\s*\/\s*(\d+)/);
+  if (m) return +m[2] ? +m[1] / +m[2] : null;
+  m = t.match(/[-−+]?\d+(?:[.,]\d+)?/);
+  return m ? parseFloat(m[0].replace("−", "-").replace(",", ".")) : t.toLowerCase();
+}
+const colPct = (tb, i) => filasDe(tb).some(r => esFila(r) && r.cells[i] && /%/.test(r.cells[i].textContent));
+function ordenable(tb) {
+  tb.dataset.ord = "1";
+  if (tb.matches(".heat, [data-nosort]")) return;
+  const head = tb.rows[0];
+  if (!head || !head.cells.length || [...head.cells].some(c => c.tagName !== "TH")) return;
+  const filas = filasDe(tb), datos = filas.filter(r => esFila(r) && !esSigue(r) && !esFija(r));
+  if (datos.length < 2) return;
+  filas.forEach((r, i) => { r._o = i; });
+  tb._key = tb.dataset.sortKey || [...head.cells].map(thTxt).join("|");
+  [...head.cells].forEach((th, i) => {
+    const lab = thTxt(th);
+    if (!lab || th.colSpan > 1) return;
+    const vals = datos.map(r => valorCelda(r.cells[i])).filter(v => v != null);
+    if (vals.length < 2) return;
+    const num = vals.filter(v => typeof v === "number").length >= vals.length / 2;
+    th.classList.add("ord"); th.dataset.tipo = num ? "n" : "t"; th.setAttribute("aria-sort", "none");
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "th-o";
+    if (!th.title) b.title = `Ordenar por ${lab}`;
+    while (th.firstChild) b.appendChild(th.firstChild);
+    b.insertAdjacentHTML("beforeend", FLECHA);
+    th.appendChild(b);
+    b.addEventListener("click", () => {
+      const prim = num ? "desc" : "asc", seg = prim === "desc" ? "asc" : "desc";
+      const cur = tb._ordCol === i ? tb._ordDir : null;
+      ordenar(tb, i, cur == null ? prim : cur === prim ? seg : null, true);
+    });
+  });
+  const st = ORD[tb._key];
+  if (st) { const i = [...head.cells].findIndex(th => th.classList.contains("ord") && thTxt(th) === st.c); if (i >= 0) ordenar(tb, i, st.d, false); }
+}
+function ordenar(tb, i, dir, porUsuario) {
+  const head = tb.rows[0], th = head.cells[i], filas = filasDe(tb), body = (filas[0] || head).parentNode;
+  const unidades = [], fijas = [], grupos = [], vac = filas.filter(r => r.classList.contains("f-vacio"));
+  filas.forEach(r => {
+    if (r.classList.contains("f-vacio")) return;
+    if (r.classList.contains("grp")) grupos.push(r);
+    else if (esFija(r)) fijas.push(r);
+    else if (esSigue(r) && unidades.length) unidades[unidades.length - 1].rows.push(r);
+    else unidades.push({rows: [r], v: valorCelda(r.cells[i]), o: r._o});
+  });
+  const frag = document.createDocumentFragment();
+  if (dir) {
+    const num = th.dataset.tipo === "n", sg = dir === "desc" ? -1 : 1;
+    unidades.forEach(u => { if (num && typeof u.v !== "number") u.v = null; else if (!num && u.v != null) u.v = String(u.v); });
+    unidades.sort((a, b) => a.v == null ? (b.v == null ? a.o - b.o : 1) : b.v == null ? -1
+      : ((num ? a.v - b.v : a.v.localeCompare(b.v, "es", {numeric: true, sensitivity: "base"})) * sg || a.o - b.o));
+    unidades.forEach(u => u.rows.forEach(r => frag.appendChild(r)));
+    fijas.concat(grupos).forEach(r => frag.appendChild(r));
+  } else filas.filter(r => !r.classList.contains("f-vacio")).sort((a, b) => a._o - b._o).forEach(r => frag.appendChild(r));
+  vac.forEach(r => frag.appendChild(r));
+  body.appendChild(frag);
+  tb._ordCol = dir ? i : null; tb._ordDir = dir || null;
+  tb.classList.toggle("ordenada", !!dir);
+  [...head.cells].forEach((h, k) => { if (h.classList.contains("ord")) h.setAttribute("aria-sort", k === i && dir ? (dir === "desc" ? "descending" : "ascending") : "none"); });
+  filasDe(tb).forEach(r => { if (esFila(r)) [...r.cells].forEach((c, k) => c.classList.toggle("ord-c", !!dir && k === i)); });
+  if (porUsuario) {
+    if (dir) ORD[tb._key] = {c: thTxt(th), d: dir}; else delete ORD[tb._key];
+    sess.set("sap-orden", ORD);
+    if (!REDUCE()) { body.classList.remove("ord-anim"); void body.offsetWidth; body.classList.add("ord-anim"); clearTimeout(body._t); body._t = setTimeout(() => body.classList.remove("ord-anim"), 400); }
+  }
+  if (tb.dataset.filtro) aplicarFiltros(tb.dataset.filtro);
+}
+const fNorm = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+const filtroDe = sc => FILT[sc] || (FILT[sc] = {});
+const activo = v => v != null && v !== "" && v !== "all";
+function aplicarFiltros(scope) {
+  const st = filtroDe(scope), q = fNorm(st.q), tbs = [...document.querySelectorAll(`table[data-filtro="${scope}"]`)];
+  let vis = 0, tot = 0, minOk = false, minLab = "";
+  tbs.forEach(tb => {
+    const head = tb.rows[0], i = tb._ordCol;
+    const pctOk = i != null && colPct(tb, i);
+    if (pctOk) { minOk = true; minLab = thTxt(head.cells[i]); }
+    const minV = activo(st.min) && pctOk ? +st.min : null;
+    let prev = true, v = 0, t = 0;
+    filasDe(tb).forEach(r => {
+      if (r.classList.contains("grp") || r.classList.contains("f-vacio")) return;
+      if (esFija(r)) return;
+      if (esSigue(r)) { r.classList.toggle("f-out", !prev); return; }
+      let ok = true;
+      for (const [g, val] of Object.entries(st)) {
+        if (g === "q" || g === "min" || !activo(val)) continue;
+        const a = r.getAttribute("data-f-" + g);
+        if (a != null && !a.split(" ").includes(String(val))) { ok = false; break; }
+      }
+      if (ok && q) ok = fNorm(r.getAttribute("data-fq") ?? (r.cells[0] || {}).textContent).includes(q);
+      if (ok && minV != null) { const x = valorCelda(r.cells[i]); ok = typeof x === "number" && x >= minV; }
+      r.classList.toggle("f-out", !ok); prev = ok; t++; if (ok) v++;
+    });
+    if (i == null) {   // sin orden: cada título de grupo muestra cuántos quedan (y se esconde si ninguno)
+      let g = null, n = 0;
+      const cerrar = () => { if (g) { g.classList.toggle("f-out", !n); const sm = g.querySelector("small"); if (sm) sm.textContent = n; } };
+      filasDe(tb).forEach(r => { if (r.classList.contains("grp")) { cerrar(); g = r; n = 0; } else if (esFila(r) && !esSigue(r) && !esFija(r) && !r.classList.contains("f-out")) n++; });
+      cerrar();
+    }
+    let vr = tb.querySelector("tr.f-vacio");
+    if (t && !v) {
+      if (!vr) { vr = document.createElement("tr"); vr.className = "f-vacio"; vr.innerHTML = `<td colspan="${head.cells.length}">Nada cumple estos filtros. <button type="button" class="fchip" data-freset="${esc(scope)}">Quitar filtros</button></td>`; }
+      (filasDe(tb)[0] || head).parentNode.appendChild(vr);
+    } else if (vr) vr.remove();
+    vis += v; tot += t;
+  });
+  const hay = Object.entries(st).some(([g, val]) => g === "q" ? !!q : g === "min" ? activo(val) && minOk : activo(val));
+  document.querySelectorAll(`.filtros[data-filtro="${scope}"]`).forEach(bar => {
+    bar.querySelectorAll(".fchip[data-fg]").forEach(c => {
+      const g = c.dataset.fg, val = st[g] ?? "all";
+      if (c.hasAttribute("data-min")) {
+        c.disabled = !minOk;
+        (c.querySelector(".ml") || c).textContent = minOk ? `≥ ${c.dataset.fv}% en «${minLab}»` : `≥ ${c.dataset.fv}% (ordena por una columna de %)`;
+        c.title = minOk ? `Solo filas con al menos ${c.dataset.fv}% en la columna «${minLab}»` : "Toca el encabezado de una columna de % (Titular, 1+…) para usar este filtro";
+        c.setAttribute("aria-pressed", String(minOk && activo(val)));
+      } else c.setAttribute("aria-pressed", String(String(val) === c.dataset.fv));
+    });
+    const inp = bar.querySelector(".fq");
+    if (inp && document.activeElement !== inp && inp.value !== (st.q || "")) inp.value = st.q || "";
+    const cnt = bar.querySelector(".f-cnt");
+    if (cnt) cnt.innerHTML = tot ? `${hay ? `${vis} de ${tot}` : `${tot}`} ${bar.dataset.unidad || "filas"}${hay ? `<button type="button" data-freset="${esc(scope)}">quitar filtros</button>` : ""}` : "";
+  });
+}
+function ordenables(root = document) {
+  const scopes = new Set();
+  root.querySelectorAll("table:not([data-ord])").forEach(tb => { ordenable(tb); if (tb.dataset.filtro) scopes.add(tb.dataset.filtro); });
+  scopes.forEach(aplicarFiltros);
+}
+new MutationObserver(() => ordenables()).observe(document.body, {childList: true, subtree: true});
+document.addEventListener("click", e => {
+  const c = e.target.closest(".fchip[data-fg]");
+  if (c && !c.disabled) {
+    const sc = c.closest("[data-filtro]").dataset.filtro, st = filtroDe(sc), g = c.dataset.fg, v = c.dataset.fv;
+    st[g] = String(st[g] ?? "all") === v && v !== "all" ? "all" : v;
+    sess.set("sap-filtros", FILT); aplicarFiltros(sc); return;
+  }
+  const r = e.target.closest("[data-freset]");
+  if (r) { e.preventDefault(); FILT[r.dataset.freset] = {}; sess.set("sap-filtros", FILT); aplicarFiltros(r.dataset.freset); }
+});
+document.addEventListener("input", e => {
+  if (!e.target.matches(".fq")) return;
+  const sc = e.target.closest("[data-filtro]").dataset.filtro;
+  filtroDe(sc).q = e.target.value; sess.set("sap-filtros", FILT); aplicarFiltros(sc);
+});
+// Barra de chips: grupos [[clave, etiqueta-aria, [[valor, html, clase, deshabilitado]]]]
+const chipsBar = (scope, unidad, grupos, extra = "") => `<div class="filtros" data-filtro="${esc(scope)}" data-unidad="${esc(unidad)}">${grupos.map(([g, aria, ops]) =>
+  `<div class="fgrp" role="group" aria-label="${esc(aria)}">${ops.map(([v, h, cl, dis]) => `<button type="button" class="fchip ${cl || ""}" data-fg="${g}" data-fv="${esc(v)}" aria-pressed="false"${g === "min" ? " data-min" : ""}${dis ? " disabled" : ""}>${h}</button>`).join("")}</div>`).join("")}${extra}<span class="f-cnt" aria-live="polite"></span></div>`;
+
+/* ---------- volver arriba: aparece tras bajar 600 px ---------- */
+const arriba = $("#arriba");
+let arrTick = false;
+const arrSync = () => { arrTick = false; arriba.classList.toggle("on", scrollY > 600); };
+addEventListener("scroll", () => { if (!arrTick) { arrTick = true; requestAnimationFrame(arrSync); } }, {passive: true});
+arriba.onclick = () => { scrollTo({top: 0, behavior: REDUCE() ? "auto" : "smooth"}); $("#main").focus({preventScroll: true}); };
+arrSync();
 
 actualizarMine();
 pintarCombi();
