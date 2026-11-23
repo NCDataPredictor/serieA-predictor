@@ -249,12 +249,21 @@ def main():
     ap.add_argument("liga", choices=list(LIGAS))
     ap.add_argument("fecha", nargs="?")
     ap.add_argument("--sims", type=int, default=P.SIMS)
+    ap.add_argument("--solo-futuros", action="store_true",
+                    help="solo partidos que no han empezado (lo publicado de los empezados queda congelado)")
     a = ap.parse_args()
     cfg = LIGAS[a.liga]
     hist = cargar(os.path.join(RAIZ, "futbol", a.liga, "historico", "*.json"))
     partidos = cargar(os.path.join(RAIZ, "futbol", a.liga, "partidos", "*.json"))
     if a.fecha:
         partidos = [p for p in partidos if p["match"]["fecha"] == a.fecha]
+    if a.solo_futuros:
+        ahora = datetime.now(timezone.utc)
+        partidos = [p for p in partidos if not p["match"].get("utc")
+                    or datetime.fromisoformat(p["match"]["utc"].replace("Z", "+00:00")) > ahora]
+        if not partidos:
+            print("No hay partidos por empezar: no se re-simula nada.")
+            return
     outdir = os.path.join(RAIZ, "docs", cfg["web"], "data")
     os.makedirs(outdir, exist_ok=True)
     idx_path = os.path.join(outdir, "index.json")
