@@ -14,6 +14,7 @@ import json
 import os
 import subprocess
 import urllib.request
+from datetime import datetime, timezone
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONF = os.path.join(RAIZ, "docs", "push.json")
@@ -90,7 +91,7 @@ def main():
     a = ap.parse_args()
     site = _cargar(CONF, {}).get("site", "https://ncdatapredictor.pages.dev/")
     if a.test is not None:
-        enviar("serie_a", "⚽ Serie A · NCData Predictor", a.test or "Prueba: así te llegará un aviso de la Serie A.", site + "serie-a/", "prueba", site + "serie-a/icons/icon-192.png")
+        enviar("serie_a", "⚽ Serie A · NCData Predictor", a.test or "Prueba: así te llegará un aviso de la Serie A.", site + "serie-a/", "prueba-" + datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S"), site + "serie-a/icons/icon-192.png")
         return
     for web, cfg in LIGAS.items():
         rel = f"docs/{web}/data/index.json"
