@@ -23,6 +23,8 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main            # lo último de main (no el commit que disparó la corrida)
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -75,7 +77,7 @@ jobs:
           JSON
           git add futbol/serie_a/nube/estado.json
           git commit -m "Jornada en la nube: datos, cuotas y simulación ($(date -u +%H:%M) UTC)"
-          git pull --rebase origin main
+          git pull --rebase -X theirs origin main   # si chocan los datos generados, gana esta corrida (es la más nueva)
           BEFORE=$(git rev-parse HEAD~1)
           git push origin HEAD:main
           # Los push hechos con el token de Actions no disparan otras acciones: los avisos se mandan aquí mismo.
