@@ -17,7 +17,9 @@ import urllib.request
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONF = os.path.join(RAIZ, "docs", "push.json")
-LIGAS = {"serie-a": {"tag": "serie_a", "nombre": "Serie A"}}
+# Cada liga con su tag, su emoji en el título y su ícono (docs/<web>/icons/icon-192.png): así se distingue el aviso
+# de un vistazo. Para una liga nueva: una entrada más aquí + su ícono.
+LIGAS = {"serie-a": {"tag": "serie_a", "nombre": "Serie A", "emoji": "⚽"}}
 
 
 def _cargar(path, default):
@@ -36,7 +38,7 @@ def _git(ref, rel):
         return {}
 
 
-def enviar(tag, titulo, texto, url, ident):
+def enviar(tag, titulo, texto, url, ident, icono=None):
     conf = _cargar(CONF, {})
     app, key = conf.get("onesignal_app_id"), os.environ.get("ONESIGNAL_REST_API_KEY")
     if not app or not key:
@@ -46,7 +48,7 @@ def enviar(tag, titulo, texto, url, ident):
     payload = {"app_id": app, "target_channel": "push",
                "filters": [{"field": "tag", "key": tag, "relation": "=", "value": "1"}],
                "headings": {"en": titulo, "es": titulo}, "contents": {"en": texto, "es": texto}, "web_url": url,
-               "chrome_web_icon": conf.get("site", "") + "icons/icon-192.png", "web_push_topic": ident[:60],
+               "chrome_web_icon": icono or conf.get("site", "") + "icons/icon-192.png", "firefox_icon": icono or conf.get("site", "") + "icons/icon-192.png", "web_push_topic": ident[:60],
                "idempotency_key": f"{uid[:8]}-{uid[8:12]}-4{uid[13:16]}-a{uid[17:20]}-{uid[20:32]}"}
     req = urllib.request.Request("https://api.onesignal.com/notifications", data=json.dumps(payload).encode(),
                                  headers={"Content-Type": "application/json", "Authorization": f"Key {key}"})
@@ -71,13 +73,13 @@ def avisos(web, antes, ahora):
         if nueva or (n_ahora and not n_antes):
             ne = sum(pb[i].get("n_errores", 0) for i in ids)
             texto = f"{len(ids)} partidos simulados" + (f" · {n_ahora} picks con valor" if n_ahora else " · picks cuando lleguen las cuotas") + (f" · {ne} errores de cuota" if ne else "")
-            out.append((f"{cfg['nombre']} · Jornada {j} lista", texto, "", f"{web}-j{j}-{'picks' if n_ahora else 'sim'}"))
+            out.append((f"{cfg['emoji']} {cfg['nombre']} · Jornada {j} lista", texto, "", f"{web}-j{j}-{'picks' if n_ahora else 'sim'}"))
     for i, p in pb.items():
         ofi = all(v == "oficial" for v in (p.get("alineacion") or {}).values()) and p.get("alineacion")
         antes_ofi = all(v == "oficial" for v in ((pa.get(i) or {}).get("alineacion") or {}).values()) and (pa.get(i) or {}).get("alineacion")
         if ofi and not antes_ofi:
             texto = f"{p['local']}–{p['visitante']} · {p.get('hora_bogota', '')} Bogotá. Revisa titulares y picks antes del partido" + (f" ({p.get('n_picks')} picks)." if p.get("n_picks") else ".")
-            out.append((f"{cfg['nombre']} · Alineaciones confirmadas", texto, "#" + i, f"{web}-xi-{i}"))
+            out.append((f"{cfg['emoji']} {cfg['nombre']} · Alineaciones confirmadas", texto, "#" + i, f"{web}-xi-{i}"))
     return out
 
 
@@ -88,14 +90,14 @@ def main():
     a = ap.parse_args()
     site = _cargar(CONF, {}).get("site", "https://ncdatapredictor.pages.dev/")
     if a.test is not None:
-        enviar("serie_a", "NCData Predictor · Serie A", a.test or "Prueba: así te llegará un aviso de la Serie A.", site + "serie-a/", "prueba")
+        enviar("serie_a", "⚽ Serie A · NCData Predictor", a.test or "Prueba: así te llegará un aviso de la Serie A.", site + "serie-a/", "prueba", site + "serie-a/icons/icon-192.png")
         return
     for web, cfg in LIGAS.items():
         rel = f"docs/{web}/data/index.json"
         antes = _git(a.before, rel) if a.before and set(a.before) != {"0"} else {}
         ahora = _cargar(os.path.join(RAIZ, rel), {})
         for titulo, texto, ancla, ident in avisos(web, antes, ahora):
-            enviar(cfg["tag"], titulo, texto, site + web + "/" + ancla, ident)
+            enviar(cfg["tag"], titulo, texto, site + web + "/" + ancla, ident, site + web + "/icons/icon-192.png")
 
 
 if __name__ == "__main__":
