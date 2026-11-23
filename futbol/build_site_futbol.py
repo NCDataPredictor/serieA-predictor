@@ -284,6 +284,9 @@ def main():
             cu["equipo"] = list(cu.get("equipo") or []) + betano.cuotas_equipo(p, extracto)
             p = {**p, "cuotas": cu}
         res = predecir(a.liga, p, hist, a.sims)
+        cons = _consenso(a.liga, res["id"])
+        if cons:
+            res["consenso"] = cons
         if extracto:
             mk = extracto.get("mercados") or {}
             res["cuotas_casa"] = {"casa": extracto.get("casa"), "capturado": extracto.get("capturado"),
@@ -307,6 +310,22 @@ def main():
                             "equipos": {t: {k: v for k, v in e.items() if k in STATS_RESULTADO} for t, e in x["equipos"].items()}}
     with open(os.path.join(outdir, "resultados.json"), "w", encoding="utf-8") as fh:
         json.dump({"actualizado": idx["actualizado"], "partidos": jugados}, fh, ensure_ascii=False, separators=(",", ":"))
+
+
+def _consenso(liga, pid):
+    """Última foto del consenso de casas (futbol/<liga>/consenso/*.json, de The Odds API) para ese partido."""
+    for f in sorted(glob.glob(os.path.join(RAIZ, "futbol", liga, "consenso", "*.json")), reverse=True):
+        with open(f, encoding="utf-8") as fh:
+            fotos = json.load(fh)
+        for foto in reversed(fotos):
+            p = (foto.get("partidos") or {}).get(pid)
+            if p:
+                out = {"hora": foto["hora"]}
+                for k, v in p.items():
+                    if k == "1x2" or k == "goles 2.5":
+                        out[k] = {x: v[x] for x in ("n", "mejor", "consenso", "pinnacle")}
+                return out
+    return None
 
 
 STATS_RESULTADO = ("goles", "corners", "amarillas", "rojas", "faltas", "remates", "remates_puerta", "offsides")

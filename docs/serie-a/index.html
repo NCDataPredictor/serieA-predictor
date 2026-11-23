@@ -834,7 +834,17 @@ function picksPartido(d, el) {
   const rows = d.picks.map(k => ({...k, id: d.id, game: d.match.local + "–" + d.match.visitante, fecha: d.match.fecha, hora: d.match.hora_bogota}));
   const val = rows.filter(k => !k.error_cuota), err = rows.filter(k => k.error_cuota);
   const cc = d.cuotas_casa;
-  el.innerHTML = `
+  const cs = d.consenso, row = (lab, mod, x, labs) => x ? `<tr><td>${lab}</td>${labs.map((l, i) => `<td class="n">${pct(mod[i])}</td><td class="n">${pct(x.consenso[i])}</td><td class="n">${x.pinnacle ? pct(x.pinnacle[i]) : "–"}</td><td class="n"><b>${x.mejor[i].toFixed(2)}</b></td><td class="n ${mod[i] * x.mejor[i] - 1 > 0 ? "pos" : ""}">${((mod[i] * x.mejor[i] - 1) * 100).toFixed(1)}%</td>`).join("</tr><tr><td></td>")}</tr>` : "";
+  const g25 = (d.partido.total_goles.over.find(o => o[0] === 2.5) || [0, null])[1];
+  const consHTML = cs ? `<h3 style="margin:6px 0 6px">Modelo contra el mercado</h3>
+    <div class="card scroll" style="padding:6px 10px;margin-bottom:14px"><table><tr><th>Mercado</th><th>Modelo</th><th title="Promedio de las casas, sin su margen">Consenso${cs["1x2"] ? ` · ${cs["1x2"].n} casas` : ""}</th><th title="La casa de referencia del mercado">Pinnacle</th><th title="La mejor cuota entre todas las casas">Mejor cuota</th><th title="Modelo × mejor cuota − 1">EV</th></tr>
+      ${row("1 · " + esc(d.match.local), [d.partido["1x2"][0]], cs["1x2"] && {...cs["1x2"], consenso: [cs["1x2"].consenso[0]], pinnacle: cs["1x2"].pinnacle && [cs["1x2"].pinnacle[0]], mejor: [cs["1x2"].mejor[0]]}, [0])}
+      ${row("X · empate", [d.partido["1x2"][1]], cs["1x2"] && {...cs["1x2"], consenso: [cs["1x2"].consenso[1]], pinnacle: cs["1x2"].pinnacle && [cs["1x2"].pinnacle[1]], mejor: [cs["1x2"].mejor[1]]}, [0])}
+      ${row("2 · " + esc(d.match.visitante), [d.partido["1x2"][2]], cs["1x2"] && {...cs["1x2"], consenso: [cs["1x2"].consenso[2]], pinnacle: cs["1x2"].pinnacle && [cs["1x2"].pinnacle[2]], mejor: [cs["1x2"].mejor[2]]}, [0])}
+      ${g25 != null ? row("Más de 2,5 goles", [g25], cs["goles 2.5"] && {...cs["goles 2.5"], consenso: [cs["goles 2.5"].consenso[0]], pinnacle: cs["goles 2.5"].pinnacle && [cs["goles 2.5"].pinnacle[0]], mejor: [cs["goles 2.5"].mejor[0]]}, [0]) : ""}
+      ${g25 != null ? row("Menos de 2,5 goles", [1 - g25], cs["goles 2.5"] && {...cs["goles 2.5"], consenso: [cs["goles 2.5"].consenso[1]], pinnacle: cs["goles 2.5"].pinnacle && [cs["goles 2.5"].pinnacle[1]], mejor: [cs["goles 2.5"].mejor[1]]}, [0]) : ""}
+    </table></div><p class="note" style="margin-top:-8px">Casas de EE. UU. y Europa (DraftKings, FanDuel, BetMGM, Pinnacle, Unibet…) vía The Odds API, ${esc((cs.hora || "").replace("T", " "))} UTC. Si el modelo se aleja mucho de Pinnacle, lo más probable es que el que se equivoca sea el modelo.</p>` : "";
+  el.innerHTML = consHTML + `
     ${cc ? `<p class="note" style="margin:0 0 10px">Cuotas de ${esc(cc.casa)} capturadas ${esc((cc.capturado || "").replace("T", " "))} UTC${cc["1x2"] ? ` · 1X2 ${cc["1x2"].map(x => x.toFixed(2)).join(" / ")} (modelo: ${d.partido["1x2"].map(p => fair(p)).join(" / ")})` : ""}.</p>`
       : `<div class="card callout">Todavía no hay cuotas de la casa para este partido, así que no hay picks: el modelo nunca supone una cuota. En Resumen tienes la cuota justa de cada línea para comparar.</div>`}
     ${cc ? `<h3 style="margin:6px 0 10px">Líneas recomendadas</h3>${val.length ? tablaPicks(val, false) : `<div class="card callout">Ninguna línea de este partido pasó los filtros (modelo e histórico a favor y EV ≥ 3%).</div>`}
