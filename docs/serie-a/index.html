@@ -3,7 +3,7 @@
 <link rel="apple-touch-icon" href="/icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="NCData">
-<script>if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("/sw.js", {scope: "/"}).catch(() => {}));</script>
+<script>if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("/OneSignalSDKWorker.js", {scope: "/"}).catch(() => {}));</script>
 
 <title>Serie A Predictor</title>
 <meta name="theme-color" content="#1a1659">
@@ -286,9 +286,9 @@ h2 .ico { vertical-align: -0.12em }
 .banner .inner { flex-wrap: wrap }
 .back-btn { margin-right: -6px }
 button.home-link { cursor: pointer }
-#modelos-dlg { border: 1px solid var(--line); border-radius: 18px; padding: 18px; width: min(560px, calc(100vw - 32px)); background: var(--surface); color: var(--ink); box-shadow: 0 30px 80px -20px rgba(0,0,0,.6) }
-#modelos-dlg::backdrop { background: rgba(5, 6, 25, .6); backdrop-filter: blur(3px) }
-#modelos-dlg[open] { animation: up .3s cubic-bezier(.2,.7,.2,1) both }
+#avisos-dlg, #modelos-dlg { border: 1px solid var(--line); border-radius: 18px; padding: 18px; width: min(560px, calc(100vw - 32px)); background: var(--surface); color: var(--ink); box-shadow: 0 30px 80px -20px rgba(0,0,0,.6) }
+#avisos-dlg::backdrop, #modelos-dlg::backdrop { background: rgba(5, 6, 25, .6); backdrop-filter: blur(3px) }
+#avisos-dlg[open], #modelos-dlg[open] { animation: up .3s cubic-bezier(.2,.7,.2,1) both }
 .dlg-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px }
 .dlg-x { width: 34px; height: 34px; border-radius: 999px; border: 1px solid var(--line); background: var(--soft); color: var(--ink); cursor: pointer; font-size: 14px }
 .dlg-home { display: grid; gap: 2px; text-decoration: none; color: var(--ink); background: var(--accent-soft); border-radius: 12px; padding: 12px 14px; margin-bottom: 12px }
@@ -337,6 +337,7 @@ button.home-link { cursor: pointer }
     <a class="brand" href="#"><span class="logo" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><circle cx="16" cy="16" r="13"/><path d="M16 9.5l5 3.6-1.9 5.9h-6.2L11 13.1z"/><path d="M16 9.5V3.5M21 13.1l5.7-1.9M19.1 19l3.5 5M12.9 19l-3.5 5M11 13.1l-5.7-1.9"/></svg></span>
       <span class="brand-t"><span>Simulación minuto a minuto · Serie A</span><h1>Serie A Predictor</h1></span></a>
     <div class="side">
+      <button type="button" class="home-link" id="avisos-btn" aria-haspopup="dialog" title="Avisos al celular">🔔 Avisos</button>
       <a class="home-link" href="manual/">Manual</a>
       <a class="home-link mine-link" href="#mis-picks">Mis picks <b id="mine-n" class="mine-n" hidden></b></a>
       <button type="button" class="home-link" id="modelos-btn" aria-haspopup="dialog">Modelos</button>
@@ -348,6 +349,11 @@ button.home-link { cursor: pointer }
   </div>
 </header>
 <div class="demo" id="demo" hidden><b>Datos de ejemplo</b> · jugadores, árbitros y estadísticas sintéticos para probar el modelo y la página. No son predicciones reales.</div>
+<dialog id="avisos-dlg" aria-labelledby="avisos-t">
+  <div class="dlg-head"><h2 id="avisos-t">Avisos de la Serie A</h2><button type="button" class="dlg-x" id="avisos-x" aria-label="Cerrar">✕</button></div>
+  <p class="note" style="margin-top:0">Te llega un aviso al celular o al computador cuando <b>el análisis de la jornada está listo</b> (picks y errores de cuota) y cuando <b>salen las alineaciones oficiales</b> de un partido (≈1 h antes), para que revises los picks antes de que empiece.</p>
+  <div id="avisos-box"></div>
+</dialog>
 <dialog id="modelos-dlg" aria-labelledby="modelos-t">
   <div class="dlg-head"><h2 id="modelos-t">Modelos</h2><button type="button" class="dlg-x" id="modelos-x" aria-label="Cerrar">✕</button></div>
   <a class="dlg-home" href="../"><b>NCData Predictor</b><span>Portada · todos los modelos y picks del día</span></a>
@@ -945,6 +951,51 @@ $("#modelos-btn").onclick = () => { if (dlg.showModal) dlg.showModal(); else loc
 $("#modelos-x").onclick = () => dlg.close();
 dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
 dlg.querySelector(".dlg-m.cur").addEventListener("click", e => { e.preventDefault(); dlg.close(); location.hash = ""; });
+
+/* ---------- avisos al celular (OneSignal, worker único en la raíz del sitio; tema "serie_a") ---------- */
+const AVS = {app: null, os: null, ready: null};
+function avsLoad() {
+  if (AVS.ready) return AVS.ready;
+  AVS.ready = new Promise((ok, ko) => {
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async OS => {
+      try { await OS.init({appId: AVS.app, serviceWorkerPath: "OneSignalSDKWorker.js", serviceWorkerParam: {scope: "/"}, allowLocalhostAsSecureOrigin: true});
+        AVS.os = OS; OS.User.PushSubscription.addEventListener("change", avsDraw); ok(OS); } catch (e) { ko(e); }
+    });
+    const sc = document.createElement("script"); sc.src = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"; sc.defer = true;
+    sc.onerror = () => ko(new Error("No se pudo cargar OneSignal")); document.head.appendChild(sc);
+  });
+  return AVS.ready;
+}
+async function avsDraw() {
+  const box = $("#avisos-box");
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent), app = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  if (!("Notification" in window) || !("serviceWorker" in navigator)) {
+    box.innerHTML = ios && !app ? `<div class="card callout">En iPhone primero instala la app: toca <b>Compartir</b> → <b>Agregar a inicio</b>, ábrela desde el ícono y vuelve aquí.</div>`
+      : `<div class="card callout">Este navegador no admite avisos.</div>`; return;
+  }
+  if (!AVS.app) { box.innerHTML = `<div class="card callout">Avisos: muy pronto.</div>`; return; }
+  let on = false;
+  try { const OS = await avsLoad(); on = !!OS.User.PushSubscription.optedIn && Notification.permission === "granted" && (await OS.User.getTags?.() || {}).serie_a === "1"; } catch (e) {
+    box.innerHTML = `<div class="card callout">No se pudo conectar con el servicio de avisos (${esc(e.message || e)}).</div>`; return; }
+  box.innerHTML = on
+    ? `<p><span class="tag ok">Activados</span> Recibirás los avisos de la Serie A en este dispositivo.</p><button type="button" class="home-link" style="color:var(--ink);border-color:var(--line)" id="avs-off">Desactivar Serie A</button>`
+    : Notification.permission === "denied" ? `<div class="card callout">Bloqueaste los avisos para este sitio. Actívalos en los ajustes del navegador (candado junto a la dirección → Notificaciones → Permitir) y vuelve aquí.</div>`
+    : `<button type="button" class="addb on" style="width:auto;height:auto;padding:10px 16px;border-radius:999px;font:600 14px var(--display);letter-spacing:.06em;text-transform:uppercase" id="avs-on">Activar avisos de la Serie A</button>`;
+  const b1 = $("#avs-on"), b0 = $("#avs-off");
+  if (b1) b1.onclick = async () => { b1.disabled = true; b1.textContent = "Activando…";
+    try { const OS = await avsLoad(); await OS.Notifications.requestPermission(); if (Notification.permission === "granted") { await OS.User.PushSubscription.optIn(); OS.User.addTag("serie_a", "1"); } } catch (e) {}
+    setTimeout(avsDraw, 1500); };
+  if (b0) b0.onclick = async () => { try { (await avsLoad()).User.removeTag("serie_a"); } catch (e) {} setTimeout(avsDraw, 800); };
+}
+const avDlg = $("#avisos-dlg");
+$("#avisos-btn").onclick = async () => {
+  if (!AVS.app) { try { AVS.app = (await getJSON("../push.json")).onesignal_app_id; } catch (e) {} }
+  $("#avisos-box").innerHTML = `<p class="note">Cargando…</p>`;
+  avDlg.showModal ? avDlg.showModal() : null; avsDraw();
+};
+$("#avisos-x").onclick = () => avDlg.close();
+avDlg.addEventListener("click", e => { if (e.target === avDlg) avDlg.close(); });
 
 actualizarMine();
 init();

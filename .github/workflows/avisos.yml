@@ -1,0 +1,34 @@
+# Avisos al celular de la Serie A (y futuras ligas): jornada lista y alineaciones confirmadas.
+# Necesita el secreto ONESIGNAL_REST_API_KEY (el mismo del repo de la NBA). El App ID está en docs/push.json.
+# "Run workflow" (a mano) manda un aviso de prueba a los suscritos a la Serie A.
+name: Avisos fútbol
+on:
+  push:
+    branches: [main]
+    paths: ["docs/*/data/index.json"]
+  workflow_dispatch:
+    inputs:
+      mensaje:
+        description: Texto del aviso de prueba
+        required: false
+        default: "Prueba: así te llegará un aviso de la Serie A."
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Avisos nuevos
+        if: github.event_name == 'push'
+        env:
+          ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
+        run: python -m futbol.avisos_futbol --before "${{ github.event.before }}"
+      - name: Aviso de prueba
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
+        run: python -m futbol.avisos_futbol --test "${{ github.event.inputs.mensaje }}"
