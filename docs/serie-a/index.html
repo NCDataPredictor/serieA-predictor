@@ -339,6 +339,7 @@ button.home-link { cursor: pointer }
     <div class="side">
       <button type="button" class="home-link" id="avisos-btn" aria-haspopup="dialog" title="Avisos al celular">🔔 Avisos</button>
       <a class="home-link" href="manual/">Manual</a>
+      <a class="home-link" href="#rendimiento">Rendimiento</a>
       <a class="home-link mine-link" href="#mis-picks">Mis picks <b id="mine-n" class="mine-n" hidden></b></a>
       <button type="button" class="home-link" id="modelos-btn" aria-haspopup="dialog">Modelos</button>
       <button type="button" class="icon-btn" id="theme-btn" aria-label="Modo claro / oscuro" title="Modo claro / oscuro">
@@ -455,6 +456,7 @@ function route() {
   const id = decodeURIComponent(location.hash.slice(1));
   document.querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c.dataset.id === id));
   if (id === "mis-picks") misPicks();
+  else if (id === "rendimiento") rendimiento();
   else if (id && IDX.partidos.some(p => p.id === id)) verPartido(id); else inicio();
   scrollTo(0, 0);
 }
@@ -850,6 +852,51 @@ function picksPartido(d, el) {
     ${cc ? `<h3 style="margin:6px 0 10px">Líneas recomendadas</h3>${val.length ? tablaPicks(val, false) : `<div class="card callout">Ninguna línea de este partido pasó los filtros (modelo e histórico a favor y EV ≥ 3%).</div>`}
     <h3 style="margin:22px 0 10px">Errores de cuota</h3>${err.length ? tablaPicks(err, false) : `<p class="note">Ninguno en este partido.</p>`}` : ""}`;
   bindPicks(el, rows);
+}
+
+/* -- Rendimiento: picks publicados liquidados cada noche con el resultado real (data/recuento.json) -- */
+async function rendimiento() {
+  $("#app").innerHTML = `<p class="empty">Cargando rendimiento…</p>`;
+  let R; try { R = await getJSON("data/recuento.json"); } catch (e) { R = null; }
+  if (!R || !R.resumen.n) { $("#app").innerHTML = `<div class="section"><h2>Rendimiento de los picks</h2></div><div class="card callout">Todavía no hay picks liquidados. El recuento se actualiza cada noche de partido con los resultados reales.</div>`; return; }
+  const sg = u => (u >= 0 ? "+" : "") + (+u).toFixed(2);
+  const kpi = (t, r) => `<div class="tile"><span>${t}</span><b>${r.n ? pct(r.acierto) : "–"}</b><span class="sub">${r.ganados}/${r.n} · ${sg(r.unidades)} u${r.n ? ` · ROI ${(r.roi * 100).toFixed(1)}%` : ""}</span></div>`;
+  const tabla = (titulo, obj, nom) => `<div class="card scroll reveal" style="padding:6px 10px"><table>
+      <tr><th style="text-align:left">${titulo}</th><th>Picks</th><th>Acierto</th><th>Prob. media</th><th>Cuota media</th><th>Unid.</th><th>ROI</th></tr>
+      ${Object.entries(obj).filter(([, r]) => r.n).map(([k, r]) => `<tr><td style="text-align:left">${nom(k)}</td><td class="n">${r.ganados}/${r.n}</td>
+        <td class="p">${pct(r.acierto)}</td><td class="n">${pct(r.p_media)}</td><td class="n">${f2(r.cuota_media)}</td>
+        <td class="n" style="color:${r.unidades >= 0 ? "var(--ok, #138a4b)" : "var(--hot, #c62828)"}">${sg(r.unidades)}</td><td class="n">${(r.roi * 100).toFixed(1)}%</td></tr>`).join("")}</table></div>`;
+  const C = R.calibracion_1x2 || {}, RES = ["Local", "Empate", "Visitante"];
+  const res = R.resumen;
+  $("#app").innerHTML = `
+    <div class="section"><h2>Rendimiento de los picks</h2><span class="eyebrow">actualizado ${esc(R.actualizado.replace("T", " "))} UTC · 1 unidad por pick</span></div>
+    <div class="tiles reveal" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">${kpi("Todos los picks", res)}${R.errores_cuota.n ? kpi("Errores de cuota", R.errores_cuota) : ""}
+      <div class="tile"><span>Acierto esperado</span><b>${pct(res.p_media)}</b><span class="sub">lo que el modelo esperaba acertar</span></div></div>
+    <p class="note">Se liquidan cada noche de partido los picks que la página mostró antes del inicio, con la cuota publicada. Si el acierto real queda muy por debajo del esperado durante varias jornadas, el modelo está sobrestimando.</p>
+    <div class="section" style="margin-top:22px"><h2>Por estadística</h2></div>${tabla("Estadística", R.por_stat, k => `${ic(k)}${esc(STAT[k] || k)}`)}
+    <div class="section" style="margin-top:22px"><h2>Por jornada</h2></div>${tabla("Fecha", R.por_fecha, k => esc(fecha(k)))}
+    ${Object.keys(R.por_casa).length > 1 ? `<div class="section" style="margin-top:22px"><h2>Por casa</h2></div>${tabla("Casa", R.por_casa, k => esc(k))}` : ""}
+    <div class="section" style="margin-top:22px"><h2>Resultado del partido (1X2)</h2><span class="eyebrow">${C.n} partidos</span></div>
+    <div class="tiles reveal" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
+      <div class="tile"><span>Favorito del modelo acertó</span><b>${pct(C.acierto_favorito_modelo)}</b></div>
+      ${C.n_mercado ? `<div class="tile"><span>Favorito del mercado acertó</span><b>${pct(C.acierto_favorito_mercado)}</b><span class="sub">${C.n_mercado} partidos con consenso</span></div>
+      <div class="tile"><span>Log loss modelo vs mercado</span><b>${f2(C.logloss_modelo_mismos)} / ${f2(C.logloss_mercado)}</b><span class="sub">más bajo = mejor</span></div>` : ""}</div>
+    <div class="card scroll reveal" style="margin-top:10px;padding:6px 10px"><table>
+      <tr><th style="text-align:left">Partido</th><th>Marcador</th><th>Modelo 1·X·2</th><th>Mercado 1·X·2</th><th>Acertó</th></tr>
+      ${R.partidos.map(p => { const fav = p.modelo.indexOf(Math.max(...p.modelo));
+        return `<tr><td style="text-align:left"><span class="who" style="gap:6px">${crest(p.local, 18)}${esc(tname(p.local))} – ${esc(tname(p.visitante))}${crest(p.visitante, 18)}</span></td>
+        <td class="n"><b>${esc(p.marcador)}</b></td><td class="n">${p.modelo.map((x, i) => i === p.resultado ? `<b>${pct(x)}</b>` : pct(x)).join(" · ")}</td>
+        <td class="n">${p.mercado ? p.mercado.map((x, i) => i === p.resultado ? `<b>${pct(x)}</b>` : pct(x)).join(" · ") : "–"}</td>
+        <td><span class="tag ${fav === p.resultado ? "ok" : "hot"}">${fav === p.resultado ? "sí" : "no"} · ${RES[p.resultado]}</span></td></tr>`; }).join("")}
+    </table></div>
+    <div class="section" style="margin-top:22px"><h2>Picks liquidados</h2><span class="eyebrow">${R.picks.length}</span></div>
+    <div class="card scroll reveal" style="padding:6px 10px"><table>
+      <tr><th style="text-align:left">Pick</th><th>Partido</th><th>Cuota</th><th>Prob.</th><th>Real</th><th>Estado</th><th>Unid.</th></tr>
+      ${R.picks.map(k => `<tr><td style="text-align:left;white-space:normal">${ic(k.stat)}${esc(pickTxt(k))}${k.error_cuota ? ' <span class="tag hot">error</span>' : ""}</td>
+        <td>${esc(tname(k.local))} – ${esc(tname(k.visitante))}<br><span class="sub">${esc(fecha(k.fecha))}</span></td>
+        <td class="n">${f2(k.cuota)}</td><td class="p">${pct(k.p)}</td><td class="n">${k.real ?? "–"}</td>
+        <td><span class="tag ${k.estado === "ganado" ? "ok" : k.estado === "perdido" ? "hot" : ""}">${k.estado}</span></td><td class="n">${sg(k.u)}</td></tr>`).join("")}
+    </table></div>`;
 }
 
 /* -- Mis picks: guardados en este navegador, liquidados con los resultados reales -- */
