@@ -61,6 +61,19 @@ a.m:hover, a.m:focus-visible { transform: translateY(-2px); box-shadow: 0 10px 2
 .hoy a:hover { transform: translateY(-2px) } .hoy a.err { border-left-color: #db052b }
 .hoy small { display: block; font: 500 11.5px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .05em }
 .hoy b { font-size: 15px } .hoy .k { font: 600 13px var(--mono); margin-top: 4px }
+/* Logo de cada competición (24-nov, pedido de Nicolas): marca de agua grande y difuminada a la derecha de la tarjeta
+   y el logo nítido, pequeño, junto al deporte. El contenido va por encima. */
+.m > :not(.wm):not(.tag) { position: relative }
+.m .wm { position: absolute; right: -6%; top: 50%; height: 125%; width: auto; max-width: 62%; object-fit: contain; transform: translateY(-50%) rotate(-12deg);
+  opacity: .2; filter: blur(1.6px); pointer-events: none; transition: opacity .25s, transform .25s, filter .25s }
+.m .wm.inv { filter: blur(1.6px) brightness(0) invert(1); opacity: .16 }
+a.m:hover .wm, a.m:focus-visible .wm { opacity: .3; filter: blur(.6px); transform: translateY(-50%) rotate(-8deg) scale(1.04) }
+a.m:hover .wm.inv, a.m:focus-visible .wm.inv { filter: blur(.6px) brightness(0) invert(1); opacity: .24 }
+.m .sport { display: flex; align-items: center; gap: 8px }
+.m .badge { flex: none; width: 26px; height: 26px; border-radius: 7px; background: #fff; display: grid; place-items: center; padding: 3px; box-shadow: 0 1px 3px rgba(0,0,0,.25) }
+.m .badge img { max-width: 100%; max-height: 100%; display: block }
+.m.soon .wm { display: none }
+.m .live { backdrop-filter: blur(2px) }
 .ios-tip { margin-top: 10px; font-size: 13px; color: var(--hero-muted) }
 .muted-p { color: var(--muted); margin: 0 }
 @keyframes up { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
@@ -103,19 +116,21 @@ footer { color: var(--muted); font-size: 12px; padding-bottom: 30px }
 "use strict";
 // Un modelo por entrada. `datos` (opcional) es un index.json ligero del que se muestra un resumen de la jornada.
 const MODELOS = [
-  {id: "nba", deporte: "Baloncesto", nombre: "NBA", texto: "Picks, props y parlays de cada jornada, con avisos por bajas.", url: "nba/",
+  {id: "nba", deporte: "Baloncesto", nombre: "NBA", texto: "Picks, props y parlays de cada jornada, con avisos por bajas.", url: "nba/", logo: "logos/nba-logoman.svg",
    c1: "#0b1a3a", c2: "#1d428a", stripe: "linear-gradient(90deg,#c8102e 0 62%,#fff 62% 64%,#1d428a 64%)", ink: "#f4f6fb"},
-  {id: "serie-a", deporte: "Fútbol · Italia", nombre: "Serie A", texto: "Simulación minuto a minuto: equipos, jugadores, árbitro, tramos de 15' y suplente de oro.", url: "serie-a/", datos: "serie-a/data/index.json",
+  {id: "serie-a", deporte: "Fútbol · Italia", nombre: "Serie A", texto: "Simulación minuto a minuto: equipos, jugadores, árbitro, tramos de 15' y suplente de oro.", url: "serie-a/", datos: "serie-a/data/index.json", logo: "logos/serie-a.png",
    c1: "#1a1659", c2: "#0032a0", stripe: "linear-gradient(90deg,#00a346 0 33.3%,#fff 33.3% 66.6%,#db052b 66.6%)", ink: "#f5f6fc"},
   {id: "premier", deporte: "Fútbol · Inglaterra", nombre: "Premier League", texto: "Mismo modelo de fútbol con parámetros propios.", pronto: true, c1: "#38003c", c2: "#5b0a63", stripe: "#00ff85", ink: "#fff"},
   {id: "laliga", deporte: "Fútbol · España", nombre: "LaLiga", texto: "Mismo modelo de fútbol con parámetros propios.", pronto: true, c1: "#1f1f1f", c2: "#3a3a3a", stripe: "#ff4b44", ink: "#fff"},
-  {id: "champions", deporte: "Fútbol · Europa", nombre: "Champions League", texto: "Fase liga: simulación con la fuerza del mercado, picks de equipo y de jugador.", url: "champions/", datos: "champions/data/index.json", c1: "#0a1446", c2: "#1b2a7a", stripe: "#c0c7d8", ink: "#fff"},
+  {id: "champions", deporte: "Fútbol · Europa", nombre: "Champions League", texto: "Fase liga: simulación con la fuerza del mercado, picks de equipo y de jugador.", url: "champions/", datos: "champions/data/index.json", logo: "logos/champions.png", inv: true, c1: "#0a1446", c2: "#1b2a7a", stripe: "#c0c7d8", ink: "#fff"},
   {id: "europa", deporte: "Fútbol · Europa", nombre: "Europa League", texto: "Fuerza entre ligas con ClubElo.", pronto: true, c1: "#2b1a00", c2: "#5a3600", stripe: "#ff6900", ink: "#fff"},
 ];
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
 document.getElementById("modelos").innerHTML = MODELOS.map(m => {
   const tag = m.pronto ? `<span class="tag">Próximamente</span>` : "";
-  const body = `<span class="sport">${esc(m.deporte)}</span><h3>${esc(m.nombre)}</h3><p>${esc(m.texto)}</p>${m.datos ? `<div class="live" id="live-${m.id}">Cargando jornada…</div>` : ""}${m.pronto ? "" : `<span class="go">Entrar →</span>`}`;
+  const wm = m.logo ? `<img class="wm${m.inv ? " inv" : ""}" src="${esc(m.logo)}" alt="" aria-hidden="true" onerror="this.remove()">` : "";
+  const badge = m.logo ? `<span class="badge"><img src="${esc(m.logo)}" alt="" onerror="this.parentNode.remove()"></span>` : "";
+  const body = `${wm}<span class="sport">${badge}${esc(m.deporte)}</span><h3>${esc(m.nombre)}</h3><p>${esc(m.texto)}</p>${m.datos ? `<div class="live" id="live-${m.id}">Cargando jornada…</div>` : ""}${m.pronto ? "" : `<span class="go">Entrar →</span>`}`;
   const st = `--c1:${m.c1};--c2:${m.c2};--stripe:${m.stripe};--c-ink:${m.ink}`;
   return m.pronto ? `<div class="m soon" style="${st}">${tag}${body}</div>` : `<a class="m" href="${esc(m.url)}" style="${st}">${tag}${body}</a>`;
 }).join("");
