@@ -9,3 +9,12 @@ rm -rf docs/nba
 cp -r "$tmp/nba/docs" docs/nba
 rm -f docs/nba/CNAME
 echo "NBA copiada en docs/nba ($(du -sh docs/nba | cut -f1))"
+# La Champions vive en NCDataPredictor/champions-league-predictor (público): se trae su web y se sirve en /champions/.
+# Si el clon falla no se cae el build de todo el sitio: /champions/ queda sin publicar en ese build.
+if git clone --depth 1 --branch "${UCL_BRANCH:-main}" https://github.com/NCDataPredictor/champions-league-predictor.git "$tmp/ucl"; then
+  rm -rf docs/champions
+  cp -r "$tmp/ucl/docs/champions" docs/champions
+  echo "Champions copiada en docs/champions ($(du -sh docs/champions | cut -f1))"
+else
+  echo "No se pudo clonar la Champions: /champions/ no se publica en este build"
+fi

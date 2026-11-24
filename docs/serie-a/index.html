@@ -1525,7 +1525,7 @@ const MODELOS_NAV = [
   {n: "Serie A", d: "Fútbol · Italia", url: "./", m1: "#1a1659", m2: "#0032a0", cur: true},
   {n: "Premier League", d: "Fútbol · Inglaterra", m1: "#38003c", m2: "#5b0a63", pronto: true},
   {n: "LaLiga", d: "Fútbol · España", m1: "#1f1f1f", m2: "#3a3a3a", pronto: true},
-  {n: "Champions", d: "Fútbol · Europa", m1: "#0a1446", m2: "#1b2a7a", pronto: true},
+  {n: "Champions", d: "Fútbol · Europa", url: "../champions/", m1: "#0a1446", m2: "#1b2a7a"},
   {n: "Europa League", d: "Fútbol · Europa", m1: "#2b1a00", m2: "#5a3600", pronto: true}];
 const dlg = $("#modelos-dlg");
 $("#modelos-grid").innerHTML = MODELOS_NAV.map(m => `<a class="dlg-m ${m.cur ? "cur" : ""} ${m.pronto ? "soon" : ""}" ${m.url ? `href="${m.url}"` : 'aria-disabled="true"'} style="--m1:${m.m1};--m2:${m.m2}"><small>${m.d}</small><b>${m.n}</b></a>`).join("");
