@@ -1,0 +1,89 @@
+{
+ "id": "2026-11-29-ROM-MON",
+ "fuente": "fotmob",
+ "fuente_id": "5749760",
+ "match": {
+  "liga": "serie_a",
+  "temporada": "2026-27",
+  "jornada": 13,
+  "fecha": "2026-11-29",
+  "hora_local": "18:00",
+  "hora_bogota": "12:00",
+  "utc": "2026-11-29T17:00:00Z",
+  "local": "ROM",
+  "visitante": "MON",
+  "estadio": "Stadio Olimpico",
+  "neutral": false,
+  "competicion": "liga"
+ },
+ "contexto": {
+  "arbitro": "",
+  "arbitro_fotmob": {
+   "nombre": ""
+  },
+  "clima": {
+   "temperature": 10,
+   "windSpeed": 4,
+   "windDirectionCardinal": "N",
+   "iconCode": 33,
+   "relativeHumidity": 68,
+   "precipChance": 3,
+   "precipitation": 0,
+   "snow": 0,
+   "cloudCover": 23,
+   "description": "Mostly Clear",
+   "apiUsed": "forecast",
+   "lastUpdated": "2026-11-23T17:00:09Z",
+   "localizedKey": "weather_condition_clear",
+   "defaultTitle": "Clear"
+  }
+ },
+ "alineaciones": {
+  "estado": null
+ },
+ "bajas": {
+  "ROM": [
+   {
+    "jugador": "ROM-958464",
+    "nombre": "Leonardo Balerdi",
+    "motivo": "lesion",
+    "regreso": "About 1-2 weeks",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "ROM-1180321",
+    "nombre": "Devyne Rensch",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "ROM-540307",
+    "nombre": "Lorenzo Pellegrini",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   }
+  ],
+  "MON": [
+   {
+    "jugador": "MON-822440",
+    "nombre": "Michael Folorunsho",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MON-1830551",
+    "nombre": "Yvan Kouadio Maye",
+    "motivo": "lesion",
+    "regreso": "Back in training",
+    "p_juega": 0.0
+   }
+  ]
+ },
+ "cuotas": {
+  "casas": []
+ },
+ "props": {}
+}

@@ -1,0 +1,117 @@
+{
+ "id": "2026-11-27-VEN-BOL",
+ "fuente": "fotmob",
+ "fuente_id": "5749769",
+ "match": {
+  "liga": "serie_a",
+  "temporada": "2026-27",
+  "jornada": 13,
+  "fecha": "2026-11-27",
+  "hora_local": "20:45",
+  "hora_bogota": "14:45",
+  "utc": "2026-11-27T19:45:00Z",
+  "local": "VEN",
+  "visitante": "BOL",
+  "estadio": "Stadio Pier Luigi Penzo",
+  "neutral": false,
+  "competicion": "liga"
+ },
+ "contexto": {
+  "arbitro": "",
+  "arbitro_fotmob": {
+   "nombre": ""
+  },
+  "clima": {
+   "temperature": 7,
+   "windSpeed": 7,
+   "windDirectionCardinal": "NE",
+   "iconCode": 27,
+   "relativeHumidity": 77,
+   "precipChance": 13,
+   "precipitation": 0,
+   "snow": 0,
+   "cloudCover": 65,
+   "description": "Mostly Cloudy",
+   "apiUsed": "forecast",
+   "lastUpdated": "2026-11-23T20:00:19Z",
+   "localizedKey": "weather_condition_cloudy",
+   "defaultTitle": "Cloudy"
+  }
+ },
+ "alineaciones": {
+  "estado": null
+ },
+ "bajas": {
+  "VEN": [
+   {
+    "jugador": "VEN-651435",
+    "nombre": "Toma Bašić",
+    "motivo": "lesion",
+    "regreso": "About 1-2 weeks",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "VEN-992052",
+    "nombre": "Thierry Correia",
+    "motivo": "lesion",
+    "regreso": "About 1-2 weeks",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "VEN-1072710",
+    "nombre": "Bartol Franjić",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   },
+   {
+    "jugador": "VEN-782703",
+    "nombre": "Marin Šverko",
+    "motivo": "lesion",
+    "regreso": "Unknown",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "VEN-1024432",
+    "nombre": "Andrea Adorante",
+    "motivo": "lesion",
+    "regreso": "Unknown",
+    "p_juega": 0.0
+   }
+  ],
+  "BOL": [
+   {
+    "jugador": "BOL-1014630",
+    "nombre": "Emil Holm",
+    "motivo": "lesion",
+    "regreso": "Late February 2027",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "BOL-873956",
+    "nombre": "Juan Miranda",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   },
+   {
+    "jugador": "BOL-1283469",
+    "nombre": "Oussama El Azzouzi",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "BOL-1344246",
+    "nombre": "Jay Enem",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   }
+  ]
+ },
+ "cuotas": {
+  "casas": []
+ },
+ "props": {}
+}

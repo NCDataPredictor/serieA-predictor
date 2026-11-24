@@ -1,0 +1,145 @@
+{
+ "id": "2026-11-29-COM-JUV",
+ "fuente": "fotmob",
+ "fuente_id": "5749762",
+ "match": {
+  "liga": "serie_a",
+  "temporada": "2026-27",
+  "jornada": 13,
+  "fecha": "2026-11-29",
+  "hora_local": "20:45",
+  "hora_bogota": "14:45",
+  "utc": "2026-11-29T19:45:00Z",
+  "local": "COM",
+  "visitante": "JUV",
+  "estadio": "Stadio Giuseppe Sinigaglia",
+  "neutral": false,
+  "competicion": "liga"
+ },
+ "contexto": {
+  "arbitro": "",
+  "arbitro_fotmob": {
+   "nombre": ""
+  },
+  "clima": {
+   "temperature": 3,
+   "windSpeed": 1,
+   "windDirectionCardinal": "NNE",
+   "iconCode": 27,
+   "relativeHumidity": 95,
+   "precipChance": 15,
+   "precipitation": 0,
+   "snow": 0,
+   "cloudCover": 74,
+   "description": "Mostly Cloudy",
+   "apiUsed": "forecast",
+   "lastUpdated": "2026-11-23T20:00:20Z",
+   "localizedKey": "weather_condition_cloudy",
+   "defaultTitle": "Cloudy"
+  }
+ },
+ "alineaciones": {
+  "estado": null
+ },
+ "bajas": {
+  "COM": [
+   {
+    "jugador": "COM-1988949",
+    "nombre": "Riccardo Cassano",
+    "motivo": "internationalDuty",
+    "regreso": "Mid December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "COM-846000",
+    "nombre": "Maxence Caqueret",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   },
+   {
+    "jugador": "COM-1347241",
+    "nombre": "Jayden Addai",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "COM-1624039",
+    "nombre": "Jesús Rodríguez",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "COM-1434889",
+    "nombre": "Assane Diao",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "COM-747926",
+    "nombre": "Moise Kean",
+    "motivo": "lesion",
+    "regreso": "Early January 2027",
+    "p_juega": 0.0
+   }
+  ],
+  "JUV": [
+   {
+    "jugador": "JUV-1684401",
+    "nombre": "Kerim Alajbegović",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "JUV-1131217",
+    "nombre": "Pierre Kalulu",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "JUV-841672",
+    "nombre": "Nicolás González",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "JUV-760722",
+    "nombre": "Kamil Grabara",
+    "motivo": "lesion",
+    "regreso": "Out for season",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "JUV-624166",
+    "nombre": "Manuel Locatelli",
+    "motivo": "lesion",
+    "regreso": "Late March 2027",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "JUV-980793",
+    "nombre": "Khéphren Thuram-Ulien",
+    "motivo": "lesion",
+    "regreso": "Mid January 2027",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "JUV-1412132",
+    "nombre": "Kenan Yıldız",
+    "motivo": "lesion",
+    "regreso": "Late December 2026",
+    "p_juega": 0.0
+   }
+  ]
+ },
+ "cuotas": {
+  "casas": []
+ },
+ "props": {}
+}

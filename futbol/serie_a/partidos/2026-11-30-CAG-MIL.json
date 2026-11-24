@@ -1,0 +1,152 @@
+{
+ "id": "2026-11-30-CAG-MIL",
+ "fuente": "fotmob",
+ "fuente_id": "5749761",
+ "match": {
+  "liga": "serie_a",
+  "temporada": "2026-27",
+  "jornada": 13,
+  "fecha": "2026-11-30",
+  "hora_local": "20:45",
+  "hora_bogota": "14:45",
+  "utc": "2026-11-30T19:45:00Z",
+  "local": "CAG",
+  "visitante": "MIL",
+  "estadio": "Unipol Domus",
+  "neutral": false,
+  "competicion": "liga"
+ },
+ "contexto": {
+  "arbitro": "",
+  "arbitro_fotmob": {
+   "nombre": ""
+  },
+  "clima": {
+   "temperature": 13,
+   "windSpeed": 3,
+   "windDirectionCardinal": "NNW",
+   "iconCode": 29,
+   "relativeHumidity": 74,
+   "precipChance": 8,
+   "precipitation": 0,
+   "snow": 0,
+   "cloudCover": 43,
+   "description": "Partly Cloudy",
+   "apiUsed": "forecast",
+   "lastUpdated": "2026-11-23T20:00:20Z",
+   "localizedKey": "weather_condition_partly_cloudy",
+   "defaultTitle": "Partly Cloudy"
+  }
+ },
+ "alineaciones": {
+  "estado": null
+ },
+ "bajas": {
+  "CAG": [
+   {
+    "jugador": "CAG-1902196",
+    "nombre": "Paul Mendy",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "CAG-936164",
+    "nombre": "Michel Ndary Adopo",
+    "motivo": "lesion",
+    "regreso": "About 1-2 weeks",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "CAG-1807301",
+    "nombre": "Joseph Liteta",
+    "motivo": "lesion",
+    "regreso": "Unknown",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "CAG-528453",
+    "nombre": "Harry Winks",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "CAG-496042",
+    "nombre": "Yerry Mina",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "CAG-1021302",
+    "nombre": "Mattia Felici",
+    "motivo": "lesion",
+    "regreso": "Out for season",
+    "p_juega": 0.0
+   }
+  ],
+  "MIL": [
+   {
+    "jugador": "MIL-1699701",
+    "nombre": "Nirash Perera",
+    "motivo": "sancion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MIL-940087",
+    "nombre": "Gonçalo Ramos",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   },
+   {
+    "jugador": "MIL-749662",
+    "nombre": "Fikayo Tomori",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   },
+   {
+    "jugador": "MIL-281762",
+    "nombre": "Pietro Terracciano",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   },
+   {
+    "jugador": "MIL-604982",
+    "nombre": "Ruben Loftus-Cheek",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MIL-688300",
+    "nombre": "Samuel Chukwueze",
+    "motivo": "lesion",
+    "regreso": "Mid January 2027",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MIL-844996",
+    "nombre": "Matteo Gabbia",
+    "motivo": "lesion",
+    "regreso": "Early January 2027",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MIL-921341",
+    "nombre": "Alexis Saelemaekers",
+    "motivo": "lesion",
+    "regreso": "Mid January 2027",
+    "p_juega": 0.0
+   }
+  ]
+ },
+ "cuotas": {
+  "casas": []
+ },
+ "props": {}
+}

@@ -1,0 +1,96 @@
+{
+ "id": "2026-11-30-LEC-ATA",
+ "fuente": "fotmob",
+ "fuente_id": "5749765",
+ "match": {
+  "liga": "serie_a",
+  "temporada": "2026-27",
+  "jornada": 13,
+  "fecha": "2026-11-30",
+  "hora_local": "18:30",
+  "hora_bogota": "12:30",
+  "utc": "2026-11-30T17:30:00Z",
+  "local": "LEC",
+  "visitante": "ATA",
+  "estadio": "Stadio Ettore Giardiniero - Via del Mare",
+  "neutral": false,
+  "competicion": "liga"
+ },
+ "contexto": {
+  "arbitro": "",
+  "arbitro_fotmob": {
+   "nombre": ""
+  },
+  "clima": {
+   "temperature": 11,
+   "windSpeed": 4,
+   "windDirectionCardinal": "N",
+   "iconCode": 27,
+   "relativeHumidity": 68,
+   "precipChance": 5,
+   "precipitation": 0,
+   "snow": 0,
+   "cloudCover": 62,
+   "description": "Mostly Cloudy",
+   "apiUsed": "forecast",
+   "lastUpdated": "2026-11-23T18:00:08Z",
+   "localizedKey": "weather_condition_cloudy",
+   "defaultTitle": "Cloudy"
+  }
+ },
+ "alineaciones": {
+  "estado": null
+ },
+ "bajas": {
+  "LEC": [
+   {
+    "jugador": "LEC-1039403",
+    "nombre": "Santiago Pierotti",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "LEC-1036182",
+    "nombre": "Ivan Ilić",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   }
+  ],
+  "ATA": [
+   {
+    "jugador": "ATA-1013021",
+    "nombre": "Marco Carnesecchi",
+    "motivo": "lesion",
+    "regreso": "Late January 2027",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "ATA-2189043",
+    "nombre": "Thomas Pompei",
+    "motivo": "lesion",
+    "regreso": "Back in training",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "ATA-1014496",
+    "nombre": "Odilon Kossounou",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   },
+   {
+    "jugador": "ATA-939780",
+    "nombre": "Isak Hien",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   }
+  ]
+ },
+ "cuotas": {
+  "casas": []
+ },
+ "props": {}
+}

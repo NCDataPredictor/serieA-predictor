@@ -1,0 +1,145 @@
+{
+ "id": "2026-11-29-SAS-NAP",
+ "fuente": "fotmob",
+ "fuente_id": "5749766",
+ "match": {
+  "liga": "serie_a",
+  "temporada": "2026-27",
+  "jornada": 13,
+  "fecha": "2026-11-29",
+  "hora_local": "15:00",
+  "hora_bogota": "09:00",
+  "utc": "2026-11-29T14:00:00Z",
+  "local": "SAS",
+  "visitante": "NAP",
+  "estadio": "MAPEI Stadium - Città del Tricolore",
+  "neutral": false,
+  "competicion": "liga"
+ },
+ "contexto": {
+  "arbitro": "",
+  "arbitro_fotmob": {
+   "nombre": ""
+  },
+  "clima": {
+   "temperature": 7,
+   "windSpeed": 4,
+   "windDirectionCardinal": "W",
+   "iconCode": 30,
+   "relativeHumidity": 75,
+   "precipChance": 8,
+   "precipitation": 0,
+   "snow": 0,
+   "cloudCover": 55,
+   "description": "Partly Cloudy",
+   "apiUsed": "forecast",
+   "lastUpdated": "2026-11-24T02:00:16Z",
+   "localizedKey": "weather_condition_partly_cloudy",
+   "defaultTitle": "Partly Cloudy"
+  }
+ },
+ "alineaciones": {
+  "estado": null
+ },
+ "bajas": {
+  "SAS": [
+   {
+    "jugador": "SAS-1641041",
+    "nombre": "Darryl Bakola",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   },
+   {
+    "jugador": "SAS-1382375",
+    "nombre": "Vasilije Adžić",
+    "motivo": "lesion",
+    "regreso": "Unknown",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "SAS-1308909",
+    "nombre": "Cristian Volpato",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "SAS-1203195",
+    "nombre": "Fedde Leysen",
+    "motivo": "lesion",
+    "regreso": "Out for season",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "SAS-850055",
+    "nombre": "Daniel Boloca",
+    "motivo": "lesion",
+    "regreso": "Back in training",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "SAS-1288119",
+    "nombre": "Ismaël Koné",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   }
+  ],
+  "NAP": [
+   {
+    "jugador": "NAP-1320863",
+    "nombre": "Antonio Vergara",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "NAP-577912",
+    "nombre": "Alex Meret",
+    "motivo": "lesion",
+    "regreso": "Early January 2027",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "NAP-414906",
+    "nombre": "Giovanni Di Lorenzo",
+    "motivo": "lesion",
+    "regreso": "About 1-2 weeks",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "NAP-308517",
+    "nombre": "Stanislav Lobotka",
+    "motivo": "lesion",
+    "regreso": "Late December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "NAP-955376",
+    "nombre": "Benoît Badiashile",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "NAP-1355552",
+    "nombre": "Alisson Santos",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "NAP-823018",
+    "nombre": "Alessandro Buongiorno",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   }
+  ]
+ },
+ "cuotas": {
+  "casas": []
+ },
+ "props": {}
+}

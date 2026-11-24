@@ -1,0 +1,89 @@
+{
+ "id": "2026-11-28-FRO-PAR",
+ "fuente": "fotmob",
+ "fuente_id": "5749763",
+ "match": {
+  "liga": "serie_a",
+  "temporada": "2026-27",
+  "jornada": 13,
+  "fecha": "2026-11-28",
+  "hora_local": "15:00",
+  "hora_bogota": "09:00",
+  "utc": "2026-11-28T14:00:00Z",
+  "local": "FRO",
+  "visitante": "PAR",
+  "estadio": "Stadio Benito Stirpe",
+  "neutral": false,
+  "competicion": "liga"
+ },
+ "contexto": {
+  "arbitro": "",
+  "arbitro_fotmob": {
+   "nombre": ""
+  },
+  "clima": {
+   "temperature": 14,
+   "windSpeed": 2,
+   "windDirectionCardinal": "S",
+   "iconCode": 32,
+   "relativeHumidity": 64,
+   "precipChance": 5,
+   "precipitation": 0,
+   "snow": 0,
+   "cloudCover": 16,
+   "description": "Sunny",
+   "apiUsed": "forecast",
+   "lastUpdated": "2026-11-24T02:00:16Z",
+   "localizedKey": "weather_condition_sunny",
+   "defaultTitle": "Sunny"
+  }
+ },
+ "alineaciones": {
+  "estado": null
+ },
+ "bajas": {
+  "FRO": [
+   {
+    "jugador": "FRO-1135820",
+    "nombre": "Daniel Bîrligea",
+    "motivo": "lesion",
+    "regreso": "About 1-2 weeks",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "FRO-1256534",
+    "nombre": "Antonio Raimondo",
+    "motivo": "lesion",
+    "regreso": "Late January 2027",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "FRO-617044",
+    "nombre": "Florian Grillitsch",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   }
+  ],
+  "PAR": [
+   {
+    "jugador": "PAR-0",
+    "nombre": "Djibril Diallo",
+    "motivo": "internationalDuty",
+    "regreso": "Mid December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "PAR-1233748",
+    "nombre": "David Romero",
+    "motivo": "lesion",
+    "regreso": "Late December 2026",
+    "p_juega": 0.0
+   }
+  ]
+ },
+ "cuotas": {
+  "casas": []
+ },
+ "props": {}
+}
