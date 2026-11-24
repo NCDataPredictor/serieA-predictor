@@ -22,20 +22,20 @@
    "nombre": ""
   },
   "clima": {
-   "temperature": 6,
-   "windSpeed": 3,
+   "temperature": 7,
+   "windSpeed": 2,
    "windDirectionCardinal": "ENE",
-   "iconCode": 30,
-   "relativeHumidity": 64,
+   "iconCode": 34,
+   "relativeHumidity": 68,
    "precipChance": 2,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 35,
-   "description": "Partly Cloudy",
+   "cloudCover": 21,
+   "description": "Mostly Sunny",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-24T00:00:34Z",
-   "localizedKey": "weather_condition_partly_cloudy",
-   "defaultTitle": "Partly Cloudy"
+   "lastUpdated": "2026-11-24T12:00:23Z",
+   "localizedKey": "weather_condition_sunny",
+   "defaultTitle": "Sunny"
   }
  },
  "alineaciones": {
@@ -71,6 +71,13 @@
     "nombre": "Federico Croci",
     "motivo": "internationalDuty",
     "regreso": "Mid December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "FIO-1501917",
+    "nombre": "Viery",
+    "motivo": "lesion",
+    "regreso": "About 1-2 weeks",
     "p_juega": 0.0
    },
    {

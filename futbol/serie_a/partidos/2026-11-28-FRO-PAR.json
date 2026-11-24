@@ -51,18 +51,18 @@
     "p_juega": 0.0
    },
    {
-    "jugador": "FRO-1256534",
-    "nombre": "Antonio Raimondo",
-    "motivo": "lesion",
-    "regreso": "Late January 2027",
-    "p_juega": 0.0
-   },
-   {
     "jugador": "FRO-617044",
     "nombre": "Florian Grillitsch",
     "motivo": "lesion",
     "regreso": "Doubtful",
     "p_juega": 0.5
+   },
+   {
+    "jugador": "FRO-1256534",
+    "nombre": "Antonio Raimondo",
+    "motivo": "lesion",
+    "regreso": "Late January 2027",
+    "p_juega": 0.0
    }
   ],
   "PAR": [
@@ -70,6 +70,13 @@
     "jugador": "PAR-0",
     "nombre": "Djibril Diallo",
     "motivo": "internationalDuty",
+    "regreso": "Mid December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "PAR-1891769",
+    "nombre": "Dominik Drobnič",
+    "motivo": "lesion",
     "regreso": "Mid December 2026",
     "p_juega": 0.0
    },

@@ -22,18 +22,18 @@
    "nombre": ""
   },
   "clima": {
-   "temperature": 3,
+   "temperature": 2,
    "windSpeed": 1,
    "windDirectionCardinal": "NNE",
    "iconCode": 27,
-   "relativeHumidity": 95,
-   "precipChance": 15,
+   "relativeHumidity": 90,
+   "precipChance": 10,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 74,
+   "cloudCover": 60,
    "description": "Mostly Cloudy",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-23T20:00:20Z",
+   "lastUpdated": "2026-11-24T08:00:24Z",
    "localizedKey": "weather_condition_cloudy",
    "defaultTitle": "Cloudy"
   }

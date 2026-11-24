@@ -23,19 +23,19 @@
   },
   "clima": {
    "temperature": 10,
-   "windSpeed": 4,
-   "windDirectionCardinal": "N",
-   "iconCode": 33,
-   "relativeHumidity": 68,
-   "precipChance": 3,
+   "windSpeed": 3,
+   "windDirectionCardinal": "NNE",
+   "iconCode": 29,
+   "relativeHumidity": 69,
+   "precipChance": 4,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 23,
-   "description": "Mostly Clear",
+   "cloudCover": 32,
+   "description": "Partly Cloudy",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-23T17:00:09Z",
-   "localizedKey": "weather_condition_clear",
-   "defaultTitle": "Clear"
+   "lastUpdated": "2026-11-24T05:00:23Z",
+   "localizedKey": "weather_condition_partly_cloudy",
+   "defaultTitle": "Partly Cloudy"
   }
  },
  "alineaciones": {
@@ -66,6 +66,13 @@
    }
   ],
   "MON": [
+   {
+    "jugador": "MON-994403",
+    "nombre": "Cyril Ngonge",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   },
    {
     "jugador": "MON-822440",
     "nombre": "Michael Folorunsho",

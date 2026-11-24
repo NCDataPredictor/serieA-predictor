@@ -2,8 +2,13 @@
  "liga": "Serie A",
  "temporada": "2026-27",
  "version": "futbol-0.1",
- "actualizado": "2026-11-24T02:14Z",
+ "actualizado": "2026-11-24T13:35Z",
  "ejemplo": false,
+ "hora_picks_bogota": 19,
+ "picks_salen": {
+  "12": "2026-11-22T00:00Z",
+  "13": "2026-11-27T00:00Z"
+ },
  "partidos": [
   {
    "id": "2026-11-22-MIL-FRO",
@@ -124,6 +129,8 @@
    "fecha": "2026-11-27",
    "hora_local": "20:45",
    "hora_bogota": "14:45",
+   "utc": "2026-11-27T19:45Z",
+   "picks_salen": "2026-11-27T00:00Z",
    "jornada": 13,
    "local": "VEN",
    "visitante": "BOL",
@@ -131,30 +138,30 @@
    "derbi": null,
    "arbitro": "",
    "1x2": [
-    0.275,
-    0.277,
-    0.448
+    0.297,
+    0.278,
+    0.426
    ],
-   "goles": 3.0,
-   "over25": 0.568,
-   "ambos": 0.627,
-   "corners": 9.42,
-   "amarillas": 3.49,
+   "goles": 3.1,
+   "over25": 0.59,
+   "ambos": 0.645,
+   "corners": 9.69,
+   "amarillas": 3.45,
    "marcador": [
     "1-1",
-    0.124
+    0.12
    ],
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-24T02:12Z",
+   "cuotas_capturadas": "2026-11-24T13:31Z",
    "alineacion": {
     "VEN": "prevista (últimos 10)",
     "BOL": "prevista (últimos 10)"
    },
    "bajas": {
-    "VEN": 3,
-    "BOL": 4
+    "VEN": 4,
+    "BOL": 5
    }
   },
   {
@@ -162,6 +169,8 @@
    "fecha": "2026-11-28",
    "hora_local": "15:00",
    "hora_bogota": "09:00",
+   "utc": "2026-11-28T14:00Z",
+   "picks_salen": "2026-11-27T00:00Z",
    "jornada": 13,
    "local": "FRO",
    "visitante": "PAR",
@@ -169,15 +178,15 @@
    "derbi": null,
    "arbitro": "",
    "1x2": [
-    0.521,
-    0.259,
-    0.221
+    0.538,
+    0.255,
+    0.207
    ],
-   "goles": 3.16,
-   "over25": 0.604,
-   "ambos": 0.641,
-   "corners": 12.85,
-   "amarillas": 3.24,
+   "goles": 3.12,
+   "over25": 0.598,
+   "ambos": 0.63,
+   "corners": 12.63,
+   "amarillas": 3.28,
    "marcador": [
     "1-1",
     0.115
@@ -185,14 +194,14 @@
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-24T02:12Z",
+   "cuotas_capturadas": "2026-11-24T13:31Z",
    "alineacion": {
     "FRO": "prevista (últimos 10)",
     "PAR": "prevista (últimos 10)"
    },
    "bajas": {
     "FRO": 3,
-    "PAR": 1
+    "PAR": 2
    }
   },
   {
@@ -200,6 +209,8 @@
    "fecha": "2026-11-28",
    "hora_local": "18:00",
    "hora_bogota": "12:00",
+   "utc": "2026-11-28T17:00Z",
+   "picks_salen": "2026-11-27T00:00Z",
    "jornada": 13,
    "local": "TOR",
    "visitante": "LAZ",
@@ -207,23 +218,23 @@
    "derbi": null,
    "arbitro": "",
    "1x2": [
-    0.279,
-    0.293,
-    0.428
+    0.274,
+    0.297,
+    0.429
    ],
-   "goles": 2.65,
+   "goles": 2.64,
    "over25": 0.488,
    "ambos": 0.567,
-   "corners": 9.73,
-   "amarillas": 3.52,
+   "corners": 9.59,
+   "amarillas": 3.44,
    "marcador": [
     "1-1",
-    0.139
+    0.14
    ],
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-24T02:12Z",
+   "cuotas_capturadas": "2026-11-24T13:31Z",
    "alineacion": {
     "TOR": "prevista (últimos 10)",
     "LAZ": "prevista (últimos 10)"
@@ -238,6 +249,8 @@
    "fecha": "2026-11-28",
    "hora_local": "20:45",
    "hora_bogota": "14:45",
+   "utc": "2026-11-28T19:45Z",
+   "picks_salen": "2026-11-27T00:00Z",
    "jornada": 13,
    "local": "INT",
    "visitante": "GEN",
@@ -261,7 +274,7 @@
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-24T02:12Z",
+   "cuotas_capturadas": "2026-11-24T13:31Z",
    "alineacion": {
     "INT": "prevista (últimos 10)",
     "GEN": "prevista (últimos 10)"
@@ -276,6 +289,8 @@
    "fecha": "2026-11-29",
    "hora_local": "12:30",
    "hora_bogota": "06:30",
+   "utc": "2026-11-29T11:30Z",
+   "picks_salen": "2026-11-27T00:00Z",
    "jornada": 13,
    "local": "UDI",
    "visitante": "FIO",
@@ -283,30 +298,30 @@
    "derbi": null,
    "arbitro": "",
    "1x2": [
-    0.282,
-    0.279,
-    0.439
+    0.294,
+    0.287,
+    0.419
    ],
-   "goles": 3.12,
-   "over25": 0.595,
-   "ambos": 0.654,
-   "corners": 8.49,
-   "amarillas": 3.17,
+   "goles": 3.0,
+   "over25": 0.567,
+   "ambos": 0.636,
+   "corners": 8.35,
+   "amarillas": 3.22,
    "marcador": [
     "1-1",
-    0.122
+    0.131
    ],
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-24T02:12Z",
+   "cuotas_capturadas": "2026-11-24T13:31Z",
    "alineacion": {
     "UDI": "prevista (últimos 10)",
     "FIO": "prevista (últimos 10)"
    },
    "bajas": {
     "UDI": 3,
-    "FIO": 2
+    "FIO": 3
    }
   },
   {
@@ -314,6 +329,8 @@
    "fecha": "2026-11-29",
    "hora_local": "15:00",
    "hora_bogota": "09:00",
+   "utc": "2026-11-29T14:00Z",
+   "picks_salen": "2026-11-27T00:00Z",
    "jornada": 13,
    "local": "SAS",
    "visitante": "NAP",
@@ -337,7 +354,7 @@
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-24T02:12Z",
+   "cuotas_capturadas": "2026-11-24T13:31Z",
    "alineacion": {
     "SAS": "prevista (últimos 10)",
     "NAP": "prevista (últimos 10)"
@@ -352,6 +369,8 @@
    "fecha": "2026-11-29",
    "hora_local": "18:00",
    "hora_bogota": "12:00",
+   "utc": "2026-11-29T17:00Z",
+   "picks_salen": "2026-11-27T00:00Z",
    "jornada": 13,
    "local": "ROM",
    "visitante": "MON",
@@ -359,30 +378,30 @@
    "derbi": null,
    "arbitro": "",
    "1x2": [
-    0.693,
-    0.184,
+    0.69,
+    0.186,
     0.124
    ],
-   "goles": 3.73,
-   "over25": 0.714,
-   "ambos": 0.652,
-   "corners": 9.55,
-   "amarillas": 3.03,
+   "goles": 3.77,
+   "over25": 0.719,
+   "ambos": 0.662,
+   "corners": 9.61,
+   "amarillas": 2.99,
    "marcador": [
     "2-1",
-    0.104
+    0.101
    ],
-   "n_picks": 1,
+   "n_picks": 0,
    "ejemplo": false,
-   "n_errores": 1,
-   "cuotas_capturadas": "2026-11-24T02:12Z",
+   "n_errores": 0,
+   "cuotas_capturadas": "2026-11-24T13:31Z",
    "alineacion": {
     "ROM": "prevista (últimos 10)",
     "MON": "prevista (últimos 10)"
    },
    "bajas": {
     "ROM": 3,
-    "MON": 2
+    "MON": 3
    }
   },
   {
@@ -390,6 +409,8 @@
    "fecha": "2026-11-29",
    "hora_local": "20:45",
    "hora_bogota": "14:45",
+   "utc": "2026-11-29T19:45Z",
+   "picks_salen": "2026-11-27T00:00Z",
    "jornada": 13,
    "local": "COM",
    "visitante": "JUV",
@@ -410,10 +431,10 @@
     "1-1",
     0.149
    ],
-   "n_picks": 1,
+   "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-24T02:12Z",
+   "cuotas_capturadas": "2026-11-24T13:31Z",
    "alineacion": {
     "COM": "prevista (últimos 10)",
     "JUV": "prevista (últimos 10)"
@@ -428,6 +449,8 @@
    "fecha": "2026-11-30",
    "hora_local": "18:30",
    "hora_bogota": "12:30",
+   "utc": "2026-11-30T17:30Z",
+   "picks_salen": "2026-11-27T00:00Z",
    "jornada": 13,
    "local": "LEC",
    "visitante": "ATA",
@@ -451,7 +474,7 @@
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-24T02:12Z",
+   "cuotas_capturadas": "2026-11-24T13:31Z",
    "alineacion": {
     "LEC": "prevista (últimos 10)",
     "ATA": "prevista (últimos 10)"
@@ -466,6 +489,8 @@
    "fecha": "2026-11-30",
    "hora_local": "20:45",
    "hora_bogota": "14:45",
+   "utc": "2026-11-30T19:45Z",
+   "picks_salen": "2026-11-27T00:00Z",
    "jornada": 13,
    "local": "CAG",
    "visitante": "MIL",
@@ -486,10 +511,10 @@
     "1-1",
     0.139
    ],
-   "n_picks": 1,
+   "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-24T02:12Z",
+   "cuotas_capturadas": "2026-11-24T13:31Z",
    "alineacion": {
     "CAG": "prevista (últimos 10)",
     "MIL": "prevista (últimos 10)"
