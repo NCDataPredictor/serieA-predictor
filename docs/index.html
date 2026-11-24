@@ -155,3 +155,44 @@ document.getElementById("theme").onclick = () => {
   try { localStorage.setItem("ncdp-theme", nx); } catch (e) {}
 };
 </script>
+
+<!-- Desliza hacia abajo para recargar (24-nov, pedido de Nicolas; igual que en la NBA). Solo en la app instalada en el
+     celular (pantalla de inicio): ahí no hay barra del navegador. El ?r= evita que el iPhone sirva la página guardada. -->
+<style>
+.ptr { position: fixed; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 8px); z-index: 95; width: 40px; height: 40px; margin-left: -20px; border-radius: 50%;
+  display: grid; place-items: center; background: var(--surface, #fff); color: var(--accent, #0578ff); box-shadow: 0 2px 10px rgba(0,0,0,.25); opacity: 0; pointer-events: none;
+  transform: translateY(-60px) }
+.ptr svg { width: 22px; height: 22px } .ptr.ready { color: var(--good, #00a346) } .ptr.go svg { animation: ptr-spin .8s linear infinite }
+@keyframes ptr-spin { to { transform: rotate(360deg) } }
+@media (prefers-reduced-motion: reduce) { .ptr.go svg { animation: ptr-spin .8s linear infinite !important } }
+</style>
+<div class="ptr" id="ptr" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4.5h-4.5"/></svg></div>
+<script>
+(function () {
+  const H = document.documentElement;
+  try { if ((window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true) H.classList.add("app"); } catch (e) {}
+  if (/[?&]r=\d+/.test(location.search)) history.replaceState(null, "", location.pathname + location.search.replace(/([?&])r=\d+&?/, "$1").replace(/[?&]$/, "") + location.hash);
+  const el = document.getElementById("ptr"), TRIG = 80;
+  let y0 = null, x0 = 0, dy = 0, on = false;
+  const set = d => { const k = Math.min(d, TRIG * 1.4); el.style.opacity = Math.min(1, k / TRIG); el.style.transform = `translateY(${k * .6 - 20}px) rotate(${k * 3}deg)`; el.classList.toggle("ready", d >= TRIG); };
+  const reset = () => { el.style.transition = "transform .2s, opacity .2s"; el.style.opacity = 0; el.style.transform = "translateY(-60px)"; el.classList.remove("ready"); setTimeout(() => { el.style.transition = ""; }, 220); };
+  const reload = () => { const q = location.search ? location.search + "&" : "?"; location.replace(location.pathname + q + "r=" + Date.now() + location.hash); };
+  addEventListener("touchstart", e => {
+    y0 = null; on = false;
+    if (!H.classList.contains("app") || e.touches.length !== 1 || scrollY > 0 || document.querySelector("dialog[open], .combo.open")) return;
+    y0 = e.touches[0].clientY; x0 = e.touches[0].clientX; dy = 0;
+  }, { passive: true });
+  addEventListener("touchmove", e => {
+    if (y0 == null) return;
+    const t = e.touches[0]; dy = t.clientY - y0;
+    if (!on) { if (Math.abs(t.clientX - x0) > Math.abs(dy) || dy < 8 || scrollY > 0) { if (Math.abs(t.clientX - x0) > 10 || dy < -4) y0 = null; return; } on = true; }
+    set(dy);
+  }, { passive: true });
+  addEventListener("touchend", () => {
+    if (y0 == null || !on) { y0 = null; return; }
+    y0 = null;
+    if (dy >= TRIG) { el.classList.add("go"); el.style.opacity = 1; el.style.transform = "translateY(10px)"; reload(); } else reset();
+  }, { passive: true });
+  addEventListener("touchcancel", () => { if (on) reset(); y0 = null; }, { passive: true });
+})();
+</script>
