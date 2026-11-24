@@ -91,6 +91,52 @@
    "estado": "ganado",
    "real": 10,
    "u": 0.9
+  },
+  "2026-11-23-MON-FIO|equipo|MON|remates_puerta|4.5|over": {
+   "id": "2026-11-23-MON-FIO",
+   "fecha": "2026-11-23",
+   "local": "MON",
+   "visitante": "FIO",
+   "tipo": "equipo",
+   "jugador": "MON",
+   "equipo": "MON",
+   "stat": "remates_puerta",
+   "linea": 4.5,
+   "lado": "over",
+   "cuota": 2.07,
+   "casa": "Betano",
+   "p": 0.523,
+   "p_modelo": 0.656,
+   "p_casa": 0.451,
+   "ev": 0.083,
+   "error_cuota": false,
+   "suplente_oro": false,
+   "estado": "ganado",
+   "real": 5,
+   "u": 1.07
+  },
+  "2026-11-23-MON-FIO|equipo|partido|remates_puerta|9.5|over": {
+   "id": "2026-11-23-MON-FIO",
+   "fecha": "2026-11-23",
+   "local": "MON",
+   "visitante": "FIO",
+   "tipo": "equipo",
+   "jugador": "partido",
+   "equipo": "partido",
+   "stat": "remates_puerta",
+   "linea": 9.5,
+   "lado": "over",
+   "cuota": 1.95,
+   "casa": "Betano",
+   "p": 0.531,
+   "p_modelo": 0.587,
+   "p_casa": 0.48,
+   "ev": 0.035,
+   "error_cuota": false,
+   "suplente_oro": false,
+   "estado": "ganado",
+   "real": 13,
+   "u": 0.95
   }
  },
  "partidos": {
@@ -125,6 +171,30 @@
    "pinnacle": null,
    "over25_modelo": 0.693,
    "goles": 6
+  },
+  "2026-11-23-MON-FIO": {
+   "fecha": "2026-11-23",
+   "local": "MON",
+   "visitante": "FIO",
+   "marcador": "3-0",
+   "resultado": 0,
+   "modelo": [
+    0.302,
+    0.277,
+    0.421
+   ],
+   "mercado": [
+    0.2614,
+    0.2492,
+    0.4895
+   ],
+   "pinnacle": [
+    0.25763025663623107,
+    0.25559096700586514,
+    0.4867787763579039
+   ],
+   "over25_modelo": 0.602,
+   "goles": 3
   }
  }
 }
