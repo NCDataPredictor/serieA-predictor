@@ -60,6 +60,22 @@ button { font: inherit }
 .brand { color: inherit; text-decoration: none; display: flex; align-items: center; gap: 14px; min-width: 0 }
 .logo { flex: none; width: 50px; height: 50px; border-radius: 12px; display: grid; place-items: center; background: var(--accent-2); box-shadow: inset 0 -3px 0 rgba(0,0,0,.25) }
 .logo svg { width: 32px; height: 32px }
+/* Ambientación con el logo de la Serie A (24-nov, pedido de Nicolas): logo en la marca, marca de agua difuminada en el
+   encabezado y una muy tenue en el fondo de la página (detrás de los paneles, solo asoma en los espacios). */
+.logo.lg-mark { background: #fff; box-shadow: inset 0 -3px 0 rgba(0,0,0,.12); padding: 6px }
+.logo.lg-mark img { width: 100%; height: 100%; object-fit: contain; display: block }
+.wm-box { position: absolute; inset: 0; overflow: hidden; pointer-events: none }
+.wm-box .wm { position: absolute; right: max(3%, 20px); top: 50%; height: 175%; aspect-ratio: 1; background: url(../logos/serie-a.png) center / contain no-repeat;
+  opacity: .2; transform: translateY(-50%) rotate(-14deg); filter: blur(1.4px) saturate(.9) }
+.banner > .inner { position: relative }
+body::after { content: ""; position: fixed; z-index: -1; right: -70px; bottom: -70px; width: min(34vw, 340px); aspect-ratio: 1; pointer-events: none;
+  background: url(../logos/serie-a.png) center / contain no-repeat; opacity: .06; transform: rotate(-14deg); filter: grayscale(.2) }
+:root[data-theme="dark"] body::after { opacity: .07 }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body::after { opacity: .07 } }
+@media (max-width: 640px) { .wm-box .wm { right: -20px; height: 140% } body::after { width: 170px; right: -40px; bottom: -40px } }
+.dlg-m { overflow: hidden } .dlg-m small, .dlg-m b { position: relative }
+.dlg-wm { position: absolute; right: -8px; top: 50%; height: 120%; width: auto; transform: translateY(-50%) rotate(-12deg); opacity: .22; filter: blur(.6px); pointer-events: none }
+.dlg-wm.inv { filter: blur(.6px) brightness(0) invert(1) }
 .brand-t { display: grid; gap: 2px; min-width: 0 }
 .brand-t > span { font: 500 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--banner-muted) }
 .banner h1 { font-size: clamp(30px, 6vw, 46px); text-transform: uppercase; letter-spacing: .02em }
@@ -591,9 +607,10 @@ main:focus { outline: none }
 </style>
 
 <header class="banner gutter">
+  <div class="wm-box" aria-hidden="true"><span class="wm"></span></div>
   <div class="inner">
     <button type="button" class="icon-btn back-btn" id="back-btn" aria-label="Volver" title="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-    <a class="brand" href="#"><span class="logo" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><circle cx="16" cy="16" r="13"/><path d="M16 9.5l5 3.6-1.9 5.9h-6.2L11 13.1z"/><path d="M16 9.5V3.5M21 13.1l5.7-1.9M19.1 19l3.5 5M12.9 19l-3.5 5M11 13.1l-5.7-1.9"/></svg></span>
+    <a class="brand" href="#"><span class="logo lg-mark" aria-hidden="true"><img src="../logos/serie-a.png" alt="" width="38" height="38"></span>
       <span class="brand-t"><span>Simulación minuto a minuto · Serie A</span><h1>Serie A Predictor</h1></span></a>
     <div class="side" role="navigation" aria-label="Secciones">
       <button type="button" class="home-link" id="avisos-btn" aria-haspopup="dialog" title="Avisos al celular"><svg class="hi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0112 0v5l1.5 2h-15z"/><path d="M10 20.5a2.2 2.2 0 004 0"/></svg><span>Avisos</span></button>
@@ -1521,14 +1538,14 @@ $("#back-btn").onclick = () => {
   else location.href = "../";
 };
 const MODELOS_NAV = [
-  {n: "NBA", d: "Baloncesto", url: "../nba/", m1: "#0b1a3a", m2: "#1d428a"},
-  {n: "Serie A", d: "Fútbol · Italia", url: "./", m1: "#1a1659", m2: "#0032a0", cur: true},
+  {n: "NBA", d: "Baloncesto", url: "../nba/", m1: "#0b1a3a", m2: "#1d428a", lg: "/logos/nba-logoman.svg"},
+  {n: "Serie A", d: "Fútbol · Italia", url: "./", m1: "#1a1659", m2: "#0032a0", cur: true, lg: "/logos/serie-a.png"},
   {n: "Premier League", d: "Fútbol · Inglaterra", m1: "#38003c", m2: "#5b0a63", pronto: true},
   {n: "LaLiga", d: "Fútbol · España", m1: "#1f1f1f", m2: "#3a3a3a", pronto: true},
-  {n: "Champions", d: "Fútbol · Europa", url: "../champions/", m1: "#0a1446", m2: "#1b2a7a"},
+  {n: "Champions", d: "Fútbol · Europa", url: "../champions/", m1: "#0a1446", m2: "#1b2a7a", lg: "/logos/champions.png", inv: true},
   {n: "Europa League", d: "Fútbol · Europa", m1: "#2b1a00", m2: "#5a3600", pronto: true}];
 const dlg = $("#modelos-dlg");
-$("#modelos-grid").innerHTML = MODELOS_NAV.map(m => `<a class="dlg-m ${m.cur ? "cur" : ""} ${m.pronto ? "soon" : ""}" ${m.url ? `href="${m.url}"` : 'aria-disabled="true"'} style="--m1:${m.m1};--m2:${m.m2}"><small>${m.d}</small><b>${m.n}</b></a>`).join("");
+$("#modelos-grid").innerHTML = MODELOS_NAV.map(m => `<a class="dlg-m ${m.cur ? "cur" : ""} ${m.pronto ? "soon" : ""}" ${m.url ? `href="${m.url}"` : 'aria-disabled="true"'} style="--m1:${m.m1};--m2:${m.m2}">${m.lg ? `<img class="dlg-wm${m.inv ? " inv" : ""}" src="${m.lg}" alt="" aria-hidden="true" onerror="this.remove()">` : ""}<small>${m.d}</small><b>${m.n}</b></a>`).join("");
 $("#modelos-btn").onclick = () => { if (dlg.showModal) dlg.showModal(); else location.href = "../"; };
 $("#modelos-x").onclick = () => dlg.close();
 dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
