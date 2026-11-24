@@ -89,6 +89,15 @@ button { font: inherit }
 .chip .t { font: 700 18px/1.15 var(--display); letter-spacing: .03em }
 .chip .s { font: 500 12px/1.3 var(--mono); text-align: right; color: var(--banner-muted) }
 .chip .x { font: 500 11px var(--mono); color: var(--banner-muted); grid-column: 1 / -1 }
+/* grupos de la barra: jornada actual y, detrás de un separador, las jornadas ya jugadas */
+.tk-lbl { align-self: stretch; display: grid; place-content: center; gap: 2px; padding: 0 4px 0 2px; color: var(--banner-ink); text-align: left; white-space: nowrap }
+.tk-lbl b { font: 700 15px/1 var(--display); letter-spacing: .06em; text-transform: uppercase }
+.tk-lbl small { font: 500 10.5px/1.2 var(--mono); color: var(--banner-muted) }
+.tk-lbl.past { margin-left: 8px; padding-left: 16px; border-left: 1px dashed rgba(255,255,255,.28) }
+.chip.past { border-left-color: rgba(255,255,255,.3); background: rgba(255,255,255,.025); opacity: .72 }
+.chip.past:hover, .chip.past:focus-visible, .chip.past.active { opacity: 1 }
+.chip .fin { font: 700 11px var(--mono); color: var(--banner-ink); letter-spacing: .04em }
+.chip .atr { font: 700 10px var(--mono); color: var(--accent-2); text-transform: uppercase; letter-spacing: .05em }
 
 main { padding-block: 22px 60px }
 .section { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; margin: 8px 0 14px }
@@ -721,12 +730,49 @@ const CACHE = {};
 async function getJSON(u) { const r = await fetch(u, {cache: "no-cache"}); if (!r.ok) throw new Error(u + " " + r.status); return r.json(); }
 async function partido(id) { return CACHE[id] || (CACHE[id] = await getJSON("data/" + encodeURIComponent(id) + ".json")); }
 
+/* Jornada actual: la primera que tiene partidos por jugar (sin contar los atrasados, que caen después de que empezó
+   la jornada siguiente). Los atrasados de jornadas viejas que se juegan durante la actual van con ella. Lo ya jugado
+   de jornadas anteriores queda aparte en la barra, detrás de un separador. */
+const inicioP = p => new Date(p.utc ? p.utc : `${p.fecha}T${p.hora_bogota || "12:00"}:00-05:00`);
+const jugado = p => !!(RES && RES.partidos[p.id]) || Date.now() > +inicioP(p) + 2.25 * 3600e3;
+let GR = null;
+function grupos() {
+  const ps = IDX.partidos, by = {};
+  ps.forEach(p => (by[p.jornada] = by[p.jornada] || []).push(p));
+  const js = Object.keys(by).map(Number).sort((a, b) => a - b);
+  const primero = j => Math.min(...by[j].map(p => +inicioP(p)));
+  const atrasado = p => js.some(j => j > p.jornada && primero(j) <= +inicioP(p));
+  const ja = js.find(j => by[j].some(p => !jugado(p) && !atrasado(p))) ?? js[js.length - 1];
+  const fin = ja == null ? 0 : Math.max(...by[ja].map(p => +inicioP(p))) + 2 * 86400e3;
+  const act = ps.filter(p => p.jornada === ja || (p.jornada < ja && !jugado(p) && +inicioP(p) <= fin));
+  const pas = ps.filter(p => p.jornada < ja && !act.includes(p)).sort((a, b) => b.jornada - a.jornada || +inicioP(a) - +inicioP(b));
+  const sig = ps.filter(p => p.jornada > ja);
+  const sale = (IDX.picks_salen || {})[ja] || (by[ja] || []).map(p => p.picks_salen).find(Boolean);
+  return {ja, act, pas, sig, sale: sale ? new Date(sale) : null};
+}
+const cuando = d => d.toLocaleString("es-CO", {timeZone: "America/Bogota", weekday: "long", day: "numeric", month: "short", hour: "numeric", minute: "2-digit"});
+function chip(p, past) {
+  const r = RES && RES.partidos[p.id], g = r && r.equipos;
+  const fin = g ? `<span class="fin">Final ${g[p.local]?.goles ?? "–"}–${g[p.visitante]?.goles ?? "–"}</span>` : `<span class="fin">Jugado</span>`;
+  const atr = !past && GR && p.jornada < GR.ja ? `<span class="atr">Atrasado · J${esc(p.jornada)}</span> ` : "";
+  return `<a class="chip${past ? " past" : ""}" href="#${esc(p.id)}" data-id="${esc(p.id)}"><span class="t" style="display:flex;align-items:center;gap:6px">${crest(p.local, 20)}${esc(p.local)} – ${esc(p.visitante)}${crest(p.visitante, 20)}</span><span class="s">${past ? esc(fecha(p.fecha)) : esc(p.hora_bogota || "")}</span><span class="x">${past ? fin : atr + `${pct(p["1x2"][0])} · ${pct(p["1x2"][1])} · ${pct(p["1x2"][2])}`}</span></a>`;
+}
+function barra() {
+  GR = grupos();
+  const PAS_MAX = 2;   // jornadas jugadas que se muestran en la barra (las más recientes)
+  const jp = [...new Set(GR.pas.map(p => p.jornada))].slice(0, PAS_MAX);
+  const lbl = (t, sub, past) => `<span class="tk-lbl${past ? " past" : ""}"><b>${t}</b><small>${sub}</small></span>`;
+  $("#track").innerHTML = lbl(`Jornada ${esc(GR.ja)}`, GR.act.every(jugado) ? "jugada" : "en juego", false) + GR.act.map(p => chip(p, false)).join("")
+    + (GR.sig.length ? lbl(`Jornada ${esc(GR.sig[0].jornada)}`, "próxima", true) + GR.sig.map(p => chip(p, false)).join("") : "")
+    + jp.map(j => lbl(`Jornada ${esc(j)}`, "ya jugada", true) + GR.pas.filter(p => p.jornada === j).map(p => chip(p, true)).join("")).join("");
+}
+
 async function init() {
-  try { IDX = await getJSON("data/index.json"); }
+  try { [IDX] = await Promise.all([getJSON("data/index.json"), resultados()]); }
   catch (e) { $("#app").innerHTML = `<p class="empty">Todavía no hay jornada publicada.</p>`; return; }
   $("#demo").hidden = !IDX.ejemplo;
   $("#foot").innerHTML = `Modelo ${esc(IDX.version)} · ${esc(IDX.temporada)} · actualizado ${esc((IDX.actualizado || "").replace("T", " "))} UTC · horas en Bogotá (UTC−5). Probabilidades del modelo antes de mezclarlas con la casa; cuota justa = 1 / probabilidad.`;
-  $("#track").innerHTML = IDX.partidos.map(p => `<a class="chip" href="#${esc(p.id)}" data-id="${esc(p.id)}"><span class="t" style="display:flex;align-items:center;gap:6px">${crest(p.local, 20)}${esc(p.local)} – ${esc(p.visitante)}${crest(p.visitante, 20)}</span><span class="s">${esc(p.hora_bogota || "")}</span><span class="x">${pct(p["1x2"][0])} · ${pct(p["1x2"][1])} · ${pct(p["1x2"][2])}</span></a>`).join("");
+  barra();
   route();
 }
 addEventListener("hashchange", route);
@@ -748,18 +794,19 @@ function bar3(p, L, V, i = 0) {
     <div class="bar3-l"><span>1 · ${esc(L)}</span><span>X · empate</span><span>2 · ${esc(V)}</span></div>`;
 }
 function inicio() {
-  const ps = IDX.partidos;
-  const j = ps.length ? ps[0].jornada : "";
+  const ps = GR.act, j = GR.ja;
   const picks = ps.reduce((a, p) => a + (p.n_picks || 0), 0);
+  const espera = GR.sale && Date.now() < +GR.sale && !picks;
+  const nAtr = ps.filter(p => p.jornada < j).length;
   $("#app").innerHTML = `
-  <div class="section"><h2>Jornada ${esc(j)}</h2><span class="eyebrow">${ps.length} partidos · ${esc(IDX.temporada)}</span></div>
+  <div class="section"><h2>Jornada ${esc(j)}</h2><span class="eyebrow">${ps.length - nAtr} partidos${nAtr ? ` + ${nAtr} atrasado${nAtr > 1 ? "s" : ""}` : ""} · ${esc(IDX.temporada)}</span></div>
   <div class="grid">${ps.map((p, i) => { const L = p.local, V = p.visitante, x = p["1x2"], fav = x[0] >= x[2] ? 0 : 2;
     const meter = (v, hi) => `<div class="meter"><i class="${v >= hi ? "hi" : ""}" style="width:${Math.round(v * 100)}%"></i></div>`;
     const al = p.alineacion[L] === p.alineacion[V] ? p.alineacion[L] : `${p.alineacion[L]} / ${p.alineacion[V]}`;
     return `
     <a class="card mcard reveal" style="--i:${i};--c1:${tcol(L)[1]};--c2:${tcol(V)[1]}" href="#${esc(p.id)}">
       <div class="mc-top"><span class="mc-when">${esc(fecha(p.fecha))} · <b>${esc(p.hora_bogota || "")}</b> Bogotá</span>
-        <span>${p.derbi ? `<span class="tag hot">${esc(p.derbi)}</span> ` : ""}<span class="tag ${al === "oficial" ? "ok" : ""}">XI ${esc(al)}</span></span></div>
+        <span>${p.derbi ? `<span class="tag hot">${esc(p.derbi)}</span> ` : ""}${p.jornada < j ? `<span class="tag hot">Atrasado · J${esc(p.jornada)}</span> ` : ""}${jugado(p) ? `<span class="tag">Jugado</span> ` : ""}<span class="tag ${al === "oficial" ? "ok" : ""}">XI ${esc(al)}</span></span></div>
       <div class="mc-teams">
         <div class="mc-t">${crest(L, 58)}<span class="nm">${esc(tname(L))}</span><span class="pw ${fav === 0 ? "fav" : ""}">${pct(x[0])}<small>gana</small></span></div>
         <div class="mc-mid"><b>${esc(p.marcador[0])}</b><span>marcador más<br>probable · ${pct(p.marcador[1], 1)}</span></div>
@@ -777,13 +824,14 @@ function inicio() {
       <div class="mc-foot"><span>${ic("arbitro")}Árbitro <b>${esc(p.arbitro || "por designar")}</b> · Bajas ${esc(L)} <b>${p.bajas[L] || 0}</b> · ${esc(V)} <b>${p.bajas[V] || 0}</b></span><span class="mc-go">Ver partido <span>→</span></span></div>
     </a>`; }).join("")}</div>
   <div class="section" style="margin-top:28px"><h2>${ic("over")}Picks de la jornada</h2><span class="eyebrow">${picks} picks · cuotas de Betano</span></div>
-  ${picks ? "" : `<div class="card callout">Todavía no hay cuotas cargadas, así que no hay picks: el modelo nunca supone una cuota. Mientras tanto, en cada partido están sus probabilidades y la cuota justa (1 / probabilidad) para compararla con la de tu casa.</div>`}
+  ${espera ? `<div class="card callout">Los picks de la jornada ${esc(j)} salen el <b>${esc(cuando(GR.sale))}</b> (hora de Bogotá), la noche antes del primer partido, cuando las casas ya abrieron las cuotas. Desde ahí se van actualizando solos durante toda la jornada con las cuotas y las alineaciones nuevas. Mientras tanto, en cada partido están sus probabilidades y la cuota justa (1 / probabilidad).</div>`
+    : picks ? "" : `<div class="card callout">Todavía no hay cuotas cargadas, así que no hay picks: el modelo nunca supone una cuota. Mientras tanto, en cada partido están sus probabilidades y la cuota justa (1 / probabilidad) para compararla con la de tu casa.</div>`}
   <div id="picks"></div>
   <div class="section" style="margin-top:28px"><h2>${ic("tarjetas")}Errores de cuota</h2><span class="eyebrow">línea de la casa lejos de lo que pasa en la cancha</span></div>
   <div id="errores"></div>`;
   contar($("#app"));
   const errVacio = `<div class="card callout">Ningún error de cuota en esta jornada. Aparece uno cuando la casa da ≤ 45% a algo que se cumplió en ≥ 70% de los partidos recientes de los dos equipos, con el promedio al menos un 20% lejos de la línea y el modelo del mismo lado.</div>`;
-  if (!picks) { $("#errores").innerHTML = errVacio; return; }
+  if (!picks) { $("#errores").innerHTML = espera ? `<div class="card callout">Salen junto con los picks.</div>` : errVacio; return; }
   Promise.all(ps.filter(p => p.n_picks).map(p => partido(p.id))).then(ds => {
     if (!$("#picks")) return;   // ya se navegó a otra vista
     const rows = ds.flatMap(d => d.picks.map(k => ({...k, id: d.id, game: d.match.local + "–" + d.match.visitante, fecha: d.match.fecha, hora: d.match.hora_bogota})));
@@ -1125,6 +1173,11 @@ function picksPartido(d, el) {
       ${g25 != null ? row("Más de 2,5 goles", [g25], cs["goles 2.5"] && {...cs["goles 2.5"], consenso: [cs["goles 2.5"].consenso[0]], pinnacle: cs["goles 2.5"].pinnacle && [cs["goles 2.5"].pinnacle[0]], mejor: [cs["goles 2.5"].mejor[0]]}, [0]) : ""}
       ${g25 != null ? row("Menos de 2,5 goles", [1 - g25], cs["goles 2.5"] && {...cs["goles 2.5"], consenso: [cs["goles 2.5"].consenso[1]], pinnacle: cs["goles 2.5"].pinnacle && [cs["goles 2.5"].pinnacle[1]], mejor: [cs["goles 2.5"].mejor[1]]}, [0]) : ""}
     </table></div><p class="note" style="margin-top:-8px">Casas de EE. UU. y Europa (DraftKings, FanDuel, BetMGM, Pinnacle, Unibet…) vía The Odds API, ${esc((cs.hora || "").replace("T", " "))} UTC. Si el modelo se aleja mucho de Pinnacle, lo más probable es que el que se equivoca sea el modelo.</p>` : "";
+  const sale = d.picks_salen ? new Date(d.picks_salen) : null;
+  if (sale && Date.now() < +sale && !d.picks.length) {
+    el.innerHTML = consHTML + `<div class="card callout">Los picks de esta jornada salen el <b>${esc(cuando(sale))}</b> (hora de Bogotá), la noche antes del primer partido de la jornada, cuando ya están las cuotas. Luego se actualizan solos hasta que empiece el partido.</div>`;
+    return;
+  }
   el.innerHTML = consHTML + `
     ${cc ? `<p class="note" style="margin:0 0 10px">Cuotas de ${esc(cc.casa)} capturadas ${esc((cc.capturado || "").replace("T", " "))} UTC${cc["1x2"] ? ` · 1X2 ${cc["1x2"].map(x => x.toFixed(2)).join(" / ")} (modelo: ${d.partido["1x2"].map(p => fair(p)).join(" / ")})` : ""}.</p>`
       : `<div class="card callout">Todavía no hay cuotas de la casa para este partido, así que no hay picks: el modelo nunca supone una cuota. En Resumen tienes la cuota justa de cada línea para comparar.</div>`}

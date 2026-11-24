@@ -3,6 +3,8 @@
 #      con los datos que ya hay en el repo (los sube el PC cuando está prendido).
 #   2. Kambi (Unibet): cuotas de los partidos que no han empezado (si hay extracto de Betano, se respeta).
 #   3. Re-simula solo los partidos que no han empezado y publica (Cloudflare redepliega; la acción de avisos avisa).
+#      Los picks de una jornada se publican desde las 7 pm (Bogotá) de la víspera de su primer partido: la corrida
+#      de las 00:15 UTC (7:15 pm Bogotá) es la que los saca; las siguientes los actualizan durante la jornada.
 # Deja en futbol/serie_a/nube/estado.json qué pasos funcionaron en la última corrida.
 name: Jornada Serie A (nube)
 on:

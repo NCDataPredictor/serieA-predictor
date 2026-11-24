@@ -3,7 +3,8 @@
 Lo corre .github/workflows/avisos.yml en cada push a main que cambie docs/<liga>/data/index.json:
     python -m futbol.avisos_futbol --before <sha de main antes del push>
 Compara el index.json de antes y el de ahora y manda:
-  · "Jornada N lista": cuando aparece una jornada nueva o la jornada pasa a tener picks (se cargaron las cuotas).
+  · "Jornada N lista": cuando aparece una jornada nueva (dice cuándo salen sus picks) o la jornada pasa a tener picks
+    (la víspera del primer partido, 7 pm Bogotá: ver build_site_futbol.HORA_PICKS).
   · "Alineaciones confirmadas": por cada partido cuyos dos equipos pasan a alineación oficial.
 Solo a los suscritos con el tag de la liga (serie_a = 1). Sin el secreto ONESIGNAL_REST_API_KEY no envía nada.
 A mano: python -m futbol.avisos_futbol --test "texto"
@@ -14,7 +15,7 @@ import json
 import os
 import subprocess
 import urllib.request
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONF = os.path.join(RAIZ, "docs", "push.json")
@@ -60,6 +61,16 @@ def enviar(tag, titulo, texto, url, ident, icono=None):
         print(f"No se pudo enviar «{titulo}»: {e} {e.read().decode(errors='replace')[:300] if hasattr(e, 'read') else ''}")
 
 
+DIAS = ("lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo")
+
+
+def _cuando(iso_utc):
+    """'2026-11-27T00:00Z' → 'el jueves 26, 7:00 pm' (hora de Bogotá)."""
+    t = datetime.fromisoformat(iso_utc.replace("Z", "+00:00")) - timedelta(hours=5)
+    h = t.hour % 12 or 12
+    return f"el {DIAS[t.weekday()]} {t.day}, {h}:{t.minute:02d} {'am' if t.hour < 12 else 'pm'}"
+
+
 def avisos(web, antes, ahora):
     """Lista de (titulo, texto, ancla, ident) a partir de dos index.json."""
     cfg = LIGAS[web]
@@ -73,7 +84,9 @@ def avisos(web, antes, ahora):
         nueva = not any(i in pa for i in ids)
         if nueva or (n_ahora and not n_antes):
             ne = sum(pb[i].get("n_errores", 0) for i in ids)
-            texto = f"{len(ids)} partidos simulados" + (f" · {n_ahora} picks con valor" if n_ahora else " · picks cuando lleguen las cuotas") + (f" · {ne} errores de cuota" if ne else "")
+            sale = (ahora.get("picks_salen") or {}).get(str(j))
+            luego = f" · picks {_cuando(sale)}" if sale else " · picks cuando lleguen las cuotas"
+            texto = f"{len(ids)} partidos simulados" + (f" · {n_ahora} picks con valor" if n_ahora else luego) + (f" · {ne} errores de cuota" if ne else "")
             out.append((f"{cfg['emoji']} {cfg['nombre']} · Jornada {j} lista", texto, "", f"{web}-j{j}-{'picks' if n_ahora else 'sim'}"))
     for i, p in pb.items():
         ofi = all(v == "oficial" for v in (p.get("alineacion") or {}).values()) and p.get("alineacion")

@@ -3,6 +3,12 @@
     python -m futbol.build_site_futbol serie_a                 # todos los partidos de futbol/serie_a/partidos/
     python -m futbol.build_site_futbol serie_a 2026-11-29      # solo los de esa fecha
     python -m futbol.build_site_futbol serie_a --sims 5000     # menos simulaciones (pruebas)
+    python -m futbol.build_site_futbol serie_a --picks-ya      # publica los picks ya, sin esperar la noche anterior
+
+Picks por jornada: se calculan siempre, pero se publican desde la noche anterior al primer partido de la jornada
+(HORA_PICKS, hora de Bogotá), cuando ya están las cuotas de las casas colombianas (Betano las abre ≈2 días antes).
+Desde ahí cada corrida los va actualizando con las cuotas y alineaciones nuevas; los de partidos ya empezados quedan
+congelados. Un partido atrasado de una jornada vieja publica sus picks en cuanto hay cuotas.
 
 Entradas (ver futbol/datos/FORMATO.md):
   futbol/<liga>/historico/*.json   partidos jugados, normalizados (los escriben los descargadores de futbol/datos/)
@@ -17,7 +23,7 @@ import glob
 import json
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, RAIZ)
@@ -264,6 +270,7 @@ def resumen(res):
     L, V = m["local"], m["visitante"]
     pa = res["partido"]
     return {"id": res["id"], "fecha": m["fecha"], "hora_local": m.get("hora_local"), "hora_bogota": m.get("hora_bogota"),
+            "utc": iso(inicio_utc(m)), "picks_salen": res.get("picks_salen"),
             "jornada": m.get("jornada"), "local": L, "visitante": V, "estadio": m.get("estadio"), "derbi": res["derbi"],
             "arbitro": res["arbitro"].get("nombre"), "1x2": pa["1x2"], "goles": pa["total_goles"]["dist"]["media"],
             "over25": next(p for l, p in pa["total_goles"]["over"] if l == 2.5), "ambos": pa["ambos_marcan"],
@@ -275,6 +282,38 @@ def resumen(res):
             "bajas": {t: len(res["bajas"][t]["lista"]) for t in (L, V)}}
 
 
+HORA_PICKS = 19          # 7:00 pm Bogotá de la víspera del primer partido de la jornada
+BOGOTA = timezone(timedelta(hours=-5))
+
+
+def inicio_utc(m):
+    """Hora de inicio del partido (UTC): `utc` de FotMob, o fecha + hora de Bogotá."""
+    if m.get("utc"):
+        return datetime.fromisoformat(m["utc"].replace("Z", "+00:00"))
+    h = m.get("hora_bogota") or "12:00"
+    return datetime.fromisoformat(f'{m["fecha"]}T{h}').replace(tzinfo=BOGOTA).astimezone(timezone.utc)
+
+
+def picks_salen(partidos):
+    """{jornada: hora UTC desde la que se publican sus picks} = HORA_PICKS de la víspera del primer partido."""
+    primero = {}
+    for p in partidos:
+        j = p["match"].get("jornada")
+        if j is None:
+            continue
+        t = inicio_utc(p["match"])
+        primero[j] = min(primero.get(j, t), t)
+    out = {}
+    for j, t in primero.items():
+        dia = t.astimezone(BOGOTA).date() - timedelta(days=1)
+        out[j] = datetime(dia.year, dia.month, dia.day, HORA_PICKS, tzinfo=BOGOTA).astimezone(timezone.utc)
+    return out
+
+
+def iso(t):
+    return t.strftime("%Y-%m-%dT%H:%MZ")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("liga", choices=list(LIGAS))
@@ -282,10 +321,13 @@ def main():
     ap.add_argument("--sims", type=int, default=P.SIMS)
     ap.add_argument("--solo-futuros", action="store_true",
                     help="solo partidos que no han empezado (lo publicado de los empezados queda congelado)")
+    ap.add_argument("--picks-ya", action="store_true",
+                    help="publica los picks aunque todavía no sea la noche anterior al primer partido de la jornada")
     a = ap.parse_args()
     cfg = LIGAS[a.liga]
     hist = cargar(os.path.join(RAIZ, "futbol", a.liga, "historico", "*.json"))
     partidos = cargar(os.path.join(RAIZ, "futbol", a.liga, "partidos", "*.json"))
+    salen = picks_salen(partidos)   # con todos los partidos de la jornada, antes de filtrar
     if a.fecha:
         partidos = [p for p in partidos if p["match"]["fecha"] == a.fecha]
     if a.solo_futuros:
@@ -315,6 +357,11 @@ def main():
             cu["equipo"] = list(cu.get("equipo") or []) + betano.cuotas_equipo(p, extracto)
             p = {**p, "cuotas": cu}
         res = predecir(a.liga, p, hist, a.sims)
+        sale = salen.get(p["match"].get("jornada"))
+        if sale:
+            res["picks_salen"] = iso(sale)
+            if not a.picks_ya and datetime.now(timezone.utc) < sale:
+                res["picks"] = []   # todavía no: se publican la víspera del primer partido de la jornada
         cons = _consenso(a.liga, res["id"])
         if cons:
             res["consenso"] = cons
@@ -329,7 +376,8 @@ def main():
     lista = sorted(viejos.values(), key=lambda x: (x["fecha"], x.get("hora_local") or "", x["id"]))
     idx = {"liga": cfg["nombre"], "temporada": cfg["temporada"], "version": P.MODEL_VERSION,
            "actualizado": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
-           "ejemplo": any(x.get("ejemplo") for x in lista), "partidos": lista}
+           "ejemplo": any(x.get("ejemplo") for x in lista), "hora_picks_bogota": HORA_PICKS,
+           "picks_salen": {str(j): iso(t) for j, t in sorted(salen.items())}, "partidos": lista}
     with open(idx_path, "w", encoding="utf-8") as fh:
         json.dump(idx, fh, ensure_ascii=False, indent=1)
     # Resultados reales de los partidos ya jugados (para liquidar "Mis picks" en la web): stats por equipo.

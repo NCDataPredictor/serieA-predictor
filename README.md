@@ -35,6 +35,12 @@ Picks (`build_site_futbol.picks`): solo props con cuota real a los dos lados, me
 (`MKT_W = 0,20`), EV ≥ 3%, prob. ≥ 50%, máx. 2 por jugador y 12 por jornada. Si la casa ofrece suplente de oro
 en esa línea, la probabilidad del modelo es la de titular + reemplazo.
 
+Cuándo salen: los picks de una jornada se publican desde las **7 pm (Bogotá) de la víspera de su primer partido**
+(`HORA_PICKS`), porque Betano y las casas colombianas abren las cuotas ≈2 días antes. Desde ahí la acción de la nube
+los actualiza cada 3 h durante toda la jornada (vie–lun, o miércoles si hay atrasados); los de un partido empezado
+quedan congelados. `--picks-ya` los publica antes. En la web, la barra y la portada muestran solo la jornada actual
+(con sus atrasados); las jornadas ya jugadas quedan aparte en la barra, detrás de un separador, con su marcador final.
+
 ## Datos de ejemplo
 
 Mientras llegan los datos reales, `python futbol/serie_a/ejemplo/generar.py` crea una liga **sintética**
