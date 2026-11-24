@@ -25,17 +25,17 @@
    "temperature": 7,
    "windSpeed": 7,
    "windDirectionCardinal": "NE",
-   "iconCode": 29,
-   "relativeHumidity": 75,
-   "precipChance": 9,
+   "iconCode": 26,
+   "relativeHumidity": 76,
+   "precipChance": 13,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 57,
-   "description": "Partly Cloudy",
+   "cloudCover": 82,
+   "description": "Cloudy",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-24T08:00:23Z",
-   "localizedKey": "weather_condition_partly_cloudy",
-   "defaultTitle": "Partly Cloudy"
+   "lastUpdated": "2026-11-24T20:00:24Z",
+   "localizedKey": "weather_condition_cloudy",
+   "defaultTitle": "Cloudy"
   }
  },
  "alineaciones": {
@@ -43,27 +43,6 @@
  },
  "bajas": {
   "VEN": [
-   {
-    "jugador": "VEN-675327",
-    "nombre": "Pasquale Mazzocchi",
-    "motivo": "lesion",
-    "regreso": "About 1-2 weeks",
-    "p_juega": 0.0
-   },
-   {
-    "jugador": "VEN-651435",
-    "nombre": "Toma Bašić",
-    "motivo": "lesion",
-    "regreso": "About 1-2 weeks",
-    "p_juega": 0.0
-   },
-   {
-    "jugador": "VEN-992052",
-    "nombre": "Thierry Correia",
-    "motivo": "lesion",
-    "regreso": "About 1-2 weeks",
-    "p_juega": 0.0
-   },
    {
     "jugador": "VEN-1072710",
     "nombre": "Bartol Franjić",
@@ -76,6 +55,27 @@
     "nombre": "Marin Šverko",
     "motivo": "lesion",
     "regreso": "Unknown",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "VEN-992052",
+    "nombre": "Thierry Correia",
+    "motivo": "lesion",
+    "regreso": "About 1-2 weeks",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "VEN-675327",
+    "nombre": "Pasquale Mazzocchi",
+    "motivo": "lesion",
+    "regreso": "About 1-2 weeks",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "VEN-651435",
+    "nombre": "Toma Bašić",
+    "motivo": "lesion",
+    "regreso": "About 1-2 weeks",
     "p_juega": 0.0
    },
    {

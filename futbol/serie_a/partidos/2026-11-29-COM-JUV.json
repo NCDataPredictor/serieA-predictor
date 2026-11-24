@@ -22,20 +22,20 @@
    "nombre": ""
   },
   "clima": {
-   "temperature": 2,
+   "temperature": 3,
    "windSpeed": 1,
    "windDirectionCardinal": "NNE",
-   "iconCode": 27,
-   "relativeHumidity": 90,
-   "precipChance": 10,
+   "iconCode": 29,
+   "relativeHumidity": 87,
+   "precipChance": 6,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 60,
-   "description": "Mostly Cloudy",
+   "cloudCover": 44,
+   "description": "Partly Cloudy",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-24T08:00:24Z",
-   "localizedKey": "weather_condition_cloudy",
-   "defaultTitle": "Cloudy"
+   "lastUpdated": "2026-11-24T20:00:24Z",
+   "localizedKey": "weather_condition_partly_cloudy",
+   "defaultTitle": "Partly Cloudy"
   }
  },
  "alineaciones": {
@@ -91,21 +91,21 @@
     "jugador": "JUV-1684401",
     "nombre": "Kerim Alajbegović",
     "motivo": "lesion",
-    "regreso": "Early December 2026",
+    "regreso": "Back in training",
     "p_juega": 0.0
    },
    {
     "jugador": "JUV-1131217",
     "nombre": "Pierre Kalulu",
     "motivo": "lesion",
-    "regreso": "Early December 2026",
+    "regreso": "Back in training",
     "p_juega": 0.0
    },
    {
     "jugador": "JUV-841672",
     "nombre": "Nicolás González",
     "motivo": "lesion",
-    "regreso": "Early December 2026",
+    "regreso": "Back in training",
     "p_juega": 0.0
    },
    {

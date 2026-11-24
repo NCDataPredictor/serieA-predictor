@@ -22,18 +22,18 @@
    "nombre": ""
   },
   "clima": {
-   "temperature": 6,
+   "temperature": 7,
    "windSpeed": 2,
-   "windDirectionCardinal": "NW",
-   "iconCode": 33,
-   "relativeHumidity": 77,
+   "windDirectionCardinal": "WNW",
+   "iconCode": 31,
+   "relativeHumidity": 78,
    "precipChance": 5,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 26,
-   "description": "Mostly Clear",
+   "cloudCover": 10,
+   "description": "Clear",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-24T05:00:22Z",
+   "lastUpdated": "2026-11-24T17:00:11Z",
    "localizedKey": "weather_condition_clear",
    "defaultTitle": "Clear"
   }
@@ -54,7 +54,7 @@
     "jugador": "TOR-1231029",
     "nombre": "Rafik Belghali",
     "motivo": "lesion",
-    "regreso": "About 1-2 weeks",
+    "regreso": "Mid December 2026",
     "p_juega": 0.0
    }
   ],

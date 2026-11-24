@@ -24,16 +24,16 @@
   "clima": {
    "temperature": 4,
    "windSpeed": 1,
-   "windDirectionCardinal": "NE",
-   "iconCode": 31,
-   "relativeHumidity": 89,
-   "precipChance": 6,
+   "windDirectionCardinal": "ENE",
+   "iconCode": 33,
+   "relativeHumidity": 91,
+   "precipChance": 5,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 14,
-   "description": "Clear",
+   "cloudCover": 21,
+   "description": "Mostly Clear",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-24T08:00:23Z",
+   "lastUpdated": "2026-11-24T20:00:24Z",
    "localizedKey": "weather_condition_clear",
    "defaultTitle": "Clear"
   }
@@ -47,15 +47,15 @@
     "jugador": "INT-304733",
     "nombre": "Hakan Çalhanoğlu",
     "motivo": "lesion",
-    "regreso": "Mid December 2026",
+    "regreso": "Late December 2026",
     "p_juega": 0.0
    },
    {
     "jugador": "INT-362212",
     "nombre": "Piotr Zieliński",
     "motivo": "lesion",
-    "regreso": "Doubtful",
-    "p_juega": 0.5
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
    },
    {
     "jugador": "INT-1199383",
