@@ -15,6 +15,7 @@
  ],
  "shortcuts": [
   {"name": "Serie A", "url": "/serie-a/", "icons": [{"src": "/icons/icon-192.png", "sizes": "192x192"}]},
+  {"name": "Champions", "url": "/champions/", "icons": [{"src": "/icons/icon-192.png", "sizes": "192x192"}]},
   {"name": "NBA", "url": "/nba/", "icons": [{"src": "/icons/icon-192.png", "sizes": "192x192"}]},
   {"name": "Mis picks · Serie A", "url": "/serie-a/#mis-picks", "icons": [{"src": "/icons/icon-192.png", "sizes": "192x192"}]}
  ]
