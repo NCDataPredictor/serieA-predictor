@@ -752,6 +752,7 @@ function grupos() {
 }
 const cuando = d => d.toLocaleString("es-CO", {timeZone: "America/Bogota", weekday: "long", day: "numeric", month: "short", hour: "numeric", minute: "2-digit"});
 function chip(p, past) {
+  past = past || jugado(p);   // lo ya jugado de la jornada actual también muestra su marcador final
   const r = RES && RES.partidos[p.id], g = r && r.equipos;
   const fin = g ? `<span class="fin">Final ${g[p.local]?.goles ?? "–"}–${g[p.visitante]?.goles ?? "–"}</span>` : `<span class="fin">Jugado</span>`;
   const atr = !past && GR && p.jornada < GR.ja ? `<span class="atr">Atrasado · J${esc(p.jornada)}</span> ` : "";
@@ -762,9 +763,13 @@ function barra() {
   const PAS_MAX = 2;   // jornadas jugadas que se muestran en la barra (las más recientes)
   const jp = [...new Set(GR.pas.map(p => p.jornada))].slice(0, PAS_MAX);
   const lbl = (t, sub, past) => `<span class="tk-lbl${past ? " past" : ""}"><b>${t}</b><small>${sub}</small></span>`;
-  $("#track").innerHTML = lbl(`Jornada ${esc(GR.ja)}`, GR.act.every(jugado) ? "jugada" : "en juego", false) + GR.act.map(p => chip(p, false)).join("")
+  $("#track").innerHTML = lbl(`Jornada ${esc(GR.ja)}`, GR.act.every(jugado) ? "jugada" : GR.act.some(p => Date.now() >= +inicioP(p)) ? "en juego" : "próxima", false) + GR.act.map(p => chip(p, false)).join("")
     + (GR.sig.length ? lbl(`Jornada ${esc(GR.sig[0].jornada)}`, "próxima", true) + GR.sig.map(p => chip(p, false)).join("") : "")
     + jp.map(j => lbl(`Jornada ${esc(j)}`, "ya jugada", true) + GR.pas.filter(p => p.jornada === j).map(p => chip(p, true)).join("")).join("");
+  // la barra arranca en el próximo partido por jugar (lo ya jugado de la jornada queda a la izquierda)
+  const sig = $("#track").querySelector(".chip:not(.past)"), first = $("#track").querySelector(".chip");
+  const ir = () => { if (sig && sig !== first) { const t = $(".ticker"); t.scrollLeft += sig.getBoundingClientRect().left - t.getBoundingClientRect().left - 16; } };
+  ir(); if (document.fonts) document.fonts.ready.then(ir);   // otra vez cuando cargan las fuentes (cambian el ancho)
 }
 
 async function init() {
@@ -823,7 +828,7 @@ function inicio() {
       </div>
       <div class="mc-foot"><span>${ic("arbitro")}Árbitro <b>${esc(p.arbitro || "por designar")}</b> · Bajas ${esc(L)} <b>${p.bajas[L] || 0}</b> · ${esc(V)} <b>${p.bajas[V] || 0}</b></span><span class="mc-go">Ver partido <span>→</span></span></div>
     </a>`; }).join("")}</div>
-  <div class="section" style="margin-top:28px"><h2>${ic("over")}Picks de la jornada</h2><span class="eyebrow">${picks} picks · cuotas de Betano</span></div>
+  <div class="section" style="margin-top:28px"><h2>${ic("over")}Picks de la jornada</h2><span class="eyebrow">${espera ? `salen ${esc(cuando(GR.sale))}` : `${picks} picks · cuotas de Betano`}</span></div>
   ${espera ? `<div class="card callout">Los picks de la jornada ${esc(j)} salen el <b>${esc(cuando(GR.sale))}</b> (hora de Bogotá), la noche antes del primer partido, cuando las casas ya abrieron las cuotas. Desde ahí se van actualizando solos durante toda la jornada con las cuotas y las alineaciones nuevas. Mientras tanto, en cada partido están sus probabilidades y la cuota justa (1 / probabilidad).</div>`
     : picks ? "" : `<div class="card callout">Todavía no hay cuotas cargadas, así que no hay picks: el modelo nunca supone una cuota. Mientras tanto, en cada partido están sus probabilidades y la cuota justa (1 / probabilidad) para compararla con la de tu casa.</div>`}
   <div id="picks"></div>
