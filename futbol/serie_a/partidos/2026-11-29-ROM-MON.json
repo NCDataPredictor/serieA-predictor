@@ -22,18 +22,18 @@
    "nombre": ""
   },
   "clima": {
-   "temperature": 11,
-   "windSpeed": 4,
+   "temperature": 10,
+   "windSpeed": 5,
    "windDirectionCardinal": "N",
-   "iconCode": 31,
-   "relativeHumidity": 65,
-   "precipChance": 3,
+   "iconCode": 33,
+   "relativeHumidity": 66,
+   "precipChance": 2,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 19,
-   "description": "Clear",
+   "cloudCover": 20,
+   "description": "Mostly Clear",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-24T17:00:11Z",
+   "lastUpdated": "2026-11-25T05:00:09Z",
    "localizedKey": "weather_condition_clear",
    "defaultTitle": "Clear"
   }
@@ -43,13 +43,6 @@
  },
  "bajas": {
   "ROM": [
-   {
-    "jugador": "ROM-958464",
-    "nombre": "Leonardo Balerdi",
-    "motivo": "lesion",
-    "regreso": "About 1-2 weeks",
-    "p_juega": 0.0
-   },
    {
     "jugador": "ROM-1180321",
     "nombre": "Devyne Rensch",
@@ -74,17 +67,17 @@
     "p_juega": 0.5
    },
    {
-    "jugador": "MON-822440",
-    "nombre": "Michael Folorunsho",
-    "motivo": "lesion",
-    "regreso": "Early December 2026",
-    "p_juega": 0.0
-   },
-   {
     "jugador": "MON-1830551",
     "nombre": "Yvan Kouadio Maye",
     "motivo": "lesion",
     "regreso": "Back in training",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MON-822440",
+    "nombre": "Michael Folorunsho",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
     "p_juega": 0.0
    }
   ]

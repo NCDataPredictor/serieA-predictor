@@ -22,20 +22,20 @@
    "nombre": ""
   },
   "clima": {
-   "temperature": 8,
+   "temperature": 9,
    "windSpeed": 4,
-   "windDirectionCardinal": "WSW",
-   "iconCode": 34,
+   "windDirectionCardinal": "W",
+   "iconCode": 30,
    "relativeHumidity": 72,
-   "precipChance": 4,
+   "precipChance": 3,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 29,
-   "description": "Mostly Sunny",
+   "cloudCover": 37,
+   "description": "Partly Cloudy",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-24T14:00:11Z",
-   "localizedKey": "weather_condition_sunny",
-   "defaultTitle": "Sunny"
+   "lastUpdated": "2026-11-25T02:00:10Z",
+   "localizedKey": "weather_condition_partly_cloudy",
+   "defaultTitle": "Partly Cloudy"
   }
  },
  "alineaciones": {
@@ -49,20 +49,6 @@
     "motivo": "lesion",
     "regreso": "Doubtful",
     "p_juega": 0.5
-   },
-   {
-    "jugador": "SAS-1382375",
-    "nombre": "Vasilije Adžić",
-    "motivo": "lesion",
-    "regreso": "Unknown",
-    "p_juega": 0.0
-   },
-   {
-    "jugador": "SAS-1308909",
-    "nombre": "Cristian Volpato",
-    "motivo": "lesion",
-    "regreso": "Early December 2026",
-    "p_juega": 0.0
    },
    {
     "jugador": "SAS-1203195",
@@ -84,21 +70,42 @@
     "motivo": "lesion",
     "regreso": "Doubtful",
     "p_juega": 0.5
-   }
-  ],
-  "NAP": [
+   },
    {
-    "jugador": "NAP-1320863",
-    "nombre": "Antonio Vergara",
+    "jugador": "SAS-1382375",
+    "nombre": "Vasilije Adžić",
+    "motivo": "lesion",
+    "regreso": "Unknown",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "SAS-1308909",
+    "nombre": "Cristian Volpato",
     "motivo": "lesion",
     "regreso": "Early December 2026",
     "p_juega": 0.0
-   },
+   }
+  ],
+  "NAP": [
    {
     "jugador": "NAP-577912",
     "nombre": "Alex Meret",
     "motivo": "lesion",
     "regreso": "Early January 2027",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "NAP-823018",
+    "nombre": "Alessandro Buongiorno",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
+   },
+   {
+    "jugador": "NAP-955376",
+    "nombre": "Benoît Badiashile",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
     "p_juega": 0.0
    },
    {
@@ -109,20 +116,6 @@
     "p_juega": 0.0
    },
    {
-    "jugador": "NAP-308517",
-    "nombre": "Stanislav Lobotka",
-    "motivo": "lesion",
-    "regreso": "Late December 2026",
-    "p_juega": 0.0
-   },
-   {
-    "jugador": "NAP-955376",
-    "nombre": "Benoît Badiashile",
-    "motivo": "lesion",
-    "regreso": "Early December 2026",
-    "p_juega": 0.0
-   },
-   {
     "jugador": "NAP-1355552",
     "nombre": "Alisson Santos",
     "motivo": "lesion",
@@ -130,11 +123,18 @@
     "p_juega": 0.0
    },
    {
-    "jugador": "NAP-823018",
-    "nombre": "Alessandro Buongiorno",
+    "jugador": "NAP-1320863",
+    "nombre": "Antonio Vergara",
     "motivo": "lesion",
-    "regreso": "Doubtful",
-    "p_juega": 0.5
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "NAP-308517",
+    "nombre": "Stanislav Lobotka",
+    "motivo": "lesion",
+    "regreso": "Late December 2026",
+    "p_juega": 0.0
    }
   ]
  },
