@@ -24,18 +24,18 @@
   "clima": {
    "temperature": 14,
    "windSpeed": 2,
-   "windDirectionCardinal": "NE",
-   "iconCode": 30,
-   "relativeHumidity": 65,
-   "precipChance": 14,
+   "windDirectionCardinal": "ENE",
+   "iconCode": 34,
+   "relativeHumidity": 62,
+   "precipChance": 2,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 39,
-   "description": "Partly Cloudy",
+   "cloudCover": 28,
+   "description": "Mostly Sunny",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-25T02:00:10Z",
-   "localizedKey": "weather_condition_partly_cloudy",
-   "defaultTitle": "Partly Cloudy"
+   "lastUpdated": "2026-11-25T14:00:06Z",
+   "localizedKey": "weather_condition_sunny",
+   "defaultTitle": "Sunny"
   }
  },
  "alineaciones": {
@@ -43,13 +43,6 @@
  },
  "bajas": {
   "FRO": [
-   {
-    "jugador": "FRO-1135820",
-    "nombre": "Daniel Bîrligea",
-    "motivo": "lesion",
-    "regreso": "About 1-2 weeks",
-    "p_juega": 0.0
-   },
    {
     "jugador": "FRO-617044",
     "nombre": "Florian Grillitsch",
@@ -62,6 +55,13 @@
     "nombre": "Antonio Raimondo",
     "motivo": "lesion",
     "regreso": "Late January 2027",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "FRO-1135820",
+    "nombre": "Daniel Bîrligea",
+    "motivo": "lesion",
+    "regreso": "About 1-2 weeks",
     "p_juega": 0.0
    }
   ],
