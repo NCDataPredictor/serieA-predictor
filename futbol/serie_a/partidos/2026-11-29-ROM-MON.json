@@ -17,9 +17,9 @@
   "competicion": "liga"
  },
  "contexto": {
-  "arbitro": "",
+  "arbitro": "Giuseppe Collu",
   "arbitro_fotmob": {
-   "nombre": ""
+   "nombre": "Giuseppe Collu"
   },
   "clima": {
    "temperature": 10,
@@ -27,13 +27,13 @@
    "windDirectionCardinal": "N",
    "iconCode": 31,
    "relativeHumidity": 66,
-   "precipChance": 3,
+   "precipChance": 2,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 16,
+   "cloudCover": 7,
    "description": "Clear",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-25T17:00:06Z",
+   "lastUpdated": "2026-11-26T05:00:11Z",
    "localizedKey": "weather_condition_clear",
    "defaultTitle": "Clear"
   }

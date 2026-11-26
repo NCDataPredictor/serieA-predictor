@@ -17,9 +17,15 @@
   "competicion": "liga"
  },
  "contexto": {
-  "arbitro": "",
+  "arbitro": "Marco Di Bello",
   "arbitro_fotmob": {
-   "nombre": ""
+   "nombre": "Marco Di Bello",
+   "partidos": 28,
+   "amarillas_pp": 2.61,
+   "liga_amarillas_pp": 3.66,
+   "faltas_pp": 25.52,
+   "rojas": 2,
+   "penaltis": 7
   },
   "clima": {
    "temperature": 12,
@@ -27,13 +33,13 @@
    "windDirectionCardinal": "NNE",
    "iconCode": 29,
    "relativeHumidity": 77,
-   "precipChance": 9,
+   "precipChance": 4,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 43,
+   "cloudCover": 50,
    "description": "Partly Cloudy",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-25T20:00:20Z",
+   "lastUpdated": "2026-11-26T08:00:18Z",
    "localizedKey": "weather_condition_partly_cloudy",
    "defaultTitle": "Partly Cloudy"
   }
@@ -54,8 +60,8 @@
     "jugador": "CAG-936164",
     "nombre": "Michel Ndary Adopo",
     "motivo": "lesion",
-    "regreso": "About 1-2 weeks",
-    "p_juega": 0.0
+    "regreso": "Doubtful",
+    "p_juega": 0.5
    },
    {
     "jugador": "CAG-1807301",
@@ -65,15 +71,15 @@
     "p_juega": 0.0
    },
    {
-    "jugador": "CAG-528453",
-    "nombre": "Harry Winks",
+    "jugador": "CAG-496042",
+    "nombre": "Yerry Mina",
     "motivo": "lesion",
     "regreso": "Early December 2026",
     "p_juega": 0.0
    },
    {
-    "jugador": "CAG-496042",
-    "nombre": "Yerry Mina",
+    "jugador": "CAG-528453",
+    "nombre": "Harry Winks",
     "motivo": "lesion",
     "regreso": "Early December 2026",
     "p_juega": 0.0
@@ -98,15 +104,15 @@
     "jugador": "MIL-1385856",
     "nombre": "Davide Bartesaghi",
     "motivo": "lesion",
-    "regreso": "Early December 2026",
-    "p_juega": 0.0
+    "regreso": "Doubtful",
+    "p_juega": 0.5
    },
    {
     "jugador": "MIL-1554575",
     "nombre": "Francesco Camarda",
     "motivo": "lesion",
-    "regreso": "About 1-2 weeks",
-    "p_juega": 0.0
+    "regreso": "Doubtful",
+    "p_juega": 0.5
    },
    {
     "jugador": "MIL-31097",
@@ -130,20 +136,6 @@
     "p_juega": 0.5
    },
    {
-    "jugador": "MIL-604982",
-    "nombre": "Ruben Loftus-Cheek",
-    "motivo": "lesion",
-    "regreso": "Early December 2026",
-    "p_juega": 0.0
-   },
-   {
-    "jugador": "MIL-688300",
-    "nombre": "Samuel Chukwueze",
-    "motivo": "lesion",
-    "regreso": "Mid January 2027",
-    "p_juega": 0.0
-   },
-   {
     "jugador": "MIL-844996",
     "nombre": "Matteo Gabbia",
     "motivo": "lesion",
@@ -153,6 +145,20 @@
    {
     "jugador": "MIL-921341",
     "nombre": "Alexis Saelemaekers",
+    "motivo": "lesion",
+    "regreso": "Mid January 2027",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MIL-604982",
+    "nombre": "Ruben Loftus-Cheek",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MIL-688300",
+    "nombre": "Samuel Chukwueze",
     "motivo": "lesion",
     "regreso": "Mid January 2027",
     "p_juega": 0.0

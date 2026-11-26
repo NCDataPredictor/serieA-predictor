@@ -17,23 +17,29 @@
   "competicion": "liga"
  },
  "contexto": {
-  "arbitro": "",
+  "arbitro": "Andrea Colombo",
   "arbitro_fotmob": {
-   "nombre": ""
+   "nombre": "Andrea Colombo",
+   "partidos": 29,
+   "amarillas_pp": 4.41,
+   "liga_amarillas_pp": 3.66,
+   "faltas_pp": 26.75,
+   "rojas": 1,
+   "penaltis": 5
   },
   "clima": {
    "temperature": 7,
    "windSpeed": 7,
    "windDirectionCardinal": "NE",
    "iconCode": 27,
-   "relativeHumidity": 79,
-   "precipChance": 7,
+   "relativeHumidity": 76,
+   "precipChance": 3,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 71,
+   "cloudCover": 64,
    "description": "Mostly Cloudy",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-26T02:00:06Z",
+   "lastUpdated": "2026-11-26T14:00:03Z",
    "localizedKey": "weather_condition_cloudy",
    "defaultTitle": "Cloudy"
   }
@@ -87,6 +93,13 @@
    }
   ],
   "BOL": [
+   {
+    "jugador": "BOL-25587",
+    "nombre": "Lorenzo De Silvestri",
+    "motivo": "lesion",
+    "regreso": "About 1-2 weeks",
+    "p_juega": 0.0
+   },
    {
     "jugador": "BOL-1813717",
     "nombre": "Ukko Happonen",

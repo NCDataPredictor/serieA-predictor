@@ -17,23 +17,29 @@
   "competicion": "liga"
  },
  "contexto": {
-  "arbitro": "",
+  "arbitro": "Federico La Penna",
   "arbitro_fotmob": {
-   "nombre": ""
+   "nombre": "Federico La Penna",
+   "partidos": 28,
+   "amarillas_pp": 4.07,
+   "liga_amarillas_pp": 3.66,
+   "faltas_pp": 27.22,
+   "rojas": 1,
+   "penaltis": 8
   },
   "clima": {
    "temperature": 8,
    "windSpeed": 3,
    "windDirectionCardinal": "NE",
-   "iconCode": 34,
+   "iconCode": 32,
    "relativeHumidity": 63,
    "precipChance": 2,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 25,
-   "description": "Mostly Sunny",
+   "cloudCover": 8,
+   "description": "Sunny",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-26T00:00:32Z",
+   "lastUpdated": "2026-11-26T12:00:05Z",
    "localizedKey": "weather_condition_sunny",
    "defaultTitle": "Sunny"
   }
@@ -43,13 +49,6 @@
  },
  "bajas": {
   "UDI": [
-   {
-    "jugador": "UDI-724368",
-    "nombre": "Keinan Davis",
-    "motivo": "lesion",
-    "regreso": "Mid December 2026",
-    "p_juega": 0.0
-   },
    {
     "jugador": "UDI-1258292",
     "nombre": "Nicolò Bertola",
@@ -63,6 +62,13 @@
     "motivo": "lesion",
     "regreso": "Late December 2026",
     "p_juega": 0.0
+   },
+   {
+    "jugador": "UDI-724368",
+    "nombre": "Keinan Davis",
+    "motivo": "lesion",
+    "regreso": "Mid December 2026",
+    "p_juega": 0.0
    }
   ],
   "FIO": [
@@ -74,17 +80,17 @@
     "p_juega": 0.0
    },
    {
-    "jugador": "FIO-1501917",
-    "nombre": "Viery",
-    "motivo": "lesion",
-    "regreso": "About 1-2 weeks",
-    "p_juega": 0.0
-   },
-   {
     "jugador": "FIO-831474",
     "nombre": "Marin Pongračić",
     "motivo": "lesion",
     "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "FIO-1501917",
+    "nombre": "Viery",
+    "motivo": "lesion",
+    "regreso": "About 1-2 weeks",
     "p_juega": 0.0
    },
    {

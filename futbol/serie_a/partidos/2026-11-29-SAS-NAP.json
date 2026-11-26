@@ -17,25 +17,31 @@
   "competicion": "liga"
  },
  "contexto": {
-  "arbitro": "",
+  "arbitro": "Marco Guida",
   "arbitro_fotmob": {
-   "nombre": ""
+   "nombre": "Marco Guida",
+   "partidos": 23,
+   "amarillas_pp": 3.61,
+   "liga_amarillas_pp": 3.66,
+   "faltas_pp": 23.5,
+   "rojas": 3,
+   "penaltis": 7
   },
   "clima": {
    "temperature": 9,
    "windSpeed": 4,
    "windDirectionCardinal": "W",
-   "iconCode": 30,
+   "iconCode": 34,
    "relativeHumidity": 74,
    "precipChance": 4,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 35,
-   "description": "Partly Cloudy",
+   "cloudCover": 29,
+   "description": "Mostly Sunny",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-26T02:00:06Z",
-   "localizedKey": "weather_condition_partly_cloudy",
-   "defaultTitle": "Partly Cloudy"
+   "lastUpdated": "2026-11-26T14:00:03Z",
+   "localizedKey": "weather_condition_sunny",
+   "defaultTitle": "Sunny"
   }
  },
  "alineaciones": {
@@ -43,13 +49,6 @@
  },
  "bajas": {
   "SAS": [
-   {
-    "jugador": "SAS-1641041",
-    "nombre": "Darryl Bakola",
-    "motivo": "lesion",
-    "regreso": "Doubtful",
-    "p_juega": 0.5
-   },
    {
     "jugador": "SAS-1203195",
     "nombre": "Fedde Leysen",
@@ -63,6 +62,13 @@
     "motivo": "lesion",
     "regreso": "Back in training",
     "p_juega": 0.0
+   },
+   {
+    "jugador": "SAS-1641041",
+    "nombre": "Darryl Bakola",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
    },
    {
     "jugador": "SAS-1288119",
@@ -88,6 +94,13 @@
   ],
   "NAP": [
    {
+    "jugador": "NAP-955376",
+    "nombre": "Benoît Badiashile",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
     "jugador": "NAP-577912",
     "nombre": "Alex Meret",
     "motivo": "lesion",
@@ -100,13 +113,6 @@
     "motivo": "lesion",
     "regreso": "Doubtful",
     "p_juega": 0.5
-   },
-   {
-    "jugador": "NAP-955376",
-    "nombre": "Benoît Badiashile",
-    "motivo": "lesion",
-    "regreso": "Early December 2026",
-    "p_juega": 0.0
    },
    {
     "jugador": "NAP-414906",

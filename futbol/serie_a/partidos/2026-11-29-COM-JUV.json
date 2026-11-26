@@ -17,25 +17,31 @@
   "competicion": "liga"
  },
  "contexto": {
-  "arbitro": "",
+  "arbitro": "Maurizio Mariani",
   "arbitro_fotmob": {
-   "nombre": ""
+   "nombre": "Maurizio Mariani",
+   "partidos": 31,
+   "amarillas_pp": 3.87,
+   "liga_amarillas_pp": 3.66,
+   "faltas_pp": 25.2,
+   "rojas": 2,
+   "penaltis": 8
   },
   "clima": {
-   "temperature": 3,
+   "temperature": 4,
    "windSpeed": 1,
-   "windDirectionCardinal": "NNE",
-   "iconCode": 29,
+   "windDirectionCardinal": "N",
+   "iconCode": 27,
    "relativeHumidity": 87,
    "precipChance": 5,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 45,
-   "description": "Partly Cloudy",
+   "cloudCover": 72,
+   "description": "Mostly Cloudy",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-25T20:00:20Z",
-   "localizedKey": "weather_condition_partly_cloudy",
-   "defaultTitle": "Partly Cloudy"
+   "lastUpdated": "2026-11-26T08:00:18Z",
+   "localizedKey": "weather_condition_cloudy",
+   "defaultTitle": "Cloudy"
   }
  },
  "alineaciones": {

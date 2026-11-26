@@ -17,23 +17,29 @@
   "competicion": "liga"
  },
  "contexto": {
-  "arbitro": "",
+  "arbitro": "Daniele Chiffi",
   "arbitro_fotmob": {
-   "nombre": ""
+   "nombre": "Daniele Chiffi",
+   "partidos": 31,
+   "amarillas_pp": 3,
+   "liga_amarillas_pp": 3.66,
+   "faltas_pp": 21.33,
+   "rojas": 4,
+   "penaltis": 10
   },
   "clima": {
    "temperature": 7,
    "windSpeed": 2,
-   "windDirectionCardinal": "NW",
+   "windDirectionCardinal": "NNW",
    "iconCode": 31,
    "relativeHumidity": 74,
-   "precipChance": 5,
+   "precipChance": 4,
    "precipitation": 0,
    "snow": 0,
    "cloudCover": 4,
    "description": "Clear",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-25T17:00:06Z",
+   "lastUpdated": "2026-11-26T05:00:11Z",
    "localizedKey": "weather_condition_clear",
    "defaultTitle": "Clear"
   }
@@ -54,8 +60,8 @@
     "jugador": "TOR-1231029",
     "nombre": "Rafik Belghali",
     "motivo": "lesion",
-    "regreso": "Mid December 2026",
-    "p_juega": 0.0
+    "regreso": "Doubtful",
+    "p_juega": 0.5
    }
   ],
   "LAZ": [

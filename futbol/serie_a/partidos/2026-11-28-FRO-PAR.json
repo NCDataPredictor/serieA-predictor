@@ -17,23 +17,29 @@
   "competicion": "liga"
  },
  "contexto": {
-  "arbitro": "",
+  "arbitro": "Kevin Bonacina",
   "arbitro_fotmob": {
-   "nombre": ""
+   "nombre": "Kevin Bonacina",
+   "partidos": 19,
+   "amarillas_pp": 3.11,
+   "liga_amarillas_pp": 3.66,
+   "faltas_pp": 26.21,
+   "rojas": 2,
+   "penaltis": 5
   },
   "clima": {
    "temperature": 14,
    "windSpeed": 2,
    "windDirectionCardinal": "NE",
-   "iconCode": 34,
-   "relativeHumidity": 62,
-   "precipChance": 3,
+   "iconCode": 32,
+   "relativeHumidity": 60,
+   "precipChance": 1,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 28,
-   "description": "Mostly Sunny",
+   "cloudCover": 6,
+   "description": "Sunny",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-26T02:00:06Z",
+   "lastUpdated": "2026-11-26T14:00:03Z",
    "localizedKey": "weather_condition_sunny",
    "defaultTitle": "Sunny"
   }

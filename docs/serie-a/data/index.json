@@ -2,7 +2,7 @@
  "liga": "Serie A",
  "temporada": "2026-27",
  "version": "futbol-0.1",
- "actualizado": "2026-11-26T03:36Z",
+ "actualizado": "2026-11-26T16:55Z",
  "ejemplo": false,
  "hora_picks_bogota": 19,
  "picks_salen": {
@@ -136,32 +136,32 @@
    "visitante": "BOL",
    "estadio": "Stadio Pier Luigi Penzo",
    "derbi": null,
-   "arbitro": "",
+   "arbitro": "Andrea Colombo",
    "1x2": [
-    0.297,
-    0.278,
-    0.426
+    0.294,
+    0.271,
+    0.435
    ],
-   "goles": 3.1,
-   "over25": 0.59,
-   "ambos": 0.645,
-   "corners": 9.69,
-   "amarillas": 3.45,
+   "goles": 3.11,
+   "over25": 0.592,
+   "ambos": 0.649,
+   "corners": 9.74,
+   "amarillas": 3.68,
    "marcador": [
     "1-1",
-    0.12
+    0.123
    ],
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-26T03:33Z",
+   "cuotas_capturadas": "2026-11-26T16:52Z",
    "alineacion": {
     "VEN": "prevista (últimos 10)",
     "BOL": "prevista (últimos 10)"
    },
    "bajas": {
     "VEN": 4,
-    "BOL": 5
+    "BOL": 6
    }
   },
   {
@@ -176,25 +176,25 @@
    "visitante": "PAR",
    "estadio": "Stadio Benito Stirpe",
    "derbi": null,
-   "arbitro": "",
+   "arbitro": "Kevin Bonacina",
    "1x2": [
-    0.538,
-    0.255,
-    0.207
+    0.531,
+    0.259,
+    0.21
    ],
-   "goles": 3.12,
-   "over25": 0.598,
+   "goles": 3.13,
+   "over25": 0.597,
    "ambos": 0.63,
-   "corners": 12.63,
-   "amarillas": 3.28,
+   "corners": 12.66,
+   "amarillas": 2.65,
    "marcador": [
     "1-1",
-    0.115
+    0.114
    ],
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-26T03:33Z",
+   "cuotas_capturadas": "2026-11-26T16:52Z",
    "alineacion": {
     "FRO": "prevista (últimos 10)",
     "PAR": "prevista (últimos 10)"
@@ -216,25 +216,25 @@
    "visitante": "LAZ",
    "estadio": "Stadio Olimpico Grande Torino",
    "derbi": null,
-   "arbitro": "",
+   "arbitro": "Daniele Chiffi",
    "1x2": [
-    0.274,
-    0.297,
-    0.429
+    0.282,
+    0.296,
+    0.422
    ],
-   "goles": 2.64,
-   "over25": 0.488,
-   "ambos": 0.567,
-   "corners": 9.59,
-   "amarillas": 3.44,
+   "goles": 2.68,
+   "over25": 0.494,
+   "ambos": 0.57,
+   "corners": 9.68,
+   "amarillas": 3.16,
    "marcador": [
     "1-1",
-    0.14
+    0.138
    ],
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-26T03:33Z",
+   "cuotas_capturadas": "2026-11-26T16:52Z",
    "alineacion": {
     "TOR": "prevista (últimos 10)",
     "LAZ": "prevista (últimos 10)"
@@ -256,25 +256,25 @@
    "visitante": "GEN",
    "estadio": "Stadio Giuseppe Meazza",
    "derbi": null,
-   "arbitro": "",
+   "arbitro": "Giovanni Ayroldi",
    "1x2": [
-    0.656,
-    0.217,
-    0.126
+    0.647,
+    0.22,
+    0.133
    ],
    "goles": 3.08,
-   "over25": 0.59,
-   "ambos": 0.568,
-   "corners": 9.0,
-   "amarillas": 3.36,
+   "over25": 0.588,
+   "ambos": 0.569,
+   "corners": 8.98,
+   "amarillas": 3.83,
    "marcador": [
     "2-1",
-    0.114
+    0.112
    ],
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-26T03:33Z",
+   "cuotas_capturadas": "2026-11-26T16:52Z",
    "alineacion": {
     "INT": "prevista (últimos 10)",
     "GEN": "prevista (últimos 10)"
@@ -296,25 +296,25 @@
    "visitante": "FIO",
    "estadio": "Bluenergy Stadium",
    "derbi": null,
-   "arbitro": "",
+   "arbitro": "Federico La Penna",
    "1x2": [
-    0.294,
-    0.287,
-    0.419
+    0.299,
+    0.282,
+    0.42
    ],
-   "goles": 3.0,
-   "over25": 0.567,
-   "ambos": 0.636,
-   "corners": 8.35,
-   "amarillas": 3.22,
+   "goles": 2.99,
+   "over25": 0.569,
+   "ambos": 0.631,
+   "corners": 8.36,
+   "amarillas": 3.27,
    "marcador": [
     "1-1",
-    0.131
+    0.125
    ],
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-26T03:33Z",
+   "cuotas_capturadas": "2026-11-26T16:52Z",
    "alineacion": {
     "UDI": "prevista (últimos 10)",
     "FIO": "prevista (últimos 10)"
@@ -336,16 +336,16 @@
    "visitante": "NAP",
    "estadio": "MAPEI Stadium - Città del Tricolore",
    "derbi": null,
-   "arbitro": "",
+   "arbitro": "Marco Guida",
    "1x2": [
-    0.222,
-    0.294,
-    0.484
+    0.223,
+    0.291,
+    0.486
    ],
-   "goles": 2.47,
-   "over25": 0.443,
-   "ambos": 0.518,
-   "corners": 9.79,
+   "goles": 2.48,
+   "over25": 0.445,
+   "ambos": 0.517,
+   "corners": 9.77,
    "amarillas": 2.37,
    "marcador": [
     "1-1",
@@ -354,7 +354,7 @@
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-26T03:33Z",
+   "cuotas_capturadas": "2026-11-26T16:52Z",
    "alineacion": {
     "SAS": "prevista (últimos 10)",
     "NAP": "prevista (últimos 10)"
@@ -376,25 +376,25 @@
    "visitante": "MON",
    "estadio": "Stadio Olimpico",
    "derbi": null,
-   "arbitro": "",
+   "arbitro": "Giuseppe Collu",
    "1x2": [
     0.691,
-    0.189,
-    0.121
+    0.19,
+    0.119
    ],
-   "goles": 3.85,
-   "over25": 0.725,
-   "ambos": 0.672,
-   "corners": 9.96,
-   "amarillas": 3.14,
+   "goles": 3.82,
+   "over25": 0.726,
+   "ambos": 0.665,
+   "corners": 9.95,
+   "amarillas": 3.44,
    "marcador": [
     "2-1",
-    0.097
+    0.099
    ],
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-26T03:33Z",
+   "cuotas_capturadas": "2026-11-26T16:52Z",
    "alineacion": {
     "ROM": "prevista (últimos 10)",
     "MON": "prevista (últimos 10)"
@@ -416,25 +416,25 @@
    "visitante": "JUV",
    "estadio": "Stadio Giuseppe Sinigaglia",
    "derbi": null,
-   "arbitro": "",
+   "arbitro": "Maurizio Mariani",
    "1x2": [
-    0.358,
-    0.32,
-    0.323
+    0.355,
+    0.321,
+    0.324
    ],
    "goles": 2.38,
-   "over25": 0.42,
-   "ambos": 0.522,
-   "corners": 9.51,
-   "amarillas": 2.42,
+   "over25": 0.422,
+   "ambos": 0.519,
+   "corners": 9.52,
+   "amarillas": 2.58,
    "marcador": [
     "1-1",
-    0.151
+    0.148
    ],
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-26T03:33Z",
+   "cuotas_capturadas": "2026-11-26T16:52Z",
    "alineacion": {
     "COM": "prevista (últimos 10)",
     "JUV": "prevista (últimos 10)"
@@ -456,31 +456,31 @@
    "visitante": "ATA",
    "estadio": "Stadio Ettore Giardiniero - Via del Mare",
    "derbi": null,
-   "arbitro": "",
+   "arbitro": "Mattia Drigo",
    "1x2": [
-    0.213,
-    0.262,
-    0.525
+    0.21,
+    0.26,
+    0.531
    ],
-   "goles": 3.11,
-   "over25": 0.594,
-   "ambos": 0.635,
-   "corners": 9.94,
-   "amarillas": 1.91,
+   "goles": 3.13,
+   "over25": 0.6,
+   "ambos": 0.632,
+   "corners": 10.14,
+   "amarillas": 1.95,
    "marcador": [
     "1-1",
-    0.118
+    0.113
    ],
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-26T03:33Z",
+   "cuotas_capturadas": "2026-11-26T16:52Z",
    "alineacion": {
     "LEC": "prevista (últimos 10)",
     "ATA": "prevista (últimos 10)"
    },
    "bajas": {
-    "LEC": 2,
+    "LEC": 3,
     "ATA": 3
    }
   },
@@ -496,25 +496,25 @@
    "visitante": "MIL",
    "estadio": "Unipol Domus",
    "derbi": null,
-   "arbitro": "",
+   "arbitro": "Marco Di Bello",
    "1x2": [
-    0.241,
-    0.303,
-    0.456
+    0.237,
+    0.314,
+    0.449
    ],
-   "goles": 2.4,
-   "over25": 0.428,
-   "ambos": 0.506,
-   "corners": 8.42,
-   "amarillas": 2.96,
+   "goles": 2.27,
+   "over25": 0.396,
+   "ambos": 0.48,
+   "corners": 8.49,
+   "amarillas": 2.63,
    "marcador": [
     "1-1",
-    0.139
+    0.144
    ],
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-26T03:33Z",
+   "cuotas_capturadas": "2026-11-26T16:52Z",
    "alineacion": {
     "CAG": "prevista (últimos 10)",
     "MIL": "prevista (últimos 10)"
