@@ -354,6 +354,9 @@ dialog.nc-dlg::backdrop { background: rgba(5,6,25,.55); backdrop-filter: blur(2p
           const r = crear ? await sb.auth.signUp({ email, password, options: { emailRedirectTo: location.origin + location.pathname } })
             : await sb.auth.signInWithPassword({ email, password });
           if (r.error) PASO = { fase: "mail", email, msg: traducir(r.error, crear), err: true };
+          // Supabase no revela si el correo ya existe: responde "creada" sin identidades y no guarda la contraseña.
+          else if (crear && !r.data.session && r.data.user && Array.isArray(r.data.user.identities) && !r.data.user.identities.length)
+            PASO = { fase: "mail", email, msg: "Si ese correo ya tiene cuenta, la contraseña no se cambió: toca Entrar, o \"Olvidé mi contraseña\" si aún no tienes una o no la recuerdas.", err: true };
           else if (crear && !r.data.session) PASO = { fase: "mail", email, msg: "Cuenta creada. Te enviamos un correo para confirmarla: ábrelo y vuelves aquí ya dentro." };
           else PASO = { fase: "mail", email: "", msg: "", recien: true };
         } else if (f.dataset.nc === "nueva") {
