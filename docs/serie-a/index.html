@@ -529,6 +529,17 @@ dialog.sheet::backdrop { background: rgba(5, 6, 25, .55); backdrop-filter: blur(
 .cb-note { margin: 0; font-size: 12px; color: var(--muted) } .cb-note.warn { color: var(--ink); background: var(--accent-soft); border-radius: 8px; padding: 7px 9px }
 .cb-empty { padding: 14px 0; font-size: 14px; color: var(--muted) } .cb-empty ol { margin: 8px 0 0; padding-left: 20px } .cb-empty li { margin: 4px 0 }
 main { padding-bottom: 96px }
+/* Crea tu pick (dentro de Mi combinada) */
+.mk { display: grid; gap: 10px; padding: 8px 0 }
+.mk label { display: grid; gap: 4px; font-size: 12px; color: var(--muted) }
+.mk select, .mk input { font: 500 14px var(--body); padding: 7px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); min-width: 0 }
+.mk .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px }
+.mk-ch { font: 600 12px var(--mono); color: var(--accent); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; cursor: pointer }
+.mk-ch:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px }
+.mk .res { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px }
+.mk .res div { background: var(--accent-soft); border-radius: 8px; padding: 7px 9px; font-size: 12px; color: var(--muted) } .mk .res b { display: block; font: 600 16px var(--mono); color: var(--ink) }
+.mk .res b.pos { color: var(--good) } .mk .res b.neg { color: var(--bad) }
+.jmk { font: 500 12px var(--mono); color: var(--accent); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; cursor: pointer; margin-left: 6px }
 @media (max-width: 640px) {
   .combo { left: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)) }
   .combo.open { left: 8px; right: 8px; bottom: calc(8px + env(safe-area-inset-bottom, 0px)) }
@@ -657,7 +668,7 @@ main:focus { outline: none }
 <div class="combo" id="combo">
   <button type="button" class="combo-pill empty" id="combo-pill" aria-expanded="false" aria-controls="combo-panel"><span class="cp-plus" aria-hidden="true">+</span><span class="t">Mi combinada</span><span class="n" id="cp-n">0</span><span class="d" id="cp-d"></span></button>
   <section class="combo-panel" id="combo-panel" hidden aria-labelledby="cb-t">
-    <div class="cb-head"><h2 id="cb-t">Mi combinada</h2><button type="button" class="cb-min" id="cb-min">Ocultar</button></div>
+    <div class="cb-head"><h2 id="cb-t">Mi combinada</h2><button type="button" class="cb-min" id="cb-mk">+ Crear pick</button><button type="button" class="cb-min" id="cb-min">Ocultar</button></div>
     <p class="cb-msg" id="cb-msg" role="status" hidden></p>
     <div class="cb-body" id="cb-body"></div>
     <div class="cb-foot" id="cb-foot"></div>
@@ -798,14 +809,55 @@ async function init() {
   route();
 }
 addEventListener("hashchange", route);
+/* ---------- Volver al mismo punto (26-nov, pedido de Nicolas) ----------
+   Cada vista (#partido, Mis picks, inicio…) recuerda hasta dónde bajaste, qué plegables abriste y dónde quedó cada
+   carrusel de tarjetas. Al volver (botón ←, atrás del navegador o el gesto del celular) la página regresa a ese punto;
+   al entrar a una vista nueva (tocar un partido, una pestaña o un enlace) arranca arriba, como antes. */
+const VISTA = { est: {}, hist: [], actual: null, atras: false, clic: 0, yClic: 0 };
+try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {}
+// la altura se toma al tocar (antes de que el navegador salte a un ancla con el mismo nombre)
+document.addEventListener("click", e => { VISTA.yClic = scrollY; if (e.target.closest && e.target.closest('a[href^="#"], [data-go]')) VISTA.clic = Date.now(); else VISTA.clic = 0; }, true);
+const VISTA_CAR = "#app .mcards, #app .pcards, #app .grid";
+function vistaAntes() {   // al empezar route(): guarda la vista que se deja y decide si esto es "volver"
+  const h = location.hash === "#" ? "" : location.hash, prev = VISTA.actual, H = VISTA.hist;
+  if (h === prev) return { h, misma: true };
+  const reciente = Date.now() - VISTA.clic < 700; VISTA.clic = 0;   // el toque cuenta solo para la navegación que provoca
+  if (prev != null) VISTA.est[prev] = { y: reciente ? VISTA.yClic : scrollY, ab: [...document.querySelectorAll("#app details")].map(d => d.open),
+    car: [...document.querySelectorAll(VISTA_CAR)].map(c => c.scrollLeft) };
+  let atras = VISTA.atras; VISTA.atras = false;
+  const anterior = H.length > 1 && H[H.length - 2] === h;
+  if (anterior && (atras || !reciente)) { H.pop(); atras = true; } else H.push(h);
+  if (H.length > 80) H.splice(0, H.length - 80);
+  VISTA.actual = h;
+  return { h, atras };
+}
+function vistaDespues(v) {   // al terminar route(): arriba si es vista nueva; si es volver, al mismo punto (espera lo que carga aparte)
+  const e = v.atras && VISTA.est[v.h];
+  if (!e) { scrollTo(0, 0); return; }
+  let ab = false, car = false, n = 0, parar = false;
+  const stop = () => { parar = true; };
+  const aplicar = () => {
+    if (!ab) { const ds = document.querySelectorAll("#app details"); if (ds.length && ds.length === e.ab.length) { ds.forEach((d, i) => { if (d.open !== e.ab[i]) d.open = e.ab[i]; }); ab = true; } }
+    if (!car) { const cs = document.querySelectorAll(VISTA_CAR); if (cs.length && cs.length === e.car.length) { cs.forEach((c, i) => { if (e.car[i]) c.scrollLeft = e.car[i]; }); car = true; } }
+    if (Math.abs(scrollY - e.y) > 2) scrollTo(0, e.y);
+  };
+  aplicar();
+  addEventListener("touchstart", stop, { passive: true }); addEventListener("wheel", stop, { passive: true }); addEventListener("keydown", stop);
+  const t = () => {
+    if (parar || VISTA.actual !== v.h || ++n > 16) { removeEventListener("touchstart", stop); removeEventListener("wheel", stop); removeEventListener("keydown", stop); return; }
+    aplicar(); setTimeout(t, 90);
+  };
+  requestAnimationFrame(() => setTimeout(t, 30));
+}
 function route() {
   if (!IDX) return;   // aún cargando la jornada: init() llama a route() al terminar
+  const VV = vistaAntes();
   const id = decodeURIComponent(location.hash.slice(1));
   document.querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c.dataset.id === id));
   if (id === "mis-picks") misPicks();
   else if (id === "rendimiento") rendimiento();
   else if (id && IDX.partidos.some(p => p.id === id)) verPartido(id); else inicio();
-  scrollTo(0, 0);
+  vistaDespues(VV);
 }
 
 /* ---------- inicio de la jornada ---------- */
@@ -1458,7 +1510,8 @@ function abrirJugador(d, t, j) {
         const hn = ser ? contarHits(ser, l, "over") : null;
         const gi = ser ? reg(() => ({eyebrow: `${d.match.local} – ${d.match.visitante} · línea del modelo`, titulo: `${j.nombre} · más de ${linTxt(l)} ${STAT[s].toLowerCase()}`, linea: l, lado: "over", grupos: ser, modelo: pp, media_modelo: st.media})) : null;
         return `<tr><td>Más de ${linTxt(l)}</td><td class="p ${pp >= .55 ? "hi" : ""}">${pct(pp)}</td>${st.oro_over ? `<td class="p oro">${pct(st.oro_over[k][1])}</td>` : ""}<td class="n jz">${fair(pp)}</td>
-          <td>${hn ? hitBtn(hn, gi) : "–"}</td><td>${addLinea(d, {tipo: "jugador", jugador: j.nombre, equipo: t, stat: s, linea: l, p_over: pp})}</td></tr>`; }).join("")}</table></div></div>`; }).join("");
+          <td>${hn ? hitBtn(hn, gi) : "–"}</td><td>${addLinea(d, {tipo: "jugador", jugador: j.nombre, equipo: t, stat: s, linea: l, p_over: pp})}</td></tr>`; }).join("")}</table></div>
+      <button type="button" class="jmk" data-jmk="${reg({id: d.id, g: "ju:" + t, quien: j.nombre, stat: s})}">Otra línea o la cuota de tu casa →</button></div>`; }).join("");
   const oro = j.suplentes_oro && j.suplentes_oro.length ? `<p class="note">Si sale (${pct(j.p_sustituido)} de las veces; completa el partido ${pct(j.p_completa)}), suele entrar: ${j.suplentes_oro.map(([n, p]) => `${esc(n)} (${pct(p)})`).join(", ")}.</p>` : "";
   $("#jug-b").innerHTML = `
     <div class="jkpi"><div><span>Titular</span><b>${pct(j.p_titular)}</b></div><div><span>Juega</span><b>${pct(j.p_juega)}</b></div><div><span>Minutos esperados</span><b>${f1(j.min_medio)}'</b></div><div><span>Amarilla</span><b>${pct(j.p_amarilla)}</b></div></div>
@@ -1544,7 +1597,9 @@ function pintarCombi() {
   $("#cp-n").textContent = n;
   $("#cp-d").textContent = n ? "@" + cuotaComb(v).toFixed(2) : "";
   pill.setAttribute("aria-label", n ? `Mi combinada: ${n} ${n === 1 ? "pata" : "patas"}, cuota ${cuotaComb(v).toFixed(2)}` : "Mi combinada: vacía");
+  syncMkBtn();
   if ($("#combo-panel").hidden) return;
+  if (MK_OPEN) { pintarMk(); return; }
   $("#cb-body").innerHTML = n ? `<ul class="cb-legs">${v.map(k => `<li>
       <div class="cb-l"><span class="lg">${ic(k.stat)}${esc(pickTxt(k))}</span><span class="sub">${esc(k.game)} · ${esc(fecha(k.fecha))}${k.sin_cuota ? " · línea del modelo: cuota justa, pon la de tu casa" : k.error_cuota ? " · error de cuota" : " · pick del modelo"}</span>
         ${k.sin_cuota ? `<span class="seg sm" style="margin-top:4px"><button type="button" data-lado="over" data-k="${esc(k.key)}" aria-pressed="${k.lado === "over"}">Más de</button><button type="button" data-lado="under" data-k="${esc(k.key)}" aria-pressed="${k.lado === "under"}">Menos de</button></span>` : ""}</div>
@@ -1553,6 +1608,7 @@ function pintarCombi() {
     : `<div class="cb-empty"><b style="color:var(--ink)">Tu combinada está vacía.</b><ol>
         <li>En <b>Picks de la jornada</b> o en la pestaña <b>Picks</b> de un partido toca <span class="cmb demo"><span class="pl">+</span>Combinada</span>.</li>
         <li>En un jugador (Alineaciones o Jugadores) o en las <b>Líneas de equipo</b> toca <span class="addc demo" style="cursor:default">+</span> en la línea que quieras.</li>
+        <li>O toca <b>+ Crear pick</b> arriba: eliges partido, mercado, línea y la cuota de tu casa.</li>
         <li>Aquí ves la cuota combinada, la probabilidad y el EV. Puedes mezclar partidos.</li></ol></div>`;
   $("#cb-body").querySelectorAll(".cb-q").forEach(inp => inp.oninput = () => { const q = parseFloat(inp.value.replace(",", ".")); if (!(q > 1)) return;
     combi.set(combi.get().map(x => x.key === inp.dataset.k ? {...x, cuota: q} : x)); pieCombi(); $("#cp-d").textContent = "@" + cuotaComb(combi.get()).toFixed(2); });
@@ -1568,12 +1624,122 @@ function abrirCombi(abrir) {
   if (abrir) { pintarCombi(); $("#cb-min").focus(); } else pill.focus();
 }
 $("#combo-pill").onclick = () => abrirCombi(true);
+$("#cb-mk").onclick = () => { MK_OPEN = !MK_OPEN; pintarCombi(); };
 $("#cb-min").onclick = () => abrirCombi(false);
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#combo-panel").hidden && !document.querySelector("dialog[open]")) abrirCombi(false); });
 addEventListener("storage", e => { if (e.key === COMBI_K || e.key === MINE_K) { pintarCombi(); syncBotones(); actualizarMine(); } });
 
+/* ---------- Crea tu pick (26-nov, igual que en la Champions): dentro de Mi combinada (cualquier partido por jugarse) y desde la ficha del jugador ---------- */
+let MK_OPEN = false, MK = {};
+const porJugar = () => IDX.partidos.filter(p => new Date(`${p.fecha}T${p.hora_bogota || "23:59"}:00-05:00`) > new Date());
+function mkOver(d) {   // [línea, prob. de "más de"] del mercado elegido
+  if (!d) return [];
+  if (MK.quien === "partido") return ((d.partido.totales || {})[MK.stat] || {}).over || [];
+  if (MK.tipo === "equipo") return ((d.equipos[MK.quien] || {})[MK.stat] || {}).over || [];
+  const j = (d.jugadores[MK.equipo] || []).find(x => x.nombre === MK.quien); const st = j && j.stats[MK.stat];
+  return st ? (st.titular_over || st.over) : [];
+}
+// Línea libre (26-nov, pedido de Nicolas): el modelo publica unas pocas líneas por mercado; para cualquier otra que
+// escriba el usuario se estima la prob. desde esas (interpolando en escala normal, o con Poisson si solo hay una).
+// Conteos: "más de x" = llegar a ⌊x⌋+1; en una línea entera, si sale justo x no se cumple ni el Más ni el Menos.
+const nInv = p => { const a = [-39.6968302866538, 220.946098424521, -275.928510446969, 138.357751867269, -30.6647980661472, 2.50662827745924],
+  b = [-54.4760987982241, 161.585836858041, -155.698979859887, 66.8013118877197, -13.2806815528857], c = [-.00778489400243029, -.322396458041136, -2.40075827716184, -2.54973253934373, 4.37466414146497, 2.93816398269878],
+  d = [.00778469570904146, .32246712907004, 2.445134137143, 3.75440866190742], pl = .02425;
+  if (p < pl) { const q = Math.sqrt(-2 * Math.log(p)); return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1); }
+  if (p > 1 - pl) return -nInv(1 - p);
+  const q = p - .5, r = q * q; return (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1); };
+const nCdf = z => { const t = 1 / (1 + .2316419 * Math.abs(z)), y = .3989422804014327 * Math.exp(-z * z / 2) * t * (.31938153 + t * (-.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429)))); return z > 0 ? 1 - y : y; };
+function pSobre(ov, h) {   // P(más de h), h terminada en ,5; devuelve [prob., ¿estimada?]
+  if (h < 0) return [1, false];
+  const e = ov.find(o => Math.abs(o[0] - h) < 1e-9); if (e) return [e[1], false];
+  if (!ov.length) return [null, true];
+  const cl = p => Math.min(Math.max(p, .001), .999);
+  if (ov.length === 1) { const lam = -Math.log(1 - cl(ov[0][1])), k = Math.floor(h) + 1; let t = Math.exp(-lam), c = 0;   // Poisson: P(X ≥ k)
+    for (let i = 0; i < k; i++) { c += t; t *= lam / (i + 1); } return [Math.min(Math.max(1 - c, 0), 1), true]; }
+  const P = ov.map(([l, p]) => [l, -nInv(cl(p))]).sort((a, b) => a[0] - b[0]);   // z de cada línea publicada
+  let i = P.findIndex(x => x[0] > h);
+  if (i === 0) i = 1; else if (i < 0) i = P.length - 1;
+  const [x0, z0] = P[i - 1], [x1, z1] = P[i], z = z0 + (z1 - z0) * (h - x0) / (x1 - x0 || 1);
+  return [1 - nCdf(z), true];
+}
+function pLinea(ov, x, lado) {   // [prob. del lado, ¿estimada?, prob. de que salga justo x (línea entera)]
+  if (!(x >= 0)) return [null, false, 0];
+  const ent = Math.abs(x - Math.round(x)) < 1e-9;
+  const [po, e1] = pSobre(ov, Math.floor(x) + .5);
+  if (!ent) return po == null ? [null, e1, 0] : [lado === "over" ? po : 1 - po, e1, 0];
+  const [pu, e2] = pSobre(ov, x - .5);   // P(X ≥ x)
+  if (po == null || pu == null) return [null, true, 0];
+  return [lado === "over" ? po : 1 - pu, e1 || e2, Math.max(pu - po, 0)];
+}
+async function pintarMk() {
+  const body = $("#cb-body"), ps = porJugar();
+  $("#cb-foot").hidden = true;
+  if (!ps.length) { body.innerHTML = `<p class="cb-note" style="padding:12px 0">No quedan partidos por jugarse en esta jornada.</p>`; return; }
+  if (!ps.some(p => p.id === MK.id)) MK = {id: ps[0].id};
+  const d = await partido(MK.id); if (!MK_OPEN) return;
+  const L = d.match.local, V = d.match.visitante;
+  const grupos = [["eq:" + L, tname(L)], ["eq:" + V, tname(V)], ["eq:partido", "Total del partido"], ["ju:" + L, "Jugador de " + tname(L)], ["ju:" + V, "Jugador de " + tname(V)]];
+  if (!MK.g) MK.g = "eq:" + L;
+  const [tg, cod] = MK.g.split(":");
+  MK.tipo = tg === "eq" ? "equipo" : "jugador";
+  let jugs = [];
+  if (MK.tipo === "jugador") { MK.equipo = cod; jugs = (d.jugadores[cod] || []).filter(j => STATS_J.some(s => j.stats[s])).sort((a, b) => b.p_juega - a.p_juega);
+    if (!jugs.some(j => j.nombre === MK.quien)) MK.quien = jugs.length ? jugs[0].nombre : null; }
+  else { MK.quien = cod; MK.equipo = cod; }
+  const stats = MK.tipo === "jugador" ? STATS_J.filter(s => { const j = jugs.find(x => x.nombre === MK.quien); return j && j.stats[s]; })
+    : STATS_EQ.filter(s => (cod === "partido" ? (d.partido.totales || {})[s] : (d.equipos[cod] || {})[s]));
+  if (!stats.includes(MK.stat)) MK.stat = stats[0];
+  const ov = mkOver(d);
+  if (MK.linea == null || isNaN(MK.linea)) MK.linea = ov.length ? ov.reduce((b, o) => Math.abs(o[1] - .5) < Math.abs(b[1] - .5) ? o : b)[0] : null;   // la más pareja
+  MK.lado = MK.lado || "over";
+  const opt = (v, t, sel) => `<option value="${esc(v)}"${String(v) === String(sel) ? " selected" : ""}>${esc(t)}</option>`;
+  body.innerHTML = `<div class="mk">
+    <p class="cb-note">Elige el partido, el mercado, la línea y la cuota que te da tu casa: el modelo te da la probabilidad y el EV, y lo sumas a tu combinada o a Mis picks.</p>
+    <label>Partido<select id="mk-p">${ps.map(p => opt(p.id, `${tname(p.local)} – ${tname(p.visitante)} · ${fecha(p.fecha)} ${p.hora_bogota || ""}`, MK.id)).join("")}</select></label>
+    <label>Mercado<select id="mk-g">${grupos.map(([v, t]) => opt(v, t, MK.g)).join("")}</select></label>
+    ${MK.tipo === "jugador" ? `<label>Jugador<select id="mk-j">${jugs.map(j => opt(j.nombre, `${j.nombre} · ${j.pos} · juega ${pct(j.p_juega)}`, MK.quien)).join("")}</select></label>` : ""}
+    <div class="row2"><label>Estadística<select id="mk-s">${stats.map(s => opt(s, STAT[s], MK.stat)).join("")}</select></label>
+      <label>Línea<input id="mk-l" type="text" inputmode="decimal" autocomplete="off" list="mk-ll" value="${MK.linea != null ? linTxt(MK.linea) : ""}" placeholder="ej. ${ov.length ? linTxt(ov[0][0]) : "2,5"}" aria-describedby="mk-lh"><datalist id="mk-ll">${ov.map(o => `<option value="${linTxt(o[0])}"></option>`).join("")}</datalist></label></div>
+    <p class="cb-note" id="mk-lh" style="margin-top:-4px">Escribe la línea de tu casa. ${ov.length ? `El modelo publica ${ov.map(o => `<button type="button" class="mk-ch" data-mkln="${o[0]}">${linTxt(o[0])}</button>`).join(" ")}; para otras la probabilidad se estima a partir de esas.` : ""}</p>
+    <div class="row2"><span class="seg" role="group" aria-label="Lado"><button type="button" data-mkl="over" aria-pressed="${MK.lado === "over"}">Más de</button><button type="button" data-mkl="under" aria-pressed="${MK.lado === "under"}">Menos de</button></span>
+      <label>Cuota de tu casa<input id="mk-q" type="text" inputmode="decimal" placeholder="ej. 1,85" value="${MK.q || ""}"></label></div>
+    <div class="res" id="mk-r"></div>
+    <div class="cb-act" id="mk-a"></div></div>`;
+  const set = (k, v, reset) => { MK[k] = v; reset.forEach(x => delete MK[x]); pintarMk(); };
+  $("#mk-p").onchange = e => set("id", e.target.value, ["g", "quien", "stat", "linea"]);
+  $("#mk-g").onchange = e => set("g", e.target.value, ["quien", "stat", "linea"]);
+  if ($("#mk-j")) $("#mk-j").onchange = e => set("quien", e.target.value, ["linea"]);
+  $("#mk-s").onchange = e => set("stat", e.target.value, ["linea"]);
+  $("#mk-l").oninput = e => { const v = parseFloat(String(e.target.value).replace(",", ".")); MK.linea = isNaN(v) ? null : v; calc(); };
+  body.querySelectorAll("[data-mkln]").forEach(b => b.onclick = () => { MK.linea = +b.dataset.mkln; $("#mk-l").value = linTxt(MK.linea); calc(); });
+  body.querySelectorAll("[data-mkl]").forEach(b => b.onclick = () => { MK.lado = b.dataset.mkl; body.querySelectorAll("[data-mkl]").forEach(x => x.setAttribute("aria-pressed", x === b)); calc(); });
+  $("#mk-q").oninput = e => { MK.q = e.target.value; calc(); };
+  function calc() {
+    const [p, est, push] = MK.linea == null ? [null, false, 0] : pLinea(ov, MK.linea, MK.lado);
+    const po = MK.linea == null ? null : pLinea(ov, MK.linea, "over")[0];
+    const q = parseFloat(String(MK.q || "").replace(",", ".")), ev = p != null && q > 1 ? p * q + push - 1 : null;
+    $("#mk-r").innerHTML = `<div>Modelo<b>${pct(p)}</b></div><div>Cuota justa<b>${p > .01 && p < .99 ? fair(p) : "–"}</b></div><div>EV<b class="${ev == null ? "" : ev > 0 ? "pos" : "neg"}">${ev == null ? "–" : (ev > 0 ? "+" : "") + (ev * 100).toFixed(1) + "%"}</b></div>`;
+    if (MK.linea == null) { $("#mk-a").innerHTML = `<span class="cb-note">Escribe una línea (por ejemplo 2,5).</span>`; return; }
+    if (p == null || !(p > .01 && p < .99)) { $("#mk-a").innerHTML = `<span class="cb-note">${p == null ? "El modelo no tiene datos para ese mercado." : `Con esa línea el modelo da ${pct(p)}: casi segura o casi imposible, así que no la suma.`}</span>`; return; }
+    const k = {id: d.id, game: L + "–" + V, fecha: d.match.fecha, tipo: MK.tipo, jugador: MK.quien, equipo: MK.equipo, stat: MK.stat, linea: MK.linea, lado: MK.lado,
+      cuota: q > 1 ? q : +(1 / p).toFixed(2), p, creado: true};
+    if (!(q > 1)) { k.sin_cuota = true; k.p_over = po; }
+    k.key = pickKey(k);
+    $("#mk-a").innerHTML = `${btnCmb(reg(k))}${btnTake(reg(k))}${q > 1 ? "" : '<span class="cb-note">Sin tu cuota entra con la cuota justa.</span>'}${est ? '<span class="cb-note">Línea fuera de las que publica el modelo: probabilidad estimada.</span>' : ""}${push > .005 ? `<span class="cb-note">Línea entera: sale justo ${linTxt(MK.linea)} el ${pct(push)} de las veces (en tu casa se devuelve; aquí cuenta como no cumplida).</span>` : ""}`;
+    syncBotones();
+  }
+  calc();
+}
+function abrirMk(pre) {
+  MK_OPEN = true; if (pre) MK = pre;
+  if ($("#combo-panel").hidden) abrirCombi(true); else pintarCombi();
+}
+function syncMkBtn() { const b = $("#cb-mk"); if (b) b.textContent = MK_OPEN ? `← Combinada (${combi.get().length})` : "+ Crear pick"; }
+
 /* ---------- clics delegados: + Combinada, Lo tomo, gráficos y jugadores (toque, mouse y teclado) ---------- */
 document.addEventListener("click", e => {
+  const jm = e.target.closest("[data-jmk]");
+  if (jm) { e.preventDefault(); jugDlg.close(); abrirMk({...REG[+jm.dataset.jmk], lado: "over"}); return; }
   const b = e.target.closest("[data-cmb],[data-take],[data-graf],[data-jug]");
   if (!b) return;
   if (b.dataset.jug != null && b.tagName === "TR" && e.target.closest("button, a, input")) return;
@@ -1591,8 +1757,8 @@ addEventListener("hashchange", () => { if (!VOLVIENDO && ULT !== location.hash) 
 $("#back-btn").onclick = () => {
   let prev = PILA.pop();
   while (prev !== undefined && prev === location.hash) prev = PILA.pop();
-  if (prev !== undefined) { VOLVIENDO = true; location.hash = prev; }
-  else if (location.hash && location.hash !== "#") location.hash = "";
+  if (prev !== undefined) { VOLVIENDO = true; VISTA.atras = true; location.hash = prev; }
+  else if (location.hash && location.hash !== "#") { VISTA.atras = true; location.hash = ""; }
   else location.href = "../";
 };
 const MODELOS_NAV = [
