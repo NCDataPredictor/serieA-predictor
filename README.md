@@ -6,6 +6,7 @@ Web estática en `docs/` (Cloudflare Pages, carpeta de salida `docs`, sin paso d
 |---|---|
 | `docs/index.html` | **Portada**: una tarjeta por modelo. NBA enlaza a su web actual (https://nba-predictor-9hf.pages.dev/). Para añadir un modelo: una entrada en `MODELOS` del script. |
 | `docs/serie-a/` | **Serie A Predictor**: jornada, panel de cada partido (Resumen, Contexto, Distribución, Jugadores, Bajas). Lee `data/index.json` y `data/<id>.json`. |
+| `/premier/` | **Premier League Predictor**: vive en [NCDataPredictor/premier-league-predictor](https://github.com/NCDataPredictor/premier-league-predictor); `scripts/pages_build.sh` la copia en `docs/premier/` en cada build (igual que `/nba/` y `/champions/`). |
 
 El contexto completo del proyecto (cómo se hizo la NBA, lecciones, plan de fútbol) está en
 [`futbol/CONTEXTO.md`](futbol/CONTEXTO.md).
