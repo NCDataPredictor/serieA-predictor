@@ -943,7 +943,7 @@ function resumen(d, el) {
     <p class="note">"Liga" es lo que hace un equipo promedio de la Serie A en un partido, para comparar. "¿Quién hace más?" es la probabilidad de que ese equipo termine con más que el rival en esa estadística.</p>
   </div>
   <div class="card" style="margin-top:14px">
-    <div class="toolbar"><h3>Líneas de equipo</h3><select id="linea-st">${STATS_EQ.filter(s => s !== "goles").map(s => `<option value="${s}">${STAT[s]}</option>`).join("")}</select></div>
+    <div class="toolbar"><h3>Líneas de equipo</h3><select id="linea-st" aria-label="Estadística">${STATS_EQ.map(s => `<option value="${s}">${STAT[s]}</option>`).join("")}</select></div>
     <div id="lineas"></div>
   </div>`;
   const sel = el.querySelector("#linea-st");
@@ -964,8 +964,8 @@ function resumen(d, el) {
 }
 function factoresTxt(d, s) {
   const L = d.match.local, V = d.match.visitante;
-  const lab = {base: "base (ataque × defensa rival)", localia: "localía", arbitro: "árbitro", derbi: "derbi", estilo: "cruce de estilos", h2h: "H2H", fuerza: "fuerza"};
-  const one = c => { const f = d.factores[c][s] || {}; return `${esc(c)}: ` + Object.entries(f).map(([k, v]) => `${lab[k] || k} ${k === "base" || k === "fuerza" ? f2(v) : "×" + f2(v)}`).join(" · "); };
+  const lab = {base: "base (ataque × defensa rival)", localia: "localía", arbitro: "árbitro", derbi: "derbi", estilo: "cruce de estilos", h2h: "H2H", fuerza: "fuerza (Dixon-Coles, ya trae la forma)", tasas: "solo por tasas sería"};
+  const one = c => { const f = d.factores[c][s] || {}; return `${esc(c)}: ` + Object.entries(f).sort((x, y) => (x[0] === "tasas") - (y[0] === "tasas")).map(([k, v]) => `${lab[k] || k} ${k === "base" || k === "fuerza" || k === "tasas" ? f2(v) : "×" + f2(v)}`).join(" · "); };
   return `<p class="note">Cómo se armó el esperado. ${one(L)}. ${one(V)}.</p>`;
 }
 
