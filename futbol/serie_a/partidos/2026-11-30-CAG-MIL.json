@@ -23,17 +23,17 @@
   },
   "clima": {
    "temperature": 12,
-   "windSpeed": 1,
+   "windSpeed": 2,
    "windDirectionCardinal": "NNE",
    "iconCode": 29,
-   "relativeHumidity": 75,
-   "precipChance": 8,
+   "relativeHumidity": 77,
+   "precipChance": 9,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 47,
+   "cloudCover": 43,
    "description": "Partly Cloudy",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-25T08:00:19Z",
+   "lastUpdated": "2026-11-25T20:00:20Z",
    "localizedKey": "weather_condition_partly_cloudy",
    "defaultTitle": "Partly Cloudy"
   }
@@ -95,6 +95,20 @@
     "p_juega": 0.0
    },
    {
+    "jugador": "MIL-1385856",
+    "nombre": "Davide Bartesaghi",
+    "motivo": "lesion",
+    "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "MIL-1554575",
+    "nombre": "Francesco Camarda",
+    "motivo": "lesion",
+    "regreso": "About 1-2 weeks",
+    "p_juega": 0.0
+   },
+   {
     "jugador": "MIL-31097",
     "nombre": "Luka Modrić",
     "motivo": "lesion",
@@ -104,20 +118,6 @@
    {
     "jugador": "MIL-1048023",
     "nombre": "Strahinja Pavlović",
-    "motivo": "lesion",
-    "regreso": "Doubtful",
-    "p_juega": 0.5
-   },
-   {
-    "jugador": "MIL-940087",
-    "nombre": "Gonçalo Ramos",
-    "motivo": "lesion",
-    "regreso": "Doubtful",
-    "p_juega": 0.5
-   },
-   {
-    "jugador": "MIL-749662",
-    "nombre": "Fikayo Tomori",
     "motivo": "lesion",
     "regreso": "Doubtful",
     "p_juega": 0.5

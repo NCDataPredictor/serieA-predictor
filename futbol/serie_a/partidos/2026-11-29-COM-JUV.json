@@ -24,16 +24,16 @@
   "clima": {
    "temperature": 3,
    "windSpeed": 1,
-   "windDirectionCardinal": "N",
+   "windDirectionCardinal": "NNE",
    "iconCode": 29,
-   "relativeHumidity": 86,
+   "relativeHumidity": 87,
    "precipChance": 5,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 55,
+   "cloudCover": 45,
    "description": "Partly Cloudy",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-25T08:00:19Z",
+   "lastUpdated": "2026-11-25T20:00:20Z",
    "localizedKey": "weather_condition_partly_cloudy",
    "defaultTitle": "Partly Cloudy"
   }
@@ -87,13 +87,6 @@
    }
   ],
   "JUV": [
-   {
-    "jugador": "JUV-1684401",
-    "nombre": "Kerim Alajbegović",
-    "motivo": "lesion",
-    "regreso": "Back in training",
-    "p_juega": 0.0
-   },
    {
     "jugador": "JUV-760722",
     "nombre": "Kamil Grabara",

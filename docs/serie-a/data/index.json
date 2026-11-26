@@ -2,7 +2,7 @@
  "liga": "Serie A",
  "temporada": "2026-27",
  "version": "futbol-0.1",
- "actualizado": "2026-11-25T19:16Z",
+ "actualizado": "2026-11-26T03:36Z",
  "ejemplo": false,
  "hora_picks_bogota": 19,
  "picks_salen": {
@@ -154,7 +154,7 @@
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-25T19:14Z",
+   "cuotas_capturadas": "2026-11-26T03:33Z",
    "alineacion": {
     "VEN": "prevista (últimos 10)",
     "BOL": "prevista (últimos 10)"
@@ -194,7 +194,7 @@
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-25T19:14Z",
+   "cuotas_capturadas": "2026-11-26T03:33Z",
    "alineacion": {
     "FRO": "prevista (últimos 10)",
     "PAR": "prevista (últimos 10)"
@@ -234,7 +234,7 @@
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-25T19:14Z",
+   "cuotas_capturadas": "2026-11-26T03:33Z",
    "alineacion": {
     "TOR": "prevista (últimos 10)",
     "LAZ": "prevista (últimos 10)"
@@ -274,7 +274,7 @@
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-25T19:14Z",
+   "cuotas_capturadas": "2026-11-26T03:33Z",
    "alineacion": {
     "INT": "prevista (últimos 10)",
     "GEN": "prevista (últimos 10)"
@@ -314,7 +314,7 @@
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-25T19:14Z",
+   "cuotas_capturadas": "2026-11-26T03:33Z",
    "alineacion": {
     "UDI": "prevista (últimos 10)",
     "FIO": "prevista (últimos 10)"
@@ -354,7 +354,7 @@
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-25T19:14Z",
+   "cuotas_capturadas": "2026-11-26T03:33Z",
    "alineacion": {
     "SAS": "prevista (últimos 10)",
     "NAP": "prevista (últimos 10)"
@@ -394,7 +394,7 @@
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-25T19:14Z",
+   "cuotas_capturadas": "2026-11-26T03:33Z",
    "alineacion": {
     "ROM": "prevista (últimos 10)",
     "MON": "prevista (últimos 10)"
@@ -418,30 +418,30 @@
    "derbi": null,
    "arbitro": "",
    "1x2": [
-    0.375,
-    0.325,
-    0.301
+    0.358,
+    0.32,
+    0.323
    ],
-   "goles": 2.3,
-   "over25": 0.404,
-   "ambos": 0.503,
-   "corners": 9.21,
-   "amarillas": 2.43,
+   "goles": 2.38,
+   "over25": 0.42,
+   "ambos": 0.522,
+   "corners": 9.51,
+   "amarillas": 2.42,
    "marcador": [
     "1-1",
-    0.149
+    0.151
    ],
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-25T19:14Z",
+   "cuotas_capturadas": "2026-11-26T03:33Z",
    "alineacion": {
     "COM": "prevista (últimos 10)",
     "JUV": "prevista (últimos 10)"
    },
    "bajas": {
     "COM": 5,
-    "JUV": 6
+    "JUV": 5
    }
   },
   {
@@ -474,7 +474,7 @@
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-25T19:14Z",
+   "cuotas_capturadas": "2026-11-26T03:33Z",
    "alineacion": {
     "LEC": "prevista (últimos 10)",
     "ATA": "prevista (últimos 10)"
@@ -498,23 +498,23 @@
    "derbi": null,
    "arbitro": "",
    "1x2": [
-    0.214,
-    0.287,
-    0.498
+    0.241,
+    0.303,
+    0.456
    ],
-   "goles": 2.56,
-   "over25": 0.467,
-   "ambos": 0.532,
-   "corners": 8.4,
-   "amarillas": 2.84,
+   "goles": 2.4,
+   "over25": 0.428,
+   "ambos": 0.506,
+   "corners": 8.42,
+   "amarillas": 2.96,
    "marcador": [
     "1-1",
-    0.135
+    0.139
    ],
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-25T19:14Z",
+   "cuotas_capturadas": "2026-11-26T03:33Z",
    "alineacion": {
     "CAG": "prevista (últimos 10)",
     "MIL": "prevista (últimos 10)"
