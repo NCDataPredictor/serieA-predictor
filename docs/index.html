@@ -13,6 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500;600&display=swap">
 <script>try { const t = localStorage.getItem("ncdp-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<script src="/cuenta.js"></script>
 <style>
 /* Portada de NCDataPredictor: un modelo por tarjeta. Cada tarjeta lleva los colores de su competición.
    Para añadir un modelo nuevo basta con sumar una entrada a MODELOS (abajo, en el script). */
@@ -35,6 +36,15 @@ h1 { font: 700 clamp(36px, 7vw, 60px)/1 var(--display); text-transform: uppercas
 header p { margin: 0; max-width: 560px; color: var(--hero-muted) }
 .theme { width: 40px; height: 40px; border-radius: 999px; border: 1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.08); color: var(--hero-ink); cursor: pointer; display: grid; place-items: center }
 .theme svg { width: 20px; height: 20px }
+/* Botones de arriba (cuenta y tema): esquina superior derecha, también en el celular */
+header .inner { position: relative }
+.top-btns { position: absolute; top: calc(14px + env(safe-area-inset-top, 0px)); right: 0; display: flex; gap: 8px; align-items: center }
+.theme.cuenta { width: auto; padding: 0 14px 0 10px; gap: 7px; display: inline-flex; font: 600 13px var(--display); letter-spacing: .08em; text-transform: uppercase }
+.theme.cuenta[hidden] { display: none }
+.theme.cuenta.on { padding: 0 9px }
+.theme.cuenta.on .nc-t { display: none }
+@media (max-width: 640px) { header .inner { padding-top: calc(66px + env(safe-area-inset-top, 0px)) } }
+@media (max-width: 420px) { .theme.cuenta .nc-t { display: none } .theme.cuenta { padding: 0 9px } }
 main { padding-block: 28px 60px }
 h2 { font: 700 22px var(--display); text-transform: uppercase; letter-spacing: .04em; margin: 26px 0 12px }
 .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)) }
@@ -90,11 +100,15 @@ footer { color: var(--muted); font-size: 12px; padding-bottom: 30px }
     <p>Cada partido se simula miles de veces con el contexto de los dos equipos, las bajas, el árbitro y el estilo de juego. El resultado: la probabilidad de cada mercado, su cuota justa y los picks donde la casa paga más de lo que debería.</p>
     <div class="hero-cta"><a href="#modelos-t">Elegir un modelo</a><a class="sec" href="#como">Cómo usarlo</a><a class="sec" id="instalar" href="#" hidden>Instalar app</a></div>
     <p id="ios-tip" class="ios-tip" hidden>En iPhone: toca Compartir y luego <b>Agregar a inicio</b> para tenerla como app.</p></div>
-  <button class="theme" id="theme" aria-label="Modo claro / oscuro" title="Modo claro / oscuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
+  <div class="top-btns"><button type="button" class="theme cuenta" id="cuenta-btn" hidden><span class="nc-t">Entrar</span></button>
+  <button class="theme" id="theme" aria-label="Modo claro / oscuro" title="Modo claro / oscuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button></div>
 </div></header>
 <main class="gutter"><div class="inner">
   <h2 id="modelos-t">Modelos</h2>
   <div class="grid" id="modelos"></div>
+  <h2 id="tus-picks">Tus picks</h2>
+  <p class="muted-p" style="margin:-4px 0 12px">Cómo te ha ido con los picks que guardaste (Lo tomo y combinadas) en todas las ligas.</p>
+  <div data-ncdp-resumen><p class="muted-p">Cargando…</p></div>
   <h2 id="hoy-t">Picks del día</h2>
   <div id="hoy" class="hoy"><p class="muted-p">Cargando…</p></div>
   <h2 id="como">Cómo usarlo</h2>

@@ -15,6 +15,7 @@
 // Mismo tema claro/oscuro que la NBA (misma clave): se aplica antes de pintar para que no parpadee.
 try { const t = localStorage.getItem("ncdp-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
 </script>
+<script src="/cuenta.js" data-liga="serie-a"></script>
 <style>
 /* Serie A Predictor. Paleta de la identidad de la Serie A: azul noche #1A1659, azul #0032A0, azul claro #0578FF,
    verde #00A346, rojo #DB052B y gris #E2E2E2. Misma estructura que la web NBA: banner, barra de partidos,
@@ -351,7 +352,7 @@ html, body { overflow-x: clip }
   .logo { width: 42px; height: 42px; border-radius: 10px } .logo svg { width: 27px; height: 27px }
   .brand-t > span { font-size: 9.5px; letter-spacing: .1em; line-height: 1.3 }
   .banner h1 { font-size: 27px }
-  .side { width: 100%; margin: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px }
+  .side { width: 100%; margin: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px }
   .side .home-link, .side .icon-btn { flex-direction: column; justify-content: center; align-items: center; gap: 3px; min-width: 0; min-height: 50px; width: auto; height: auto;
     padding: 6px 1px; border-radius: 10px; font: 600 10px/1.05 var(--display); letter-spacing: .02em; text-transform: uppercase; text-align: center; display: flex }
   .side .home-link .hi, .side .icon-btn svg { width: 18px; height: 18px }
@@ -638,6 +639,7 @@ main:focus { outline: none }
       <a class="home-link" href="#rendimiento" title="Rendimiento de los picks"><svg class="hi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span class="lg">Rendimiento</span><span class="sh">Rendim.</span></a>
       <a class="home-link mine-link" href="#mis-picks" title="Mis picks"><svg class="hi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14v17l-7-4-7 4z"/><path d="M9 10l2 2 4-4"/></svg><span>Mis picks</span><b id="mine-n" class="mine-n" hidden></b></a>
       <button type="button" class="home-link" id="modelos-btn" aria-haspopup="dialog" title="Otros modelos"><svg class="hi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></svg><span>Modelos</span></button>
+      <button type="button" class="home-link" id="cuenta-btn" hidden><span class="nc-t">Entrar</span></button>
       <button type="button" class="icon-btn" id="theme-btn" aria-label="Modo claro / oscuro" title="Modo claro / oscuro">
         <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
         <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
@@ -742,7 +744,7 @@ const crest = (c, px = 28) => FM[c]
 const iniciales = n => String(n || "").split(/\s+/).filter(Boolean).map(w => w[0]).slice(-2).join("").toUpperCase();
 const foto = (pid, nombre, c, px = 34) => { const t = tcol(c), id = String(pid || "").split("-").pop();
   return `<span class="ph" style="--ps:${px}px;--tc:${t[1]};--tf:${t[2]}">${iniciales(nombre)}${/^\d+$/.test(id) ? `<img src="${IMG}playerimages/${id}.png" alt="" loading="lazy" onerror="this.parentNode.classList.add('nf')">` : ""}</span>`; };
-const store = {get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }};
+const store = {get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} if (k === MINE_K || k === COMBIS_K) rendPublicar(); }};
 
 /* ---------- tema ---------- */
 $("#theme-btn").onclick = () => {
@@ -806,6 +808,7 @@ async function init() {
   $("#demo").hidden = !IDX.ejemplo;
   $("#foot").innerHTML = `Modelo ${esc(IDX.version)} · ${esc(IDX.temporada)} · actualizado ${esc((IDX.actualizado || "").replace("T", " "))} UTC · horas en Bogotá (UTC−5). Probabilidades del modelo antes de mezclarlas con la casa; cuota justa = 1 / probabilidad.`;
   barra();
+  rendPublicar();
   route();
 }
 addEventListener("hashchange", route);
@@ -873,6 +876,7 @@ function inicio() {
   const espera = GR.sale && Date.now() < +GR.sale && !picks;
   const nAtr = ps.filter(p => p.jornada < j).length;
   $("#app").innerHTML = `
+  <div data-ncdp-tira></div>
   <div class="section"><h2>Jornada ${esc(j)}</h2><span class="eyebrow">${ps.length - nAtr} partidos${nAtr ? ` + ${nAtr} atrasado${nAtr > 1 ? "s" : ""}` : ""} · ${esc(IDX.temporada)}</span></div>
   <div class="grid">${ps.map((p, i) => { const L = p.local, V = p.visitante, x = p["1x2"], fav = x[0] >= x[2] ? 0 : 2;
     const meter = (v, hi) => `<div class="meter"><i class="${v >= hi ? "hi" : ""}" style="width:${Math.round(v * 100)}%"></i></div>`;
@@ -1198,6 +1202,7 @@ function bajas(d, el) {
 }
 
 /* ---------- picks: tabla, Mis picks y Mi combinada ---------- */
+const LIGA_ID = "serie-a";
 const MINE_K = "sap-mine";
 const mine = {
   get() { try { return JSON.parse(store.get(MINE_K) || "[]"); } catch (e) { return []; } },
@@ -1324,6 +1329,15 @@ function liquidarCombi(c, R) {
   if (ls.every(x => x.estado === "ganado")) return {estado: "ganada", u: c.cuota - 1, ls};
   return {estado: ls.some(x => x.estado === "sin datos") ? "sin datos" : "pendiente", ls};
 }
+// Rendimiento de tus picks para la cuenta y la portada (/cuenta.js): cada pick y combinada liquidados, 1 unidad cada uno.
+async function rendPublicar() {
+  if (!window.NCDP) return;
+  const R = await resultados(), E = {ganado: "g", ganada: "g", perdido: "p", perdida: "p"};
+  const ps = mine.get().map(k => { const x = liquidar(k, R); return {f: k.fecha, e: E[x.estado] || "x", u: x.u, c: k.cuota}; })
+    .concat(combis.get().map(c => { const x = liquidarCombi(c, R); return {f: c.legs.map(k => k.fecha || "").sort().pop() || c.creada, e: E[x.estado] || "x", u: x.u, c: c.cuota}; }));
+  NCDP.rend(LIGA_ID, ps);
+}
+addEventListener("ncdp-sync", () => { actualizarMine(); syncBotones(); rendPublicar(); if (location.hash === "#mis-picks") misPicks(); });
 async function misPicks() {
   const v = mine.get(), R = await resultados();
   const L = v.map(k => ({...k, ...liquidar(k, R)}));
@@ -1336,7 +1350,7 @@ async function misPicks() {
   const kpi = (t, r) => `<div class="tile"><span>${t}</span><b>${r.n ? pct(r.pct) : "–"}</b><span class="sub">${r.g}/${r.n} · ${r.u >= 0 ? "+" : ""}${r.u.toFixed(2)} u${r.n ? ` · ROI ${(r.roi * 100).toFixed(1)}%` : ""}</span></div>`;
   const tagE = e => `<span class="tag ${e === "ganado" || e === "ganada" ? "ok" : e === "perdido" || e === "perdida" ? "hot" : ""}">${e}</span>`;
   $("#app").innerHTML = `
-    <div class="section"><h2>Mis picks</h2><span class="eyebrow">guardados en este navegador · ${v.length} picks${CB.length ? ` · ${CB.length} combinadas` : ""}</span></div>
+    <div class="section"><h2>Mis picks</h2><span class="eyebrow">${window.NCDP && NCDP.usuario ? "guardados en tu cuenta" : "guardados en este navegador"} · ${v.length} picks${CB.length ? ` · ${CB.length} combinadas` : ""}</span></div>
     ${v.length || CB.length ? "" : `<div class="card callout">Todavía no guardaste picks. En "Picks de la jornada" o en la pestaña Picks de cada partido toca <span class="take demo"><span class="bx"></span>Lo tomo</span> para guardarlo aquí, o <span class="cmb demo"><span class="pl">+</span>Combinada</span> para armar una combinada (botón <b>Mi combinada</b> abajo) y guardarla.</div>`}
     ${v.length || CB.length ? `<div class="tiles reveal" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">${kpi("Rendimiento total", tot)}${kpi("Picks de equipo", eq)}${kpi("Picks de jugador", ju)}${CB.length ? kpi("Combinadas", cbh) : ""}</div>
     <p class="note">Apuesta de 1 unidad por pick o combinada. Se liquidan solos con el resultado real cuando el partido entra al histórico (por ahora solo las líneas de equipo; las de jugador quedan "sin datos").</p>` : ""}
@@ -1353,7 +1367,7 @@ async function misPicks() {
         <ul>${c.legs.map((k, i) => `<li>${ic(k.stat)}${esc(pickTxt(k))} <span class="sub">· ${esc(k.game)} · @${f2(k.cuota)}</span> ${c.ls[i].estado !== "pendiente" ? tagE(c.ls[i].estado) : ""}</li>`).join("")}</ul>
         <div class="toolbar" style="margin:0"><span class="sub">${c.u != null ? `Unidades ${c.u >= 0 ? "+" : ""}${c.u.toFixed(2)}` : "EV al guardarla " + ((c.p * c.cuota - 1) * 100).toFixed(1) + "%"}</span><button type="button" class="btn ghost" data-cdel="${esc(c.cid)}" style="padding:4px 12px">Quitar</button></div></div>`).join("")}</div>`
       : `<div class="card callout">Aún no guardaste combinadas. Toca <span class="cmb demo"><span class="pl">+</span>Combinada</span> en los picks (de cualquier partido) o <span class="addc demo" style="cursor:default">+</span> en las líneas de equipo o de jugador; luego abre <b>Mi combinada</b> abajo y toca <b>Guardar en Mis picks</b>.</div>`}`;
-  syncBotones();
+  syncBotones(); rendPublicar();
   document.querySelectorAll(".del").forEach(b => b.onclick = () => { mine.set(mine.get().filter(x => x.key !== b.dataset.key)); misPicks(); });
   document.querySelectorAll("[data-cdel]").forEach(b => b.onclick = () => { combis.set(combis.get().filter(x => x.cid !== b.dataset.cdel)); misPicks(); });
 }
