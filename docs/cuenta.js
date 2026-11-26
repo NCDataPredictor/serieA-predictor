@@ -11,8 +11,8 @@
 (function () {
   "use strict";
   // Proyecto de Supabase. La clave "anon" es pública (va en el navegador); la seguridad la ponen las políticas RLS.
-  const CFG = { url: "", anon: "", google: false };
-  const SB_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js";
+  const CFG = { url: "https://uewkpclgdjdefaubdbhq.supabase.co", anon: "sb_publishable_3UGyFjVA6sBuxRPBpMGYig_eaLgeria", google: false };
+  const SB_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js";
 
   const LIGAS = {
     "nba": { nombre: "NBA", url: "/nba/", logo: "/logos/nba-logoman.svg", c: "#1d428a", claves: ["nbap-mine"] },
