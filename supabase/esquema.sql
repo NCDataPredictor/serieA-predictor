@@ -13,6 +13,11 @@ create table if not exists public.ncdp_datos (
 
 alter table public.ncdp_datos enable row level security;
 
+-- Los proyectos nuevos de Supabase no dan permisos automáticos sobre tablas creadas por SQL: sin esto la web recibe
+-- "permission denied for table ncdp_datos". RLS (abajo) sigue limitando cada fila a su dueño.
+grant usage on schema public to authenticated;
+grant select, insert, update, delete on table public.ncdp_datos to authenticated;
+
 drop policy if exists "ncdp: leer lo propio" on public.ncdp_datos;
 drop policy if exists "ncdp: crear lo propio" on public.ncdp_datos;
 drop policy if exists "ncdp: cambiar lo propio" on public.ncdp_datos;
