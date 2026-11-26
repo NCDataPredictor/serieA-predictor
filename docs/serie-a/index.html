@@ -449,9 +449,17 @@ dialog.sheet::backdrop { background: rgba(5, 6, 25, .55); backdrop-filter: blur(
 .mb-x span { display: grid; min-width: 0; font: 600 9.5px/1.2 var(--mono); color: var(--muted) }
 .mb-x b { overflow: hidden; text-overflow: clip; white-space: nowrap; color: var(--ink); font-weight: 600 }
 .mb-x small { display: none; font-size: 9px; white-space: nowrap; overflow: hidden }
+/* 26-nov (pedido de Nicolas): bajo cada barra, escudo del rival + L (de local) o V (de visitante) */
+.mb-x .crest, .mb-x .mb-dot { justify-self: center; margin-bottom: 2px }
+.mb-x .crest .badge { font-size: 0; min-width: 0; width: 14px; height: 14px; padding: 0; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--tf) }
+.mb-dot { display: block; width: 14px; height: 14px; border-radius: 50%; background: var(--tc); box-shadow: inset 0 0 0 1.5px var(--tf) }
+.lv { justify-self: center; display: inline-grid; place-items: center; min-width: 15px; height: 14px; padding: 0 2px; margin-top: 2px; border-radius: 4px; font: 700 9px/1 var(--mono); font-style: normal; letter-spacing: 0 }
+.lv.l { background: var(--ink); color: var(--surface) }
+.lv.v { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.3px var(--muted) }
+.mb-leg .lv { margin: 0 5px 0 0; vertical-align: 0 }
 @container mb (min-width: 400px) { .mb-x small { display: block } .mb-a { gap: 6px } .mb-x { gap: 6px } }
 .mb-leg { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted); margin-top: 12px }
-.mb-leg i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px }
+.mb-leg i:not(.lv) { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px }
 .mb-leg i.ln { height: 0; width: 16px; border-top: 2px dashed var(--ink); border-radius: 0; vertical-align: 3px }
 
 /* ---- ficha del jugador ---- */
@@ -736,6 +744,10 @@ const FM = {ATA: 8524, BOL: 9857, CAG: 8529, COM: 10171, CRE: 7801, FIO: 8535, F
   MIL: 8564, MON: 6504, NAP: 9875, PAR: 10167, PIS: 6479, ROM: 8686, SAS: 7943, TOR: 9804, UDI: 8600, VEN: 7881, VER: 9876, EMP: 8534, SAM: 9882, SAL: 6480, SPE: 9881};
 const IMG = "https://images.fotmob.com/image_resources/";
 const tcol = c => (TEAM[c] || [c, "#0032a0", "#fff"]);
+// Etiqueta de local/visitante y escudo pequeño del rival para el eje de los mini gráficos
+const lvTag = loc => `<i class="lv ${loc ? "l" : "v"}" aria-hidden="true">${loc ? "L" : "V"}</i>`;
+const lvTxt = loc => loc ? "de local vs" : "de visitante en";
+const mbCrest = c => FM[c] ? crest(c, 16) : `<span class="mb-dot" style="--tc:${tcol(c)[1]};--tf:${tcol(c)[2]}" aria-hidden="true"></span>`;
 const crest = (c, px = 28) => FM[c]
   ? `<span class="crest" style="--cs:${px}px"><img src="${IMG}logo/teamlogo/${FM[c]}.png" alt="${esc(tname(c))}" loading="lazy" onerror="this.parentNode.classList.add('nf')">${badge(c)}</span>`
   : `<span class="crest nf" style="--cs:${px}px">${badge(c)}</span>`;
@@ -1468,14 +1480,14 @@ function graficoHTML(cfg) {
       <div class="mb" role="img" aria-label="${esc(g.titulo)}: ${hg} de ${g.filas.length} con ${lado} ${linTxt(cfg.linea)}"><div class="mb-a" style="--n:${g.filas.length}">
         <div class="mb-line" style="bottom:${(cfg.linea / mx * 100).toFixed(1)}%"><span>${linTxt(cfg.linea)}</span></div>
         ${g.filas.map((f, i) => { const ok = hitDe(f.v, cfg.linea, cfg.lado);
-          return `<div class="mb-c ${ok ? "ok" : "no"}" style="--i:${i + gi * 4}" title="${esc(fecha(f.fecha))} · ${f.local ? "vs" : "en"} ${esc(tname(f.rival))}: ${fv(f.v)}${f.min != null ? ` · ${f.min}'` : ""} → ${ok ? "se cumplió" : "no se cumplió"}"><i style="height:${Math.max(f.v / mx * 100, 1.5).toFixed(1)}%"><span>${fv(f.v)}</span></i></div>`; }).join("")}
+          return `<div class="mb-c ${ok ? "ok" : "no"}" style="--i:${i + gi * 4}" title="${esc(fecha(f.fecha))} · ${lvTxt(f.local)} ${esc(tname(f.rival))}: ${fv(f.v)}${f.min != null ? ` · ${f.min}'` : ""} → ${ok ? "se cumplió" : "no se cumplió"}"><i style="height:${Math.max(f.v / mx * 100, 1.5).toFixed(1)}%"><span>${fv(f.v)}</span></i></div>`; }).join("")}
       </div></div>
-      <div class="mb-x" style="--n:${g.filas.length}">${g.filas.map(f => `<span><b>${esc(f.rival)}</b><small>${ddmm(f.fecha)}</small></span>`).join("")}</div></div>`;
+      <div class="mb-x" style="--n:${g.filas.length}">${g.filas.map(f => `<span${f.ucl ? ' class="ucl"' : ""} title="${lvTxt(f.local)} ${esc(tname(f.rival))}">${mbCrest(f.rival)}<b>${f.ucl ? "★" : ""}${esc(f.rival)}</b>${lvTag(f.local)}<small>${ddmm(f.fecha)}</small></span>`).join("")}</div></div>`;
   };
   return `<div class="mb-top"><div class="mb-cnt ${h / n >= .5 ? "ok" : "no"}"><b>${h} de ${n}</b><span>con ${lado} ${linTxt(cfg.linea)}</span></div>
     <div class="mb-kpi"><span>Promedio <b>${f1(prom)}</b></span>${cfg.media_modelo != null ? `<span>Modelo espera <b>${f1(cfg.media_modelo)}</b></span>` : ""}${cfg.modelo != null ? `<span>Modelo <b>${pct(cfg.modelo)}</b></span>` : ""}${cfg.casa != null ? `<span>Casa <b>${pct(cfg.casa)}</b></span>` : ""}${cfg.cuota ? `<span>Cuota <b>${f2(cfg.cuota)}</b></span>` : ""}</div></div>
     ${cfg.grupos.filter(g => g.filas.length).map(grupo).join("")}
-    <div class="mb-leg"><span><i style="background:var(--good)"></i>Se cumplió</span><span><i style="background:var(--bad)"></i>No se cumplió</span><span><i class="ln"></i>Línea ${linTxt(cfg.linea)}</span><span>De más viejo (izq.) a más reciente (der.)</span></div>
+    <div class="mb-leg"><span><i style="background:var(--good)"></i>Se cumplió</span><span><i style="background:var(--bad)"></i>No se cumplió</span><span><i class="ln"></i>Línea ${linTxt(cfg.linea)}</span><span>${lvTag(true)}De local</span><span>${lvTag(false)}De visitante</span><span>De más viejo (izq.) a más reciente (der.)</span></div>
     ${cfg.extra || ""}`;
 }
 const grafDlg = $("#graf-dlg");
