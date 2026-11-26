@@ -316,7 +316,21 @@ def armar(db, fz_goles, partido):
 
 
 def _h2h_row(p):
+    """Un cara a cara para la web. Además de los totales lleva lo que se ve al tocarlo (26-nov, pedido de Nicolas):
+    posesión y xG si la fuente los trae, jornada, id de FotMob (enlace al partido) y goles y tarjetas con su jugador."""
+    nombres = {j["id"]: j.get("nombre") for js in (p.get("jugadores") or {}).values() for j in js if j.get("id")}
+    ev = []
+    for e in p.get("eventos", []):
+        if e.get("tipo") not in ("goles", "amarillas", "rojas"):
+            continue
+        x = {"min": e.get("min"), "equipo": e["equipo"], "tipo": e["tipo"], "jugador": nombres.get(e.get("jugador"))}
+        if e["tipo"] == "goles" and e.get("jugador") and not str(e["jugador"]).startswith(e["equipo"] + "-"):
+            x["propia"] = True  # el que marcó es del otro equipo: gol en propia
+        ev.append(x)
+    ev.sort(key=lambda x: (x["min"] is None, x["min"] or 0))
+    extra = ("posesion", "xg")
     return {"fecha": p["fecha"], "temporada": p["temporada"], "competicion": p.get("competicion", "liga"),
-            "local": p["local"], "visitante": p["visitante"],
-            "equipos": {k: {s: v.get(s, 0) for s in P.STATS_EQUIPO} for k, v in p["equipos"].items()},
-            "arbitro": p.get("arbitro")}
+            "jornada": p.get("jornada"), "local": p["local"], "visitante": p["visitante"],
+            "equipos": {k: {**{s: v.get(s, 0) for s in P.STATS_EQUIPO}, **{s: v[s] for s in extra if v.get(s) is not None}}
+                        for k, v in p["equipos"].items()},
+            "arbitro": p.get("arbitro"), "fuente": p.get("fuente"), "fuente_id": p.get("fuente_id"), "eventos": ev}

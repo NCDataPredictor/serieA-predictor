@@ -408,6 +408,43 @@ tr.grp th small { font: 500 11px var(--mono); color: var(--muted); letter-spacin
 .pb { background: none; border: 0; padding: 2px 4px; margin: -2px -4px; font: inherit; color: inherit; cursor: pointer; border-radius: 5px; text-decoration: underline dotted; text-underline-offset: 3px }
 .pb:hover, .pb:focus-visible { background: var(--accent-soft); outline: none; text-decoration-style: solid }
 
+/* ---- Cara a cara tocable (26-nov, pedido de Nicolas): cada partido anterior abre su detalle; escudos en cada fila ---- */
+tr.h2h-r { cursor: pointer; transition: background .15s }
+tr.h2h-r:hover td, tr.h2h-r:focus-visible td { background: var(--accent-soft) }
+tr.h2h-r:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px }
+.h2h-m { display: inline-flex; align-items: center; gap: 5px; vertical-align: middle }
+.h2h-m .f { color: var(--muted); font: 500 12px var(--mono); margin-right: 3px }
+.h2h-m b { font-weight: 600 }
+td.h2h-go { color: var(--accent); font-weight: 700; padding-left: 0; width: 1% }
+.pd-score { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; text-align: center; padding: 4px 0 10px }
+.pd-score .tm { display: grid; justify-items: center; gap: 6px; min-width: 0; font-weight: 600; font-size: 14px; line-height: 1.2 }
+.pd-score .tm span { overflow-wrap: anywhere }
+.pd-score .crest .badge { white-space: nowrap; font-size: 15px; padding: 6px 8px }
+.pd-score .mk { display: flex; align-items: center; justify-content: center; font: 700 40px/1 var(--display, inherit); font-variant-numeric: tabular-nums; letter-spacing: .02em; white-space: nowrap }
+.pd-score .mk i { font-style: normal; color: var(--muted); margin: 0 6px }
+.pd-score .mk .l { color: var(--muted) }
+.pd-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 6px }
+.pd-meta span { border: 1px solid var(--line); border-radius: 99px; padding: 3px 10px; font: 500 12px var(--mono); color: var(--muted) }
+.pd-meta b { color: var(--ink); font-weight: 600 }
+.pd-ev { display: grid; grid-template-columns: 1fr 44px 1fr; gap: 6px 8px; align-items: center; font-size: 13.5px }
+.pd-ev .m { text-align: center; font: 600 12px var(--mono); color: var(--muted); background: var(--soft); border-radius: 99px; padding: 2px 0 }
+.pd-ev .a { display: flex; align-items: center; gap: 6px; justify-content: flex-end; text-align: right; min-width: 0 }
+.pd-ev .b { display: flex; align-items: center; gap: 6px; min-width: 0 }
+.pd-ev .a span, .pd-ev .b span { overflow-wrap: anywhere }
+.pd-ev .ico { width: 16px; height: 16px; flex: none }
+.pd-ev .og { color: var(--muted); font-size: 11.5px }
+.pd-st { display: grid; gap: 11px }
+.pd-row { display: grid; grid-template-columns: 52px 1fr 52px; gap: 4px 10px; align-items: center; animation: up .4s both; animation-delay: calc(var(--i) * 35ms) }
+.pd-row .lb { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12.5px; color: var(--muted) }
+.pd-row .lb .ico { width: 15px; height: 15px }
+.pd-row .v { font: 700 15px var(--mono); font-variant-numeric: tabular-nums } .pd-row .v.r { text-align: right }
+.pd-row .v.mx { color: var(--ink) } .pd-row .v:not(.mx) { color: var(--muted); font-weight: 500 }
+.pd-bar { display: flex; height: 8px; border-radius: 99px; overflow: hidden; background: var(--soft); gap: 3px }
+.pd-bar i { display: block; height: 100%; border-radius: 99px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); transform-origin: var(--o, left); animation: pdgrow .5s cubic-bezier(.2,.7,.2,1) both }
+@keyframes pdgrow { from { transform: scaleX(0) } }
+.pd-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font-weight: 600; color: var(--accent) }
+@media (prefers-reduced-motion: reduce) { .pd-row, .pd-bar i { animation: none } tr.h2h-r { transition: none } }
+
 /* ---- hojas (gráfico de una línea y ficha del jugador): abajo en el celular, al centro en escritorio ---- */
 dialog.sheet { border: 1px solid var(--line); border-radius: 18px; padding: 0; width: min(600px, calc(100vw - 32px)); max-width: none; max-height: min(88dvh, 820px);
   background: var(--surface); color: var(--ink); box-shadow: 0 30px 80px -20px rgba(0,0,0,.6); overflow: hidden }
@@ -670,6 +707,10 @@ main:focus { outline: none }
 <dialog id="graf-dlg" class="sheet" aria-labelledby="graf-t">
   <div class="sh-head"><div class="sh-tt"><span class="eyebrow" id="graf-e"></span><h2 id="graf-t">Últimos partidos</h2></div><button type="button" class="dlg-x" data-close aria-label="Cerrar">✕</button></div>
   <div class="sh-body" id="graf-b"></div>
+</dialog>
+<dialog id="h2h-dlg" class="sheet" aria-labelledby="h2h-t">
+  <div class="sh-head"><div class="sh-tt"><span class="eyebrow" id="h2h-e"></span><h2 id="h2h-t">Partido</h2></div><button type="button" class="dlg-x" data-close aria-label="Cerrar">✕</button></div>
+  <div class="sh-body" id="h2h-b"></div>
 </dialog>
 <dialog id="jug-dlg" class="sheet" aria-labelledby="jug-t">
   <div class="sh-head" id="jug-h"><div class="sh-tt"><h2 id="jug-t">Jugador</h2></div><button type="button" class="dlg-x" data-close aria-label="Cerrar">✕</button></div>
@@ -1049,6 +1090,7 @@ function contexto(d, el) {
   };
   const a = d.arbitro;
   const h = d.h2h;
+  H2H_ACT = h.partidos;
   el.innerHTML = `
   <div class="grid2">${forma(L)}${forma(V)}</div>
   <div class="grid2" style="margin-top:14px">
@@ -1058,7 +1100,8 @@ function contexto(d, el) {
       <p class="note">${a.n ? a.n + " partidos dirigidos en nuestro histórico" : a.n_externo + " partidos en la Serie A según FotMob"}. Su media (con más peso en los últimos 5) se encoge hacia la de la liga según cuántos partidos tiene; el efecto multiplica las amarillas esperadas de los dos equipos.</p>` : `<p class="note">Sin árbitro designado o sin historial: se usa la media de la liga.</p>`}
     </div>
     <div class="card"><h3>Cara a cara${d.derbi ? ` · ${esc(d.derbi)}` : ""}</h3>
-      ${h.partidos.length ? `<div class="scroll"><table><tr><th>Partido</th><th>Res.</th><th>Rem.</th><th>Córn.</th><th>Amar.</th></tr>${h.partidos.slice().reverse().map(p => { const a1 = p.equipos[p.local], b1 = p.equipos[p.visitante]; return `<tr><td data-sort="${esc(p.fecha)}">${esc(p.fecha)} · ${esc(p.local)}–${esc(p.visitante)}</td><td class="n">${a1.goles}-${b1.goles}</td><td class="n">${a1.remates}-${b1.remates}</td><td class="n">${a1.corners}-${b1.corners}</td><td class="n">${a1.amarillas}-${b1.amarillas}</td></tr>`; }).join("")}</table></div>
+      ${h.partidos.length ? `<div class="scroll"><table><tr><th>Partido</th><th>Res.</th><th>Rem.</th><th>Córn.</th><th>Amar.</th><th></th></tr>${h.partidos.map((p, i) => [p, i]).reverse().map(([p, i]) => { const a1 = p.equipos[p.local], b1 = p.equipos[p.visitante]; return `<tr class="h2h-r" data-h2h="${i}" tabindex="0" role="button" aria-label="Ver el partido ${esc(tname(p.local))} ${a1.goles}-${b1.goles} ${esc(tname(p.visitante))} del ${esc(p.fecha)}"><td data-sort="${esc(p.fecha)}"><span class="h2h-m"><span class="f">${esc(p.fecha.slice(8, 10) + "/" + p.fecha.slice(5, 7) + "/" + p.fecha.slice(2, 4))}</span>${crest(p.local, 20)}<b>${esc(p.local)}</b>–<b>${esc(p.visitante)}</b>${crest(p.visitante, 20)}</span></td><td class="n">${a1.goles}-${b1.goles}</td><td class="n">${a1.remates}-${b1.remates}</td><td class="n">${a1.corners}-${b1.corners}</td><td class="n">${a1.amarillas}-${b1.amarillas}</td><td class="h2h-go" aria-hidden="true">›</td></tr>`; }).join("")}</table></div>
+      <p class="note" style="margin-top:6px">Toca un partido para ver su detalle: goles, tarjetas y estadísticas.</p>
       <p class="note">Peso del cara a cara: ${h.n} partidos → ${pct(h.n / (h.n + 4))}. Efecto en el esperado: ${["goles", "remates", "corners", "faltas", "amarillas"].map(s => `${STAT[s].toLowerCase()} ×${f2(h.mult[s])}`).join(", ")}.</p>`
       : `<p class="note">No se enfrentaron la temporada pasada ni en esta.${d.derbi ? " Al ser derbi se aplica el efecto derbi de partida en tarjetas y faltas." : ""}</p>`}
     </div>
@@ -1550,7 +1593,48 @@ function abrirJugador(d, t, j) {
   abrirDlg(jugDlg);
   syncBotones();
 }
-[grafDlg, jugDlg].forEach(dl => {
+/* ---------- detalle de un partido del cara a cara ---------- */
+var H2H_ACT = [];
+const h2hDlg = $("#h2h-dlg");
+const COMP_TXT = {liga: "Liga", champions: "Champions", copa: "Copa", supercopa: "Supercopa", europa: "Europa League", conference: "Conference League"};
+function abrirH2H(p) {
+  if (!p) return;
+  const L = p.local, V = p.visitante, a = p.equipos[L] || {}, b = p.equipos[V] || {}, gl = a.goles ?? 0, gv = b.goles ?? 0;
+  const fecha = new Date(p.fecha + "T12:00:00").toLocaleDateString("es-CO", {weekday: "long", day: "numeric", month: "long", year: "numeric"});
+  $("#h2h-e").textContent = `${COMP_TXT[p.competicion] || p.competicion || "Liga"}${p.jornada ? ` · jornada ${p.jornada}` : ""} · ${p.temporada}`;
+  $("#h2h-t").textContent = `${tname(L)} ${gl}–${gv} ${tname(V)}`;
+  const tm = c => `<div class="tm">${crest(c, 52)}<span>${esc(tname(c))}</span></div>`;
+  const ev = p.eventos || [];
+  const evRow = e => { const mio = e.equipo === L, ico = e.tipo === "goles" ? ic("goles") : ic(e.tipo);
+    const t = `${ico}<span>${e.jugador ? esc(e.jugador) : `<span class="og">${e.tipo === "goles" ? "Gol" : "Banquillo o sin nombre"}</span>`}${e.propia ? ' <span class="og">(en propia)</span>' : ""}</span>`;
+    return `<div class="a">${mio ? t : ""}</div><span class="m">${e.min != null ? e.min + "'" : "–"}</span><div class="b">${mio ? "" : t}</div>`; };
+  const goles = ev.filter(e => e.tipo === "goles"), tarj = ev.filter(e => e.tipo !== "goles");
+  const ST = [["posesion", "Posesión", "%"], ["xg", "Goles esperados (xG)"], ["remates", STAT.remates], ["remates_puerta", STAT.remates_puerta], ["corners", STAT.corners],
+    ["faltas", STAT.faltas], ["amarillas", STAT.amarillas], ["rojas", STAT.rojas], ["offsides", STAT.offsides], ["pases", STAT.pases]].filter(([k]) => a[k] != null && b[k] != null);
+  // si los dos clubes visten parecido (p. ej. dos rojos), el visitante usa su segundo color o un gris
+  const rgb = h => { const m = /^#?([0-9a-f]{6})$/i.exec(String(h || "").replace(/^#?([0-9a-f])([0-9a-f])([0-9a-f])$/i, "#$1$1$2$2$3$3")); return m ? [0, 2, 4].map(k => parseInt(m[1].substr(k, 2), 16)) : null; };
+  const cerca = (x, y) => { const a1 = rgb(x), b1 = rgb(y); return a1 && b1 && Math.hypot(...a1.map((v, k) => v - b1[k])) < 120; };
+  const ca = tcol(L)[1], cb = !cerca(tcol(V)[1], ca) ? tcol(V)[1] : !cerca(tcol(V)[2], ca) && !cerca(tcol(V)[2], "#ffffff") && !cerca(tcol(V)[2], "#111111") ? tcol(V)[2] : "var(--muted)";
+  const fmt = (k, v) => k === "xg" ? f2(v) : v;
+  const filas = ST.map(([k, n, u = ""], i) => { const x = +a[k] || 0, y = +b[k] || 0, t = x + y || 1;
+    return `<div class="pd-row" style="--i:${i}"><span class="lb">${ic(k)}${esc(n)}</span><span class="v${x >= y ? " mx" : ""}">${fmt(k, a[k])}${u}</span>
+      <div class="pd-bar" aria-hidden="true">${x ? `<i style="width:${(x / t * 100).toFixed(1)}%;background:${ca};--o:right"></i>` : ""}${y ? `<i style="width:${(y / t * 100).toFixed(1)}%;background:${cb}"></i>` : ""}</div>
+      <span class="v r${y >= x ? " mx" : ""}">${fmt(k, b[k])}${u}</span></div>`; }).join("");
+  $("#h2h-b").innerHTML = `
+    <div class="pd-score">${tm(L)}<div class="mk"><span class="${gl < gv ? "l" : ""}">${gl}</span><i>–</i><span class="${gv < gl ? "l" : ""}">${gv}</span></div>${tm(V)}</div>
+    <div class="pd-meta"><span>${esc(fecha.charAt(0).toUpperCase() + fecha.slice(1))}</span>${p.arbitro ? `<span>Árbitro <b>${esc(p.arbitro)}</b></span>` : ""}</div>
+    <h3>${ic("goles")} Goles</h3>
+    ${goles.length ? `<div class="pd-ev">${goles.map(evRow).join("")}</div>` : `<p class="note">${gl + gv ? "Este archivo no trae quién marcó." : "Sin goles."}</p>`}
+    ${tarj.length ? `<h3>${ic("tarjetas")} Tarjetas</h3><div class="pd-ev">${tarj.map(evRow).join("")}</div>` : ""}
+    <h3>Estadísticas</h3>
+    <div class="pd-st">${filas}</div>
+    ${p.fuente === "fotmob" && p.fuente_id ? `<a class="pd-link" href="https://www.fotmob.com/match/${encodeURIComponent(p.fuente_id)}" target="_blank" rel="noopener">Ver el partido completo en FotMob ↗</a>` : ""}`;
+  $("#h2h-b").scrollTop = 0;
+  abrirDlg(h2hDlg);
+}
+document.addEventListener("click", e => { const t = e.target.closest("[data-h2h]"); if (t) abrirH2H(H2H_ACT[+t.dataset.h2h]); });
+document.addEventListener("keydown", e => { const t = e.target.closest && e.target.closest("tr[data-h2h]"); if (t && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); abrirH2H(H2H_ACT[+t.dataset.h2h]); } });
+[grafDlg, jugDlg, h2hDlg].forEach(dl => {
   dl.addEventListener("click", e => { if (e.target === dl || e.target.closest("[data-close]")) dl.close(); });
 });
 
