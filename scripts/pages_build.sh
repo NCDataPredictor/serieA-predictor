@@ -18,3 +18,14 @@ if git clone --depth 1 --branch "${UCL_BRANCH:-main}" https://github.com/NCDataP
 else
   echo "No se pudo clonar la Champions: /champions/ no se publica en este build"
 fi
+# La Premier League vive en NCDataPredictor/premier-league-predictor (público): se trae su web y se sirve en /premier/.
+# Su logo va también a docs/logos/premier.png (lo usan la tarjeta de la portada y el menú de modelos de cada liga).
+# Si el clon falla no se cae el build de todo el sitio: /premier/ queda sin publicar en ese build.
+if git clone --depth 1 --branch "${EPL_BRANCH:-main}" https://github.com/NCDataPredictor/premier-league-predictor.git "$tmp/epl"; then
+  rm -rf docs/premier
+  cp -r "$tmp/epl/docs/premier" docs/premier
+  [ -f docs/premier/logos/premier.png ] && cp docs/premier/logos/premier.png docs/logos/premier.png
+  echo "Premier copiada en docs/premier ($(du -sh docs/premier | cut -f1))"
+else
+  echo "No se pudo clonar la Premier: /premier/ no se publica en este build"
+fi
