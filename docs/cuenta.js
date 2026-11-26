@@ -1,7 +1,7 @@
 /* NCData Predictor · Cuenta y rendimiento de tus picks (26-nov, pedido de Nicolas)
    Un solo archivo para todo el sitio (se sirve en /cuenta.js; lo cargan la portada, /nba/, /serie-a/, /premier/ y
    /champions/). Hace tres cosas:
-   1. Botón de cuenta arriba (#cuenta-btn de cada página): entrar con el correo (código de 6 dígitos o enlace) vía Supabase.
+   1. Botón de cuenta arriba (#cuenta-btn de cada página): entrar con un enlace al correo (o código, si la plantilla lo trae) vía Supabase.
    2. Sincroniza tus picks guardados (las claves de localStorage de cada liga) con tu cuenta, para verlos en cualquier
       celular o computador. Sin sesión todo sigue funcionando como antes, solo en este navegador.
    3. Rendimiento: cada liga deja aquí la lista liquidada de tus picks (clave ncdp-rend-<liga>, ver NCDP.rend) y este
@@ -106,6 +106,7 @@ dialog.nc-dlg::backdrop { background: rgba(5,6,25,.55); backdrop-filter: blur(2p
 .nc-b[disabled] { opacity: .55; cursor: default }
 .nc-b svg { width: 18px; height: 18px }
 .nc-row { display: flex; gap: 8px; flex-wrap: wrap } .nc-row > .nc-in { flex: 1 1 200px }
+.nc-cod summary { cursor: pointer; font-size: 13.5px; color: var(--muted, #5c6079) }
 .nc-msg { font-size: 13.5px; padding: 8px 10px; border-radius: 10px; background: var(--good-soft, #dcf3e5); color: var(--ink, #10122a) } .nc-msg.err { background: var(--bad-soft, #fbe2e6) }
 .nc-who { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--line, #dfe1ea); border-radius: 12px }
 .nc-who .nc-av { width: 34px; height: 34px; font-size: 16px; flex: none } .nc-who b { display: block; overflow-wrap: anywhere } .nc-who small { color: var(--muted, #5c6079); font-size: 12.5px }
@@ -160,7 +161,17 @@ dialog.nc-dlg::backdrop { background: rgba(5,6,25,.55); backdrop-filter: blur(2p
   /* ---------- 4. Supabase (se carga solo si hace falta) ---------- */
   const activo = !!(CFG.url && CFG.anon);
   let sb = null, sbP = null, USER = null, ULT = null, ESTADO = "", sincronizando = false, otraVez = false, tAg = null;
-  const hayCode = /[?&]code=/.test(location.search);
+  // Enlace del correo: Supabase vuelve a esta página con #access_token=…&refresh_token=… (flujo implícito: sirve
+  // aunque el enlace se abra en otro navegador, p. ej. el de la app de Gmail). Se lee y se borra del # antes de que la
+  // página lo tome por una ruta (#partido, #mis-picks…). Si el enlace venció llega #error=…&error_description=….
+  let TOK = null, TOKERR = "";
+  try {
+    const h = new URLSearchParams(location.hash.slice(1));
+    if (h.get("access_token") && h.get("refresh_token")) TOK = { access_token: h.get("access_token"), refresh_token: h.get("refresh_token") };
+    else if (h.get("error") || h.get("error_code")) TOKERR = h.get("error_description") || h.get("error") || "enlace no válido";
+    if (TOK || TOKERR) history.replaceState(history.state, "", location.pathname + location.search);
+  } catch (e) {}
+  const hayCode = !!TOK;
   function cargar() {
     if (!activo) return Promise.resolve(null);
     if (sbP) return sbP;
@@ -168,7 +179,7 @@ dialog.nc-dlg::backdrop { background: rgba(5,6,25,.55); backdrop-filter: blur(2p
       if (window.supabase && window.supabase.createClient) return ok();
       const s = document.createElement("script"); s.src = SB_JS; s.async = true; s.onload = ok; s.onerror = () => mal(new Error("No se pudo cargar Supabase")); document.head.appendChild(s);
     }).then(() => {
-      sb = window.supabase.createClient(CFG.url, CFG.anon, { auth: { flowType: "pkce", detectSessionInUrl: true, persistSession: true, autoRefreshToken: true, storageKey: "ncdp-auth" } });
+      sb = window.supabase.createClient(CFG.url, CFG.anon, { auth: { flowType: "implicit", detectSessionInUrl: false, persistSession: true, autoRefreshToken: true, storageKey: "ncdp-auth" } });
       sb.auth.onAuthStateChange((ev, s) => {
         const u = s && s.user || null, antes = USER && USER.id;
         USER = u; pintarBtn();
@@ -176,10 +187,14 @@ dialog.nc-dlg::backdrop { background: rgba(5,6,25,.55); backdrop-filter: blur(2p
         if (ev === "SIGNED_OUT") { const m = jparse(get(META_K), {}); setRaw(META_K, JSON.stringify({ ...m, uid: null })); }
         pintarDlg();
       });
-      return sb.auth.getSession().then(r => {
+      return (TOK ? sb.auth.setSession(TOK) : Promise.resolve(null)).then(r => {
+        if (TOK) { TOK = null; if (r && r.error) PASO = { fase: "mail", email: "", msg: traducir(r.error), err: true }; else PASO.recien = true; }
+        return sb.auth.getSession();
+      }).then(r => {
         USER = (r.data.session && r.data.session.user) || null;
-        if (hayCode) { const u = new URL(location.href); u.searchParams.delete("code"); history.replaceState(history.state, "", u.pathname + u.search + u.hash); }
-        pintarBtn(); return sb;
+        pintarBtn();
+        if (PASO.recien || PASO.err) abrir();
+        return sb;
       });
     }).catch(e => { sbP = null; ESTADO = "err:" + e.message; pintarDlg(); return null; });
     return sbP;
@@ -262,6 +277,7 @@ dialog.nc-dlg::backdrop { background: rgba(5,6,25,.55); backdrop-filter: blur(2p
       + (R.total.n ? `<section><h3>${ICO.chart}En todas las ligas</h3>${kpiHtml(R.total)}</section>` : `<p>Aún no guardaste picks. Toca <b>Lo tomo</b> en un pick para seguir su rendimiento.</p>`)
       + `<div class="nc-row">${LIGA ? `<a class="nc-b sec" href="#mis-picks" data-nc-close>Mis picks</a>` : ""}<a class="nc-b sec" href="/#tus-picks" data-nc-close>Rendimiento general</a></div>`;
     let auth;
+    const bien = PASO.recien && USER ? `<div class="nc-msg">Listo, entraste. Tus picks de este navegador ya se están guardando en tu cuenta.</div>` : "";
     if (!activo) auth = `<div class="nc-off">El inicio de sesión se activa en cuanto el sitio tenga su cuenta de Supabase. Mientras tanto tus picks se guardan en este navegador.</div>`;
     else if (USER) {
       const st = ESTADO === "sync" ? "Sincronizando…" : ESTADO.startsWith("err:") ? "No se pudo sincronizar: " + ESTADO.slice(4) : ULT ? "Sincronizado " + hace(ULT) : "Conectado";
@@ -269,17 +285,18 @@ dialog.nc-dlg::backdrop { background: rgba(5,6,25,.55); backdrop-filter: blur(2p
         <p style="margin-top:8px">Tus picks y combinadas de todas las ligas se guardan en tu cuenta: los ves en cualquier celular o computador donde entres.</p>
         <div class="nc-row" style="margin-top:10px"><button type="button" class="nc-b sec" data-nc="sync">Sincronizar ahora</button><button type="button" class="nc-b sec" data-nc="salir">Cerrar sesión</button></div></section>`;
     } else if (PASO.fase === "code") {
-      auth = `<section><h3>${ICO.mail}Revisa tu correo</h3><p>Enviamos un código de 6 dígitos a <b>${esc(PASO.email)}</b>. Escríbelo aquí, o abre el enlace del correo en este mismo navegador.</p>
-        <form data-nc="code" class="nc-row" style="margin-top:10px"><input class="nc-in code" name="t" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,8}" maxlength="8" required aria-label="Código del correo" placeholder="000000"><button class="nc-b" type="submit">Entrar</button></form>
+      auth = `<section><h3>${ICO.mail}Revisa tu correo</h3><p>Te enviamos un enlace a <b>${esc(PASO.email)}</b>. Ábrelo y vuelves a esta página ya con tu cuenta. Puede tardar un minuto; si no llega, mira en spam o promociones.</p>
         ${PASO.msg ? `<div class="nc-msg${PASO.err ? " err" : ""}" style="margin-top:8px">${esc(PASO.msg)}</div>` : ""}
-        <div class="nc-row" style="margin-top:8px"><button type="button" class="nc-b sec" data-nc="otro">Usar otro correo</button></div></section>`;
+        <div class="nc-row" style="margin-top:10px"><button type="button" class="nc-b sec" data-nc="reenviar">Enviar otra vez</button><button type="button" class="nc-b sec" data-nc="otro">Usar otro correo</button></div>
+        <details class="nc-cod" style="margin-top:10px"><summary>¿Te llegó un código de 6 dígitos?</summary>
+        <form data-nc="code" class="nc-row" style="margin-top:8px"><input class="nc-in code" name="t" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,8}" maxlength="8" required aria-label="Código del correo" placeholder="000000"><button class="nc-b" type="submit">Entrar</button></form></details></section>`;
     } else {
       auth = `<section><h3>${ICO.cloud}Guarda tus picks en tu cuenta</h3><p>Entra con tu correo (sin contraseña) y tus picks de todas las ligas te siguen a cualquier celular o computador. Lo que ya guardaste en este navegador se suma a tu cuenta.</p>
-        <form data-nc="mail" class="nc-row" style="margin-top:10px"><input class="nc-in" type="email" name="e" autocomplete="email" required placeholder="tu@correo.com" aria-label="Correo" value="${esc(PASO.email)}"><button class="nc-b" type="submit">Enviar código</button></form>
+        <form data-nc="mail" class="nc-row" style="margin-top:10px"><input class="nc-in" type="email" name="e" autocomplete="email" required placeholder="tu@correo.com" aria-label="Correo" value="${esc(PASO.email)}"><button class="nc-b" type="submit">Enviar enlace</button></form>
         ${PASO.msg ? `<div class="nc-msg${PASO.err ? " err" : ""}" style="margin-top:8px">${esc(PASO.msg)}</div>` : ""}
         ${CFG.google ? `<div class="nc-row" style="margin-top:8px"><button type="button" class="nc-b sec" data-nc="google">Entrar con Google</button></div>` : ""}</section>`;
     }
-    DLG.querySelector(".nc-bd").innerHTML = auth + rendHtml;
+    DLG.querySelector(".nc-bd").innerHTML = bien + auth + rendHtml;
   }
   function abrir() {
     if (!DLG) {
@@ -290,7 +307,8 @@ dialog.nc-dlg::backdrop { background: rgba(5,6,25,.55); backdrop-filter: blur(2p
         if (e.target === DLG || e.target.closest("[data-nc-close]")) { DLG.close(); return; }
         const b = e.target.closest("button[data-nc]"); if (!b) return;
         const a = b.dataset.nc;
-        if (a === "cerrar") DLG.close();
+        if (a === "cerrar") { DLG.close(); PASO.recien = false; }
+        else if (a === "reenviar") { b.disabled = true; await cargar(); if (sb) { const r = await sb.auth.signInWithOtp({ email: PASO.email, options: { emailRedirectTo: location.origin + location.pathname, shouldCreateUser: true } }); PASO = { ...PASO, msg: r.error ? traducir(r.error) : "Listo, te enviamos otro enlace.", err: !!r.error }; } pintarDlg(); }
         else if (a === "otro") { PASO = { fase: "mail", email: PASO.email, msg: "" }; pintarDlg(); }
         else if (a === "sync") sincronizar();
         else if (a === "salir") { await cargar(); if (sb) await sb.auth.signOut(); USER = null; pintarBtn(); pintarDlg(); }
@@ -319,8 +337,8 @@ dialog.nc-dlg::backdrop { background: rgba(5,6,25,.55); backdrop-filter: blur(2p
   }
   function traducir(e) {
     const m = String(e && e.message || e);
-    if (/rate limit|seconds/i.test(m)) return "Espera un minuto antes de pedir otro código.";
-    if (/expired|invalid/i.test(m)) return "El código no es válido o ya venció. Pide uno nuevo.";
+    if (/rate limit|seconds/i.test(m)) return "Se pidieron muchos correos seguidos. Espera unos minutos e intenta otra vez.";
+    if (/expired|invalid/i.test(m)) return "El enlace o el código ya no sirve (vence en una hora y se usa una sola vez). Pide uno nuevo.";
     if (/email/i.test(m)) return "Revisa el correo: parece que no es válido.";
     return "No se pudo: " + m;
   }
@@ -388,6 +406,7 @@ dialog.nc-dlg::backdrop { background: rgba(5,6,25,.55); backdrop-filter: blur(2p
     new MutationObserver(() => { document.querySelectorAll("[data-ncdp-tira='']").forEach(el => { el.innerHTML = tiraHtml(); el.dataset.ncdpTira = "1"; }); })
       .observe(document.body, { childList: true, subtree: true });
     pintarTodo();
+    if (TOKERR) { PASO = { fase: "mail", email: "", msg: traducir(TOKERR), err: true }; abrir(); }
     if (activo && (sesionGuardada() || hayCode)) cargar();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", montar); else montar();
