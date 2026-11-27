@@ -1,0 +1,32 @@
+# Vigía de alineaciones (27-nov-2026): las alineaciones oficiales salen ~60 min antes del partido y los cron de GitHub
+# llegan tarde o se pierden, así que la jornada casi nunca corría en esa ventana y el aviso "Alineaciones confirmadas"
+# no salía. Esta acción se queda vigilando FotMob mientras haya partidos en las próximas 5 horas y, cuando un partido
+# tiene los titulares oficiales, lanza la acción de la jornada (re-simula, publica y manda el aviso).
+# Se intenta cada hora: si no hay partidos cerca termina en segundos; si ya hay una vigía corriendo, la nueva espera.
+name: Vigía de alineaciones
+on:
+  schedule:
+    - cron: "40 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: write          # para lanzar jornada.yml
+concurrency:
+  group: vigia-alineaciones
+  cancel-in-progress: false
+jobs:
+  vigia:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install numpy
+      - name: Vigilar alineaciones
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -m futbol.vigia_alineaciones
