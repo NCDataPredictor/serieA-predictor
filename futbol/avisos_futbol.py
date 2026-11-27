@@ -14,6 +14,7 @@ import hashlib
 import json
 import os
 import subprocess
+import time
 import urllib.request
 from datetime import datetime, timedelta, timezone
 
@@ -56,9 +57,31 @@ def enviar(tag, titulo, texto, url, ident, icono=None):
                                  headers={"Content-Type": "application/json", "Authorization": f"Key {key}"})
     try:
         with urllib.request.urlopen(req, timeout=30) as r:
-            print(f"Enviado: {titulo} → {r.read().decode()[:200]}")
+            resp = r.read().decode()
+        print(f"Enviado: {titulo} → {resp[:200]}")
+        _entregas(app, key, titulo, resp)
     except Exception as e:  # no debe tumbar la acción
-        print(f"No se pudo enviar «{titulo}»: {e} {e.read().decode(errors='replace')[:300] if hasattr(e, 'read') else ''}")
+        print(f"::warning::No se pudo enviar «{titulo}»: {e} {e.read().decode(errors='replace')[:300] if hasattr(e, 'read') else ''}")
+
+
+def _entregas(app, key, titulo, resp):
+    """Deja en el log a cuántos celulares llegó (OneSignal acepta el envío aunque nadie tenga el tag de la liga)."""
+    try:
+        d = json.loads(resp)
+        if not d.get("id") or d.get("errors"):
+            print(f"::warning::«{titulo}» no tiene destinatarios: {d.get('errors')}. ¿Alguien activó los avisos de esta liga en la web?")
+            return
+        time.sleep(8)
+        req = urllib.request.Request(f"https://api.onesignal.com/notifications/{d['id']}?app_id={app}",
+                                     headers={"Authorization": f"Key {key}"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            n = json.loads(r.read().decode())
+        ok, total = n.get("successful"), n.get("recipients") or ((n.get("successful") or 0) + (n.get("failed") or 0) + (n.get("errored") or 0))
+        print(f"  Entregas: {ok} de {total} (fallidas {n.get('failed')}, con error {n.get('errored')}, pendientes {n.get('remaining')})")
+        if not total:
+            print(f"::warning::«{titulo}» salió a 0 celulares: nadie tiene activados los avisos de esta liga.")
+    except Exception as e:
+        print(f"  (no se pudo leer el recuento de entregas: {e})")
 
 
 DIAS = ("lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo")
