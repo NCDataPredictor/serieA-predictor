@@ -28,7 +28,7 @@
    "penaltis": 5
   },
   "clima": {
-   "temperature": 14,
+   "temperature": 15,
    "windSpeed": 2,
    "windDirectionCardinal": "NE",
    "iconCode": 32,
@@ -36,10 +36,10 @@
    "precipChance": 1,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 13,
+   "cloudCover": 5,
    "description": "Sunny",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-26T20:00:36Z",
+   "lastUpdated": "2026-11-27T08:00:21Z",
    "localizedKey": "weather_condition_sunny",
    "defaultTitle": "Sunny"
   }

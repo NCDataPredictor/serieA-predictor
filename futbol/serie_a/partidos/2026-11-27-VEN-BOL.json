@@ -31,17 +31,17 @@
    "temperature": 7,
    "windSpeed": 6,
    "windDirectionCardinal": "NE",
-   "iconCode": 33,
-   "relativeHumidity": 76,
+   "iconCode": 29,
+   "relativeHumidity": 77,
    "precipChance": 3,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 27,
-   "description": "Mostly Clear",
+   "cloudCover": 38,
+   "description": "Partly Cloudy",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-26T23:00:07Z",
-   "localizedKey": "weather_condition_clear",
-   "defaultTitle": "Clear"
+   "lastUpdated": "2026-11-27T10:00:06Z",
+   "localizedKey": "weather_condition_partly_cloudy",
+   "defaultTitle": "Partly Cloudy"
   }
  },
  "alineaciones": {

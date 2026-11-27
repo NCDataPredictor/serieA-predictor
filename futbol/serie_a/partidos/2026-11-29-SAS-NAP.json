@@ -29,19 +29,19 @@
   },
   "clima": {
    "temperature": 9,
-   "windSpeed": 4,
-   "windDirectionCardinal": "W",
-   "iconCode": 34,
-   "relativeHumidity": 74,
-   "precipChance": 4,
+   "windSpeed": 3,
+   "windDirectionCardinal": "WSW",
+   "iconCode": 30,
+   "relativeHumidity": 70,
+   "precipChance": 2,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 29,
-   "description": "Mostly Sunny",
+   "cloudCover": 55,
+   "description": "Partly Cloudy",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-26T14:00:03Z",
-   "localizedKey": "weather_condition_sunny",
-   "defaultTitle": "Sunny"
+   "lastUpdated": "2026-11-27T02:00:06Z",
+   "localizedKey": "weather_condition_partly_cloudy",
+   "defaultTitle": "Partly Cloudy"
   }
  },
  "alineaciones": {
