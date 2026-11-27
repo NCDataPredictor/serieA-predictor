@@ -28,18 +28,18 @@
    "penaltis": 8
   },
   "clima": {
-   "temperature": 4,
+   "temperature": 3,
    "windSpeed": 1,
-   "windDirectionCardinal": "N",
-   "iconCode": 27,
-   "relativeHumidity": 87,
+   "windDirectionCardinal": "NNE",
+   "iconCode": 26,
+   "relativeHumidity": 86,
    "precipChance": 5,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 72,
-   "description": "Mostly Cloudy",
+   "cloudCover": 91,
+   "description": "Cloudy",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-26T08:00:18Z",
+   "lastUpdated": "2026-11-26T20:00:37Z",
    "localizedKey": "weather_condition_cloudy",
    "defaultTitle": "Cloudy"
   }

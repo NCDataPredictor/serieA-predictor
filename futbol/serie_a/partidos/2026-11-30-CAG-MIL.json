@@ -32,14 +32,14 @@
    "windSpeed": 2,
    "windDirectionCardinal": "NNE",
    "iconCode": 29,
-   "relativeHumidity": 77,
-   "precipChance": 4,
+   "relativeHumidity": 79,
+   "precipChance": 5,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 50,
+   "cloudCover": 47,
    "description": "Partly Cloudy",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-26T08:00:18Z",
+   "lastUpdated": "2026-11-26T20:00:37Z",
    "localizedKey": "weather_condition_partly_cloudy",
    "defaultTitle": "Partly Cloudy"
   }
@@ -120,13 +120,6 @@
     "motivo": "lesion",
     "regreso": "About 1-2 weeks",
     "p_juega": 0.0
-   },
-   {
-    "jugador": "MIL-1048023",
-    "nombre": "Strahinja Pavlović",
-    "motivo": "lesion",
-    "regreso": "Doubtful",
-    "p_juega": 0.5
    },
    {
     "jugador": "MIL-281762",

@@ -26,14 +26,14 @@
    "windSpeed": 4,
    "windDirectionCardinal": "N",
    "iconCode": 29,
-   "relativeHumidity": 68,
-   "precipChance": 4,
+   "relativeHumidity": 69,
+   "precipChance": 2,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 33,
+   "cloudCover": 36,
    "description": "Partly Cloudy",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-26T06:00:15Z",
+   "lastUpdated": "2026-11-26T18:00:13Z",
    "localizedKey": "weather_condition_partly_cloudy",
    "defaultTitle": "Partly Cloudy"
   }
@@ -47,8 +47,8 @@
     "jugador": "LEC-1299869",
     "nombre": "Mohamed Kaba",
     "motivo": "lesion",
-    "regreso": "Doubtful",
-    "p_juega": 0.5
+    "regreso": "Mid December 2026",
+    "p_juega": 0.0
    },
    {
     "jugador": "LEC-1036182",

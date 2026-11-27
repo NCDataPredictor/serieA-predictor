@@ -30,18 +30,18 @@
   "clima": {
    "temperature": 7,
    "windSpeed": 2,
-   "windDirectionCardinal": "NNW",
-   "iconCode": 31,
-   "relativeHumidity": 74,
-   "precipChance": 4,
+   "windDirectionCardinal": "NNE",
+   "iconCode": 29,
+   "relativeHumidity": 77,
+   "precipChance": 5,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 4,
-   "description": "Clear",
+   "cloudCover": 31,
+   "description": "Partly Cloudy",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-26T05:00:11Z",
-   "localizedKey": "weather_condition_clear",
-   "defaultTitle": "Clear"
+   "lastUpdated": "2026-11-26T23:00:07Z",
+   "localizedKey": "weather_condition_partly_cloudy",
+   "defaultTitle": "Partly Cloudy"
   }
  },
  "alineaciones": {
@@ -65,13 +65,6 @@
    }
   ],
   "LAZ": [
-   {
-    "jugador": "LAZ-541555",
-    "nombre": "Mattia Zaccagni",
-    "motivo": "lesion",
-    "regreso": "Doubtful",
-    "p_juega": 0.5
-   },
    {
     "jugador": "LAZ-478447",
     "nombre": "Adam Marušić",
