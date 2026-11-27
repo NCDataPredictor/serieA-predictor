@@ -30,10 +30,10 @@
    "precipChance": 2,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 35,
+   "cloudCover": 32,
    "description": "Partly Cloudy",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-27T06:00:17Z",
+   "lastUpdated": "2026-11-27T18:00:18Z",
    "localizedKey": "weather_condition_partly_cloudy",
    "defaultTitle": "Partly Cloudy"
   }
@@ -44,17 +44,17 @@
  "bajas": {
   "LEC": [
    {
-    "jugador": "LEC-1299869",
-    "nombre": "Mohamed Kaba",
-    "motivo": "lesion",
-    "regreso": "Mid December 2026",
-    "p_juega": 0.0
-   },
-   {
     "jugador": "LEC-1036182",
     "nombre": "Ivan Ilić",
     "motivo": "lesion",
     "regreso": "Early December 2026",
+    "p_juega": 0.0
+   },
+   {
+    "jugador": "LEC-1299869",
+    "nombre": "Mohamed Kaba",
+    "motivo": "lesion",
+    "regreso": "Mid December 2026",
     "p_juega": 0.0
    },
    {
@@ -81,15 +81,15 @@
     "p_juega": 0.0
    },
    {
-    "jugador": "ATA-1014496",
-    "nombre": "Odilon Kossounou",
+    "jugador": "ATA-939780",
+    "nombre": "Isak Hien",
     "motivo": "lesion",
     "regreso": "Doubtful",
     "p_juega": 0.5
    },
    {
-    "jugador": "ATA-939780",
-    "nombre": "Isak Hien",
+    "jugador": "ATA-1014496",
+    "nombre": "Odilon Kossounou",
     "motivo": "lesion",
     "regreso": "Doubtful",
     "p_juega": 0.5

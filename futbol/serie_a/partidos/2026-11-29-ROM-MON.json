@@ -23,17 +23,17 @@
   },
   "clima": {
    "temperature": 10,
-   "windSpeed": 4,
+   "windSpeed": 5,
    "windDirectionCardinal": "N",
    "iconCode": 31,
    "relativeHumidity": 63,
-   "precipChance": 2,
+   "precipChance": 1,
    "precipitation": 0,
    "snow": 0,
    "cloudCover": 3,
    "description": "Clear",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-27T05:00:12Z",
+   "lastUpdated": "2026-11-27T17:00:09Z",
    "localizedKey": "weather_condition_clear",
    "defaultTitle": "Clear"
   }
@@ -60,13 +60,6 @@
   ],
   "MON": [
    {
-    "jugador": "MON-994403",
-    "nombre": "Cyril Ngonge",
-    "motivo": "lesion",
-    "regreso": "Doubtful",
-    "p_juega": 0.5
-   },
-   {
     "jugador": "MON-1830551",
     "nombre": "Yvan Kouadio Maye",
     "motivo": "lesion",
@@ -79,6 +72,13 @@
     "motivo": "lesion",
     "regreso": "Early December 2026",
     "p_juega": 0.0
+   },
+   {
+    "jugador": "MON-994403",
+    "nombre": "Cyril Ngonge",
+    "motivo": "lesion",
+    "regreso": "Doubtful",
+    "p_juega": 0.5
    }
   ]
  },

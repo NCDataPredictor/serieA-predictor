@@ -2,7 +2,7 @@
  "liga": "Serie A",
  "temporada": "2026-27",
  "version": "futbol-0.1",
- "actualizado": "2026-11-27T12:16Z",
+ "actualizado": "2026-11-27T21:22Z",
  "ejemplo": false,
  "hora_picks_bogota": 19,
  "picks_salen": {
@@ -178,23 +178,23 @@
    "derbi": null,
    "arbitro": "Kevin Bonacina",
    "1x2": [
-    0.531,
-    0.259,
-    0.21
+    0.54,
+    0.251,
+    0.209
    ],
-   "goles": 3.13,
-   "over25": 0.597,
-   "ambos": 0.63,
-   "corners": 12.66,
+   "goles": 3.19,
+   "over25": 0.612,
+   "ambos": 0.637,
+   "corners": 12.55,
    "amarillas": 2.65,
    "marcador": [
     "1-1",
-    0.114
+    0.111
    ],
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-27T12:13Z",
+   "cuotas_capturadas": "2026-11-27T21:20Z",
    "alineacion": {
     "FRO": "prevista (últimos 10)",
     "PAR": "prevista (últimos 10)"
@@ -218,30 +218,30 @@
    "derbi": null,
    "arbitro": "Daniele Chiffi",
    "1x2": [
-    0.271,
+    0.281,
     0.291,
-    0.438
+    0.428
    ],
-   "goles": 2.71,
-   "over25": 0.508,
-   "ambos": 0.578,
-   "corners": 9.73,
-   "amarillas": 3.15,
+   "goles": 2.74,
+   "over25": 0.512,
+   "ambos": 0.587,
+   "corners": 9.76,
+   "amarillas": 2.97,
    "marcador": [
     "1-1",
-    0.133
+    0.135
    ],
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-27T12:13Z",
+   "cuotas_capturadas": "2026-11-27T21:20Z",
    "alineacion": {
     "TOR": "prevista (últimos 10)",
     "LAZ": "prevista (últimos 10)"
    },
    "bajas": {
-    "TOR": 2,
-    "LAZ": 3
+    "TOR": 1,
+    "LAZ": 4
    }
   },
   {
@@ -258,15 +258,15 @@
    "derbi": null,
    "arbitro": "Giovanni Ayroldi",
    "1x2": [
-    0.647,
-    0.22,
-    0.133
+    0.682,
+    0.204,
+    0.113
    ],
-   "goles": 3.08,
-   "over25": 0.588,
-   "ambos": 0.569,
-   "corners": 8.98,
-   "amarillas": 3.83,
+   "goles": 3.13,
+   "over25": 0.6,
+   "ambos": 0.557,
+   "corners": 9.0,
+   "amarillas": 3.75,
    "marcador": [
     "2-1",
     0.112
@@ -274,14 +274,14 @@
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-27T12:13Z",
+   "cuotas_capturadas": "2026-11-27T21:20Z",
    "alineacion": {
     "INT": "prevista (últimos 10)",
     "GEN": "prevista (últimos 10)"
    },
    "bajas": {
-    "INT": 3,
-    "GEN": 1
+    "INT": 4,
+    "GEN": 2
    }
   },
   {
@@ -298,29 +298,29 @@
    "derbi": null,
    "arbitro": "Federico La Penna",
    "1x2": [
-    0.299,
-    0.282,
+    0.302,
+    0.278,
     0.42
    ],
-   "goles": 2.99,
-   "over25": 0.569,
-   "ambos": 0.631,
-   "corners": 8.36,
-   "amarillas": 3.27,
+   "goles": 3.0,
+   "over25": 0.568,
+   "ambos": 0.635,
+   "corners": 8.4,
+   "amarillas": 3.29,
    "marcador": [
     "1-1",
-    0.125
+    0.126
    ],
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-27T12:13Z",
+   "cuotas_capturadas": "2026-11-27T21:20Z",
    "alineacion": {
     "UDI": "prevista (últimos 10)",
     "FIO": "prevista (últimos 10)"
    },
    "bajas": {
-    "UDI": 3,
+    "UDI": 4,
     "FIO": 3
    }
   },
@@ -354,7 +354,7 @@
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-27T12:13Z",
+   "cuotas_capturadas": "2026-11-27T21:20Z",
    "alineacion": {
     "SAS": "prevista (últimos 10)",
     "NAP": "prevista (últimos 10)"
@@ -394,7 +394,7 @@
    "n_picks": 3,
    "ejemplo": false,
    "n_errores": 2,
-   "cuotas_capturadas": "2026-11-27T12:13Z",
+   "cuotas_capturadas": "2026-11-27T21:20Z",
    "alineacion": {
     "ROM": "prevista (últimos 10)",
     "MON": "prevista (últimos 10)"
@@ -418,15 +418,15 @@
    "derbi": null,
    "arbitro": "Maurizio Mariani",
    "1x2": [
-    0.355,
-    0.321,
-    0.324
+    0.364,
+    0.317,
+    0.319
    ],
-   "goles": 2.38,
-   "over25": 0.422,
-   "ambos": 0.519,
-   "corners": 9.52,
-   "amarillas": 2.58,
+   "goles": 2.34,
+   "over25": 0.413,
+   "ambos": 0.509,
+   "corners": 9.49,
+   "amarillas": 2.6,
    "marcador": [
     "1-1",
     0.148
@@ -434,14 +434,14 @@
    "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-27T12:13Z",
+   "cuotas_capturadas": "2026-11-27T21:20Z",
    "alineacion": {
     "COM": "prevista (últimos 10)",
     "JUV": "prevista (últimos 10)"
    },
    "bajas": {
-    "COM": 5,
-    "JUV": 5
+    "COM": 6,
+    "JUV": 6
    }
   },
   {
@@ -474,7 +474,7 @@
    "n_picks": 2,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-27T12:13Z",
+   "cuotas_capturadas": "2026-11-27T21:20Z",
    "alineacion": {
     "LEC": "prevista (últimos 10)",
     "ATA": "prevista (últimos 10)"
@@ -498,30 +498,30 @@
    "derbi": null,
    "arbitro": "Marco Di Bello",
    "1x2": [
-    0.229,
-    0.302,
-    0.468
+    0.242,
+    0.305,
+    0.453
    ],
-   "goles": 2.34,
-   "over25": 0.41,
-   "ambos": 0.491,
-   "corners": 8.41,
-   "amarillas": 2.6,
+   "goles": 2.42,
+   "over25": 0.431,
+   "ambos": 0.513,
+   "corners": 8.62,
+   "amarillas": 2.65,
    "marcador": [
     "1-1",
-    0.143
+    0.144
    ],
-   "n_picks": 1,
+   "n_picks": 0,
    "ejemplo": false,
    "n_errores": 0,
-   "cuotas_capturadas": "2026-11-27T12:13Z",
+   "cuotas_capturadas": "2026-11-27T21:20Z",
    "alineacion": {
     "CAG": "prevista (últimos 10)",
     "MIL": "prevista (últimos 10)"
    },
    "bajas": {
-    "CAG": 6,
-    "MIL": 10
+    "CAG": 4,
+    "MIL": 9
    }
   }
  ]
