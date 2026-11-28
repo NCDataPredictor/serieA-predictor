@@ -9,7 +9,7 @@
   "fecha": "2026-11-28",
   "hora_local": "15:00",
   "hora_bogota": "09:00",
-  "utc": "2026-11-28T14:00:00Z",
+  "utc": "2026-11-28T14:00:00.000Z",
   "local": "FRO",
   "visitante": "PAR",
   "estadio": "Stadio Benito Stirpe",
@@ -28,18 +28,18 @@
    "penaltis": 5
   },
   "clima": {
-   "temperature": 15,
+   "temperature": 14,
    "windSpeed": 2,
-   "windDirectionCardinal": "ENE",
+   "windDirectionCardinal": "E",
    "iconCode": 32,
-   "relativeHumidity": 56,
-   "precipChance": 3,
+   "relativeHumidity": 59,
+   "precipChance": 1,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 6,
+   "cloudCover": 8,
    "description": "Sunny",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-27T20:00:17Z",
+   "lastUpdated": "2026-11-28T06:00:19Z",
    "localizedKey": "weather_condition_sunny",
    "defaultTitle": "Sunny"
   }
@@ -49,20 +49,6 @@
  },
  "bajas": {
   "FRO": [
-   {
-    "jugador": "FRO-617044",
-    "nombre": "Florian Grillitsch",
-    "motivo": "lesion",
-    "regreso": "Doubtful",
-    "p_juega": 0.5
-   },
-   {
-    "jugador": "FRO-1256534",
-    "nombre": "Antonio Raimondo",
-    "motivo": "lesion",
-    "regreso": "Doubtful",
-    "p_juega": 0.5
-   },
    {
     "jugador": "FRO-1135820",
     "nombre": "Daniel Bîrligea",

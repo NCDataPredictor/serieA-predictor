@@ -28,20 +28,20 @@
    "penaltis": 7
   },
   "clima": {
-   "temperature": 8,
+   "temperature": 9,
    "windSpeed": 3,
    "windDirectionCardinal": "WSW",
-   "iconCode": 28,
-   "relativeHumidity": 68,
+   "iconCode": 30,
+   "relativeHumidity": 67,
    "precipChance": 1,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 75,
-   "description": "Mostly Cloudy",
+   "cloudCover": 50,
+   "description": "Partly Cloudy",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-27T20:00:18Z",
-   "localizedKey": "weather_condition_cloudy",
-   "defaultTitle": "Cloudy"
+   "lastUpdated": "2026-11-28T02:00:11Z",
+   "localizedKey": "weather_condition_partly_cloudy",
+   "defaultTitle": "Partly Cloudy"
   }
  },
  "alineaciones": {
@@ -81,7 +81,7 @@
     "jugador": "SAS-1382375",
     "nombre": "Vasilije Adžić",
     "motivo": "lesion",
-    "regreso": "Unknown",
+    "regreso": "Early March 2027",
     "p_juega": 0.0
    },
    {

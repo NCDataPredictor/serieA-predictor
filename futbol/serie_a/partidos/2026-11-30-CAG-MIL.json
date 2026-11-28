@@ -50,13 +50,6 @@
  "bajas": {
   "CAG": [
    {
-    "jugador": "CAG-496042",
-    "nombre": "Yerry Mina",
-    "motivo": "lesion",
-    "regreso": "Early December 2026",
-    "p_juega": 0.0
-   },
-   {
     "jugador": "CAG-528453",
     "nombre": "Harry Winks",
     "motivo": "lesion",
@@ -85,13 +78,6 @@
     "motivo": "sancion",
     "regreso": "Early December 2026",
     "p_juega": 0.0
-   },
-   {
-    "jugador": "MIL-1554575",
-    "nombre": "Francesco Camarda",
-    "motivo": "lesion",
-    "regreso": "Doubtful",
-    "p_juega": 0.5
    },
    {
     "jugador": "MIL-281762",

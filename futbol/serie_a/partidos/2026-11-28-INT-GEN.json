@@ -9,7 +9,7 @@
   "fecha": "2026-11-28",
   "hora_local": "20:45",
   "hora_bogota": "14:45",
-  "utc": "2026-11-28T19:45:00Z",
+  "utc": "2026-11-28T19:45:00.000Z",
   "local": "INT",
   "visitante": "GEN",
   "estadio": "Stadio Giuseppe Meazza",
@@ -30,16 +30,16 @@
   "clima": {
    "temperature": 3,
    "windSpeed": 1,
-   "windDirectionCardinal": "NE",
+   "windDirectionCardinal": "NNE",
    "iconCode": 31,
-   "relativeHumidity": 91,
+   "relativeHumidity": 93,
    "precipChance": 7,
    "precipitation": 0,
    "snow": 0,
-   "cloudCover": 5,
+   "cloudCover": 1,
    "description": "Clear",
    "apiUsed": "forecast",
-   "lastUpdated": "2026-11-27T20:00:18Z",
+   "lastUpdated": "2026-11-28T05:00:22Z",
    "localizedKey": "weather_condition_clear",
    "defaultTitle": "Clear"
   }
@@ -49,13 +49,6 @@
  },
  "bajas": {
   "INT": [
-   {
-    "jugador": "INT-362212",
-    "nombre": "Piotr Zieliński",
-    "motivo": "lesion",
-    "regreso": "Doubtful",
-    "p_juega": 0.5
-   },
    {
     "jugador": "INT-805451",
     "nombre": "Alessandro Bastoni",
